@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/injection_container.dart';
 import '../../../core/services/notification_service.dart';
+import '../../../core/utils/log_generator.dart';
 import '../../../domain/entities/medicine.dart';
+import '../../../domain/repositories/medicine_log_repository.dart';
 import '../../../domain/repositories/medicine_repository.dart';
 import 'medicine_state.dart';
 
@@ -38,6 +40,17 @@ class MedicineCubit extends Cubit<MedicineState> {
     try {
       emit(MedicineLoading());
       final savedMedicine = await _medicineRepository.addMedicine(medicine);
+      
+      // Generate today's logs for the medicine
+      try {
+        final logRepository = getIt<MedicineLogRepository>();
+        final logs = LogGenerator.generateTodayLogs(savedMedicine);
+        for (final log in logs) {
+          await logRepository.addLog(log);
+        }
+      } catch (e) {
+        // Silently handle log generation errors
+      }
       
       // Schedule notifications for the medicine
       try {
