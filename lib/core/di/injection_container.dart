@@ -6,12 +6,18 @@ import '../../domain/repositories/medicine_repository.dart';
 import '../../domain/repositories/medicine_log_repository.dart';
 import '../../presentation/blocs/medicine/medicine_cubit.dart';
 import '../../presentation/blocs/medicine_log/medicine_log_cubit.dart';
+import '../services/notification_service.dart';
 
 /// Service locator instance
 final getIt = GetIt.instance;
 
 /// Initialize dependency injection
 Future<void> initializeDependencies() async {
+  // Initialize notification service
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+  getIt.registerSingleton<NotificationService>(notificationService);
+
   // Data sources
   final objectBoxService = ObjectBoxService();
   await objectBoxService.init();

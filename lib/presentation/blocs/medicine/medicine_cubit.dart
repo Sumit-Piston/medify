@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/di/injection_container.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../domain/entities/medicine.dart';
 import '../../../domain/repositories/medicine_repository.dart';
 import 'medicine_state.dart';
@@ -35,7 +37,17 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> addMedicine(Medicine medicine) async {
     try {
       emit(MedicineLoading());
-      await _medicineRepository.addMedicine(medicine);
+      final savedMedicine = await _medicineRepository.addMedicine(medicine);
+      
+      // Schedule notifications for the medicine
+      try {
+        final notificationService = getIt<NotificationService>();
+        await notificationService.scheduleMedicineReminders(savedMedicine);
+      } catch (e) {
+        // Silently handle notification errors - don't fail the whole operation
+        // In production, log to error tracking service
+      }
+      
       emit(const MedicineOperationSuccess('Medicine added successfully'));
       await loadMedicines();
     } catch (e) {
@@ -47,7 +59,16 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> updateMedicine(Medicine medicine) async {
     try {
       emit(MedicineLoading());
-      await _medicineRepository.updateMedicine(medicine);
+      final updatedMedicine = await _medicineRepository.updateMedicine(medicine);
+      
+      // Reschedule notifications for the updated medicine
+      try {
+        final notificationService = getIt<NotificationService>();
+        await notificationService.scheduleMedicineReminders(updatedMedicine);
+      } catch (e) {
+        // Silently handle notification errors
+      }
+      
       emit(const MedicineOperationSuccess('Medicine updated successfully'));
       await loadMedicines();
     } catch (e) {
@@ -59,6 +80,15 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> deleteMedicine(int id) async {
     try {
       emit(MedicineLoading());
+      
+      // Cancel notifications for this medicine before deleting
+      try {
+        final notificationService = getIt<NotificationService>();
+        await notificationService.cancelMedicineReminders(id);
+      } catch (e) {
+        // Silently handle notification errors
+      }
+      
       await _medicineRepository.deleteMedicine(id);
       emit(const MedicineOperationSuccess('Medicine deleted successfully'));
       await loadMedicines();
@@ -70,7 +100,22 @@ class MedicineCubit extends Cubit<MedicineState> {
   /// Toggle medicine active status
   Future<void> toggleMedicineStatus(int id) async {
     try {
-      await _medicineRepository.toggleMedicineStatus(id);
+      final medicine = await _medicineRepository.toggleMedicineStatus(id);
+      
+      // Update notifications based on active status
+      try {
+        final notificationService = getIt<NotificationService>();
+        if (medicine.isActive) {
+          // Schedule notifications when activated
+          await notificationService.scheduleMedicineReminders(medicine);
+        } else {
+          // Cancel notifications when deactivated
+          await notificationService.cancelMedicineReminders(id);
+        }
+      } catch (e) {
+        // Silently handle notification errors
+      }
+      
       await loadMedicines();
     } catch (e) {
       emit(MedicineError('Failed to toggle medicine status: ${e.toString()}'));

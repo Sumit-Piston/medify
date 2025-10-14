@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
+import '../../core/di/injection_container.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/utils/date_time_utils.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/custom_button.dart';
@@ -64,18 +66,48 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         ),
       ),
       body: BlocListener<MedicineCubit, MedicineState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is MedicineOperationSuccess) {
+            // Schedule notifications for the medicine if it was successfully saved
+            try {
+              final notificationService = getIt<NotificationService>();
+              
+              // Check permission first
+              final hasPermission =
+                  await notificationService.areNotificationsEnabled();
+              if (!hasPermission) {
+                final granted = await notificationService.requestPermissions();
+                if (!granted && mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Notification permission required for reminders',
+                      ),
+                      backgroundColor: Colors.orange,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+            } catch (e) {
+              // Silently handle permission errors
+            }
+
             // Show success message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.green,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+            
             // Go back to previous screen
-            Navigator.of(context).pop(true);
+            if (mounted) {
+              Navigator.of(context).pop(true);
+            }
           }
 
           if (state is MedicineError) {
@@ -300,7 +332,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   }
 
   /// Validate and save medicine
-  void _saveMedicine() {
+  Future<void> _saveMedicine() async {
     // Validate form
     if (!_formKey.currentState!.validate()) {
       return;
@@ -338,6 +370,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     } else {
       context.read<MedicineCubit>().addMedicine(medicine);
     }
+
+    // Schedule notifications after saving
+    // The medicine will get an ID after being saved
+    // We'll schedule notifications after the state updates to MedicineOperationSuccess
   }
 
   /// Get icon based on time of day
