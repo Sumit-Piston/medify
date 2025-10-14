@@ -13,6 +13,7 @@ import '../blocs/medicine_log/medicine_log_state.dart';
 import '../widgets/medicine_card.dart';
 import '../widgets/todays_summary_card.dart';
 import 'add_edit_medicine_page.dart';
+import 'settings_page.dart';
 
 /// Page to display list of all medicines
 class MedicineListPage extends StatefulWidget {
@@ -55,6 +56,18 @@ class _MedicineListPageState extends State<MedicineListPage> {
               _loadTodaysLogs();
             },
             tooltip: 'Refresh',
+          ),
+          // Settings button
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+            tooltip: 'Settings',
           ),
         ],
       ),

@@ -12,6 +12,7 @@ import '../blocs/medicine/medicine_state.dart';
 import '../blocs/medicine_log/medicine_log_cubit.dart';
 import '../blocs/medicine_log/medicine_log_state.dart';
 import '../widgets/medicine_log_card.dart';
+import 'settings_page.dart';
 
 /// Page to display today's medicine schedule
 class SchedulePage extends StatefulWidget {
@@ -54,6 +55,17 @@ class _SchedulePageState extends State<SchedulePage> {
             icon: const Icon(Icons.refresh),
             onPressed: _loadData,
             tooltip: 'Refresh',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+            tooltip: 'Settings',
           ),
         ],
       ),

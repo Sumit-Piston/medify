@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_strings.dart';
 import 'core/di/injection_container.dart';
+import 'core/services/preferences_service.dart';
+import 'core/services/theme_service.dart';
 import 'core/themes/app_theme.dart';
 import 'presentation/blocs/medicine/medicine_cubit.dart';
 import 'presentation/blocs/medicine_log/medicine_log_cubit.dart';
 import 'presentation/pages/main_navigation_page.dart';
+import 'presentation/pages/onboarding_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +19,37 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final PreferencesService _prefsService;
+  late ThemeMode _themeMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefsService = getIt<PreferencesService>();
+    _themeMode = _prefsService.themeMode;
+
+    // Register theme change callback
+    ThemeService().registerThemeCallback((themeMode) {
+      setState(() {
+        _themeMode = themeMode;
+      });
+    });
+  }
+
+  /// Update theme mode
+  void updateThemeMode(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +67,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        home: const MainNavigationPage(),
+        themeMode: _themeMode,
+        home: _prefsService.isFirstLaunch
+            ? const OnboardingPage()
+            : const MainNavigationPage(),
       ),
     );
   }
