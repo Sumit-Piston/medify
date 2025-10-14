@@ -199,9 +199,7 @@ class _MedicineListPageState extends State<MedicineListPage> {
   /// Navigate to add medicine page
   Future<void> _navigateToAddMedicine() async {
     final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (context) => const AddEditMedicinePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const AddEditMedicinePage()),
     );
 
     // Reload medicines if a medicine was added

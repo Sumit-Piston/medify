@@ -14,10 +14,7 @@ import '../blocs/medicine/medicine_state.dart';
 class AddEditMedicinePage extends StatefulWidget {
   final Medicine? medicine; // null for add, non-null for edit
 
-  const AddEditMedicinePage({
-    super.key,
-    this.medicine,
-  });
+  const AddEditMedicinePage({super.key, this.medicine});
 
   @override
   State<AddEditMedicinePage> createState() => _AddEditMedicinePageState();
@@ -164,11 +161,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
               Text(
                 'Set times when you need to take this medicine',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.7),
-                    ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
               const SizedBox(height: AppSizes.paddingM),
 
@@ -182,10 +178,9 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                         Icon(
                           Icons.access_time,
                           size: AppSizes.iconXL,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.3),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.3),
                         ),
                         const SizedBox(height: AppSizes.paddingS),
                         Text(
@@ -195,13 +190,12 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                         const SizedBox(height: 4),
                         Text(
                           'Tap the button below to add',
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withValues(alpha: 0.6),
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
                         ),
                       ],
                     ),
@@ -217,10 +211,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                     final timeOfDay = DateTimeUtils.getTimeOfDayString(time);
 
                     return Chip(
-                      avatar: Icon(
-                        _getTimeOfDayIcon(timeOfDay),
-                        size: 18,
-                      ),
+                      avatar: Icon(_getTimeOfDayIcon(timeOfDay), size: 18),
                       label: Text(
                         timeString,
                         style: const TextStyle(fontWeight: FontWeight.w600),
@@ -277,9 +268,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       initialTime: TimeOfDay.now(),
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: false,
-          ),
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
           child: child!,
         );
       },
@@ -367,4 +356,3 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     }
   }
 }
-
