@@ -5,14 +5,14 @@ import 'core/di/injection_container.dart';
 import 'core/themes/app_theme.dart';
 import 'presentation/blocs/medicine/medicine_cubit.dart';
 import 'presentation/blocs/medicine_log/medicine_log_cubit.dart';
-import 'presentation/pages/home_page.dart';
+import 'presentation/pages/medicine_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize dependencies
   await initializeDependencies();
-  
+
   runApp(const MyApp());
 }
 
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const HomePage(),
+        home: const MedicineListPage(),
       ),
     );
   }
