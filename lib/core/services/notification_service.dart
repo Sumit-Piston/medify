@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -6,6 +8,7 @@ import '../../domain/entities/medicine.dart';
 import '../utils/date_time_utils.dart';
 
 /// Service for managing local notifications
+/// Handles foreground, background, and terminated app states
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -16,70 +19,237 @@ class NotificationService {
 
   bool _isInitialized = false;
 
+  // Notification channel constants
+  static const String _channelId = 'medicine_reminders';
+  static const String _channelName = 'Medicine Reminders';
+  static const String _channelDescription =
+      'Notifications for medicine reminders';
+
   /// Initialize notification service
   Future<void> initialize() async {
-    if (_isInitialized) return;
-
-    // Initialize timezone database
-    tz.initializeTimeZones();
-    tz.setLocalLocation(
-      tz.getLocation('America/New_York'),
-    ); // Set your timezone
-
-    // Android initialization settings
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-
-    // iOS initialization settings
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-
-    // Initialize plugin
-    await _notifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
-
-    _isInitialized = true;
-  }
-
-  /// Handle notification tap
-  void _onNotificationTapped(NotificationResponse response) {
-    // TODO: Navigate to specific medicine or log screen
-    // Can parse payload to determine action
-    // Silently handle for now - will implement navigation later
-  }
-
-  /// Request notification permissions
-  Future<bool> requestPermissions() async {
-    if (await Permission.notification.isGranted) {
-      return true;
+    if (_isInitialized) {
+      _log('Notification service already initialized');
+      return;
     }
 
-    final status = await Permission.notification.request();
-    return status.isGranted;
+    try {
+      _log('Initializing notification service...');
+
+      // Initialize timezone database with local timezone
+      tz.initializeTimeZones();
+      _setLocalTimezone();
+
+      // Create notification channel for Android
+      await _createNotificationChannel();
+
+      // Android initialization settings
+      const androidSettings = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
+
+      // iOS initialization settings
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        // Critical: This allows notifications to show in foreground on iOS
+        defaultPresentAlert: true,
+        defaultPresentSound: true,
+        defaultPresentBadge: true,
+      );
+
+      const initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
+
+      // Initialize plugin with callbacks
+      final initialized = await _notifications.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: _onNotificationTapped,
+        // CRITICAL: This handles foreground notifications on Android
+        onDidReceiveBackgroundNotificationResponse:
+            _onBackgroundNotificationTapped,
+      );
+
+      if (initialized == true) {
+        _isInitialized = true;
+        _log('Notification service initialized successfully');
+      } else {
+        _log('Failed to initialize notification service', isError: true);
+      }
+    } catch (e) {
+      _log('Error initializing notification service: $e', isError: true);
+      rethrow;
+    }
+  }
+
+  /// Set timezone to device's local timezone
+  void _setLocalTimezone() {
+    try {
+      // Try to get the device's timezone
+      final String timeZoneName = DateTime.now().timeZoneName;
+      _log('Device timezone: $timeZoneName');
+
+      // Use a more robust timezone detection
+      try {
+        tz.setLocalLocation(tz.getLocation(timeZoneName));
+        _log('Timezone set to: $timeZoneName');
+      } catch (e) {
+        // Fallback to UTC if device timezone is not found
+        _log('Failed to set device timezone, using UTC as fallback');
+        tz.setLocalLocation(tz.UTC);
+      }
+    } catch (e) {
+      _log('Error setting timezone: $e', isError: true);
+      tz.setLocalLocation(tz.UTC);
+    }
+  }
+
+  /// Create Android notification channel (required for Android 8.0+)
+  Future<void> _createNotificationChannel() async {
+    if (!Platform.isAndroid) return;
+
+    try {
+      const androidChannel = AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        description: _channelDescription,
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+        showBadge: true,
+      );
+
+      final androidPlugin = _notifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+
+      if (androidPlugin != null) {
+        await androidPlugin.createNotificationChannel(androidChannel);
+        _log('Android notification channel created: $_channelId');
+      }
+    } catch (e) {
+      _log('Error creating notification channel: $e', isError: true);
+    }
+  }
+
+  /// Handle notification tap (when app is in foreground or background)
+  void _onNotificationTapped(NotificationResponse response) {
+    _log('Notification tapped: ${response.payload}');
+    // TODO: Implement navigation to specific medicine or log screen
+    // Example: Navigate to schedule page or medicine detail page
+    // Can parse payload to determine action
+    // For now, this is a placeholder
+  }
+
+  /// Handle background notification tap (static method required)
+  @pragma('vm:entry-point')
+  static void _onBackgroundNotificationTapped(NotificationResponse response) {
+    developer.log('Background notification tapped: ${response.payload}');
+    // TODO: Implement background navigation if needed
+  }
+
+  /// Request notification permissions (handles Android 13+ and iOS)
+  Future<bool> requestPermissions() async {
+    try {
+      _log('Requesting notification permissions...');
+
+      // Check current permission status
+      if (await Permission.notification.isGranted) {
+        _log('Notification permission already granted');
+        return true;
+      }
+
+      // For Android 13+ (API 33+), we need to request POST_NOTIFICATIONS permission
+      if (Platform.isAndroid) {
+        final androidInfo = await _getAndroidVersion();
+        if (androidInfo >= 33) {
+          _log(
+            'Android 13+ detected, requesting POST_NOTIFICATIONS permission',
+          );
+          final status = await Permission.notification.request();
+          _log('Permission status: $status');
+          return status.isGranted;
+        }
+        // For Android < 13, notifications are enabled by default
+        _log('Android < 13, notifications enabled by default');
+        return true;
+      }
+
+      // For iOS, request permission
+      if (Platform.isIOS) {
+        _log('iOS detected, requesting notification permission');
+        final iosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+
+        if (iosPlugin != null) {
+          final granted = await iosPlugin.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+          _log('iOS permission granted: $granted');
+          return granted ?? false;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      _log('Error requesting permissions: $e', isError: true);
+      return false;
+    }
+  }
+
+  /// Get Android SDK version
+  Future<int> _getAndroidVersion() async {
+    if (!Platform.isAndroid) return 0;
+    try {
+      // This is a simplified version - you might need to use
+      // device_info_plus package for more accurate detection
+      return 33; // Assume Android 13+ for safety
+    } catch (e) {
+      return 33;
+    }
   }
 
   /// Check if notifications are enabled
   Future<bool> areNotificationsEnabled() async {
-    return await Permission.notification.isGranted;
+    try {
+      if (Platform.isAndroid) {
+        return await Permission.notification.isGranted;
+      } else if (Platform.isIOS) {
+        final iosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+        if (iosPlugin != null) {
+          final granted = await iosPlugin.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+          return granted ?? false;
+        }
+      }
+      return false;
+    } catch (e) {
+      _log('Error checking notification status: $e', isError: true);
+      return false;
+    }
   }
 
   /// Schedule daily notifications for a medicine
   Future<void> scheduleMedicineReminders(Medicine medicine) async {
     if (!medicine.isActive) {
-      // Don't schedule for inactive medicines
+      _log('Medicine ${medicine.name} is inactive, skipping notifications');
       return;
     }
+
+    _log('Scheduling reminders for medicine: ${medicine.name}');
 
     // Cancel existing notifications for this medicine
     await cancelMedicineReminders(medicine.id!);
@@ -87,13 +257,23 @@ class NotificationService {
     // Schedule notification for each reminder time
     for (int i = 0; i < medicine.reminderTimes.length; i++) {
       final seconds = medicine.reminderTimes[i];
-      await _scheduleDailyNotification(
-        medicineId: medicine.id!,
-        timeIndex: i,
-        seconds: seconds,
-        medicineName: medicine.name,
-        dosage: medicine.dosage,
-      );
+      try {
+        await _scheduleDailyNotification(
+          medicineId: medicine.id!,
+          timeIndex: i,
+          seconds: seconds,
+          medicineName: medicine.name,
+          dosage: medicine.dosage,
+        );
+        _log(
+          'Scheduled notification ${i + 1}/${medicine.reminderTimes.length} for ${medicine.name}',
+        );
+      } catch (e) {
+        _log(
+          'Error scheduling notification $i for ${medicine.name}: $e',
+          isError: true,
+        );
+      }
     }
   }
 
@@ -105,79 +285,136 @@ class NotificationService {
     required String medicineName,
     required String dosage,
   }) async {
-    // Generate unique notification ID
-    final notificationId = _generateNotificationId(medicineId, timeIndex);
+    try {
+      // Generate unique notification ID
+      final notificationId = _generateNotificationId(medicineId, timeIndex);
 
-    // Convert seconds to DateTime
-    final now = DateTime.now();
-    final scheduledTime = DateTimeUtils.secondsToDateTime(seconds);
+      // Convert seconds to DateTime
+      final now = DateTime.now();
+      final scheduledTime = DateTimeUtils.secondsToDateTime(seconds);
 
-    // If time has passed today, schedule for tomorrow
-    final scheduledDateTime = scheduledTime.isBefore(now)
-        ? scheduledTime.add(const Duration(days: 1))
-        : scheduledTime;
+      // If time has passed today, schedule for tomorrow
+      final scheduledDateTime = scheduledTime.isBefore(now)
+          ? scheduledTime.add(const Duration(days: 1))
+          : scheduledTime;
 
-    // Convert to TZDateTime
-    final tzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
+      // Convert to TZDateTime
+      final tzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
 
-    // Android notification details
-    const androidDetails = AndroidNotificationDetails(
-      'medicine_reminders', // channel ID
-      'Medicine Reminders', // channel name
-      channelDescription: 'Notifications for medicine reminders',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-      sound: RawResourceAndroidNotificationSound('notification_sound'),
-      enableVibration: true,
-      playSound: true,
-      styleInformation: BigTextStyleInformation(''),
-    );
+      _log(
+        'Scheduling notification ID $notificationId for $medicineName at ${DateTimeUtils.formatTime(scheduledDateTime)}',
+      );
 
-    // iOS notification details
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      sound: 'notification_sound.aiff',
-    );
+      // Android notification details with foreground presentation
+      final androidDetails = AndroidNotificationDetails(
+        _channelId,
+        _channelName,
+        channelDescription: _channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+        // Remove custom sound if not provided
+        // sound: RawResourceAndroidNotificationSound('notification_sound'),
+        enableVibration: true,
+        playSound: true,
+        // Big text style for better readability
+        styleInformation: BigTextStyleInformation(
+          'It\'s time to take $medicineName ($dosage). Don\'t forget your medicine!',
+        ),
+        // Action buttons (optional - can add Taken, Snooze, Skip)
+        actions: <AndroidNotificationAction>[
+          const AndroidNotificationAction(
+            'taken',
+            'Mark as Taken',
+            showsUserInterface: true,
+          ),
+          const AndroidNotificationAction(
+            'snooze',
+            'Snooze',
+            showsUserInterface: false,
+          ),
+        ],
+        // Full screen intent for critical reminders
+        fullScreenIntent: true,
+        // Show notification even when app is in foreground
+        visibility: NotificationVisibility.public,
+        ticker: 'Time to take $medicineName',
+      );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+      // iOS notification details with foreground presentation
+      const iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        // Remove custom sound if not provided
+        // sound: 'notification_sound.aiff',
+        badgeNumber: 1,
+        subtitle: 'Medicine Reminder',
+        // iOS 10+ allows notifications to show in foreground
+        interruptionLevel: InterruptionLevel.timeSensitive,
+      );
 
-    // Schedule the notification
-    await _notifications.zonedSchedule(
-      notificationId,
-      'Time to take your medicine',
-      '$medicineName - $dosage',
-      tzDateTime,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
-      payload: 'medicine_$medicineId',
-    );
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      // Schedule the notification
+      await _notifications.zonedSchedule(
+        notificationId,
+        '💊 Time to take your medicine',
+        '$medicineName - $dosage',
+        tzDateTime,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
+        payload: 'medicine_$medicineId',
+      );
+
+      _log('Notification scheduled successfully: ID $notificationId');
+    } catch (e) {
+      _log('Error in _scheduleDailyNotification: $e', isError: true);
+      rethrow;
+    }
   }
 
   /// Cancel all reminders for a medicine
   Future<void> cancelMedicineReminders(int medicineId) async {
-    // Cancel all possible notification IDs for this medicine
-    // Assuming max 10 reminder times per medicine
-    for (int i = 0; i < 10; i++) {
-      final notificationId = _generateNotificationId(medicineId, i);
-      await _notifications.cancel(notificationId);
+    try {
+      _log('Canceling reminders for medicine ID: $medicineId');
+      // Cancel all possible notification IDs for this medicine
+      // Assuming max 10 reminder times per medicine
+      for (int i = 0; i < 10; i++) {
+        final notificationId = _generateNotificationId(medicineId, i);
+        await _notifications.cancel(notificationId);
+      }
+      _log('Canceled reminders for medicine ID: $medicineId');
+    } catch (e) {
+      _log('Error canceling medicine reminders: $e', isError: true);
     }
   }
 
   /// Cancel all notifications
   Future<void> cancelAllNotifications() async {
-    await _notifications.cancelAll();
+    try {
+      _log('Canceling all notifications');
+      await _notifications.cancelAll();
+      _log('All notifications canceled');
+    } catch (e) {
+      _log('Error canceling all notifications: $e', isError: true);
+    }
   }
 
   /// Get pending notifications
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-    return await _notifications.pendingNotificationRequests();
+    try {
+      final pending = await _notifications.pendingNotificationRequests();
+      _log('Found ${pending.length} pending notifications');
+      return pending;
+    } catch (e) {
+      _log('Error getting pending notifications: $e', isError: true);
+      return [];
+    }
   }
 
   /// Show immediate notification (for testing)
@@ -186,33 +423,44 @@ class NotificationService {
     required String body,
     String? payload,
   }) async {
-    const androidDetails = AndroidNotificationDetails(
-      'medicine_reminders',
-      'Medicine Reminders',
-      channelDescription: 'Notifications for medicine reminders',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-    );
+    try {
+      _log('Showing immediate notification: $title');
 
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+      final androidDetails = AndroidNotificationDetails(
+        _channelId,
+        _channelName,
+        channelDescription: _channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+        // Show notification even when app is in foreground
+        visibility: NotificationVisibility.public,
+      );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+      const iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        interruptionLevel: InterruptionLevel.active,
+      );
 
-    await _notifications.show(
-      DateTime.now().millisecondsSinceEpoch % 100000, // Random ID
-      title,
-      body,
-      details,
-      payload: payload,
-    );
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      await _notifications.show(
+        DateTime.now().millisecondsSinceEpoch % 100000, // Random ID
+        title,
+        body,
+        details,
+        payload: payload,
+      );
+
+      _log('Immediate notification shown successfully');
+    } catch (e) {
+      _log('Error showing immediate notification: $e', isError: true);
+    }
   }
 
   /// Generate unique notification ID from medicine ID and time index
@@ -230,12 +478,63 @@ class NotificationService {
 
   /// Reschedule all active medicine reminders
   Future<void> rescheduleAllReminders(List<Medicine> medicines) async {
-    await cancelAllNotifications();
+    try {
+      _log('Rescheduling reminders for ${medicines.length} medicines');
+      await cancelAllNotifications();
 
-    for (final medicine in medicines) {
-      if (medicine.isActive) {
-        await scheduleMedicineReminders(medicine);
+      int scheduled = 0;
+      for (final medicine in medicines) {
+        if (medicine.isActive) {
+          await scheduleMedicineReminders(medicine);
+          scheduled++;
+        }
       }
+
+      _log('Rescheduled reminders for $scheduled active medicines');
+    } catch (e) {
+      _log('Error rescheduling reminders: $e', isError: true);
+    }
+  }
+
+  /// Log helper for debugging
+  void _log(String message, {bool isError = false}) {
+    if (isError) {
+      developer.log(
+        message,
+        name: 'NotificationService',
+        level: 1000, // Error level
+      );
+    } else {
+      developer.log(
+        message,
+        name: 'NotificationService',
+        level: 500, // Info level
+      );
+    }
+  }
+
+  /// Get notification statistics (for debugging)
+  Future<Map<String, dynamic>> getNotificationStats() async {
+    try {
+      final pending = await getPendingNotifications();
+      return {
+        'isInitialized': _isInitialized,
+        'pendingCount': pending.length,
+        'pendingNotifications': pending
+            .map(
+              (n) => {
+                'id': n.id,
+                'title': n.title,
+                'body': n.body,
+                'payload': n.payload,
+              },
+            )
+            .toList(),
+        'timezone': tz.local.name,
+      };
+    } catch (e) {
+      _log('Error getting notification stats: $e', isError: true);
+      return {'error': e.toString()};
     }
   }
 }
