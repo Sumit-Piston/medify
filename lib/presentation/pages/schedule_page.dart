@@ -40,8 +40,16 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.todaysSchedule),
+        title: const Text('Today'), // Per spec: "Today" + calendar icon
+        centerTitle: false,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            onPressed: () {
+              // Future: Show date picker for viewing other days
+            },
+            tooltip: 'Select date',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadData,

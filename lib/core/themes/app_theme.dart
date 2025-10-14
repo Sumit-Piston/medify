@@ -43,30 +43,35 @@ class AppTheme {
         ),
       ),
 
-      // Card theme
+      // Card theme (Border Radius: 16px per spec)
       cardTheme: CardThemeData(
         elevation: AppSizes.elevationS,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusCard),
         ),
         color: AppColors.cardLight,
       ),
 
-      // Text theme with Nunito font
+      // Text theme with Nunito font (following spec)
+      // H1: 28px Bold, H2: 24px SemiBold, H3: 20px SemiBold
+      // Body Large: 18px, Body Medium: 16px, Body Small: 14px, Caption: 12px
       textTheme: GoogleFonts.nunitoTextTheme().copyWith(
+        // H1: 28px, Nunito Bold (Page titles)
         displayLarge: GoogleFonts.nunito(
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textPrimaryLight,
-        ),
-        displayMedium: GoogleFonts.nunito(
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: AppColors.textPrimaryLight,
         ),
-        displaySmall: GoogleFonts.nunito(
+        // H2: 24px, Nunito SemiBold (Section headers)
+        displayMedium: GoogleFonts.nunito(
           fontSize: 24,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        // H3: 20px, Nunito SemiBold (Card titles)
+        displaySmall: GoogleFonts.nunito(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
         headlineMedium: GoogleFonts.nunito(
@@ -75,24 +80,38 @@ class AppTheme {
           color: AppColors.textPrimaryLight,
         ),
         titleLarge: GoogleFonts.nunito(
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
         titleMedium: GoogleFonts.nunito(
-          fontSize: 16,
+          fontSize: 18,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
+        // Body Large: 18px (Important text)
         bodyLarge: GoogleFonts.nunito(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textPrimaryLight,
+        ),
+        // Body Medium: 16px (Primary content)
+        bodyMedium: GoogleFonts.nunito(
           fontSize: 16,
           fontWeight: FontWeight.normal,
           color: AppColors.textPrimaryLight,
         ),
-        bodyMedium: GoogleFonts.nunito(
+        // Body Small: 14px (Secondary text)
+        bodySmall: GoogleFonts.nunito(
           fontSize: 14,
           fontWeight: FontWeight.normal,
-          color: AppColors.textPrimaryLight,
+          color: AppColors.textSecondaryLight,
+        ),
+        // Caption: 12px (Labels, hints)
+        labelSmall: GoogleFonts.nunito(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textSecondaryLight,
         ),
         labelLarge: GoogleFonts.nunito(
           fontSize: 16,
@@ -101,16 +120,18 @@ class AppTheme {
         ),
       ),
 
-      // Button themes
+      // Button themes (Border Radius: 12px per spec)
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: AppSizes.elevationS,
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+            borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           textStyle: GoogleFonts.nunito(
             fontSize: 16,
@@ -122,10 +143,12 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+            borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           side: const BorderSide(color: AppColors.primary, width: 2),
           textStyle: GoogleFonts.nunito(
@@ -138,8 +161,10 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           textStyle: GoogleFonts.nunito(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -147,7 +172,7 @@ class AppTheme {
         ),
       ),
 
-      // Input decoration theme
+      // Input decoration theme (Border Radius: 8px per spec)
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceLight,
@@ -156,19 +181,19 @@ class AppTheme {
           vertical: AppSizes.paddingM,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.borderLight),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.borderLight),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.error),
         ),
         labelStyle: GoogleFonts.nunito(
@@ -235,75 +260,94 @@ class AppTheme {
         ),
       ),
 
-      // Card theme
+      // Card theme (Border Radius: 16px per spec)
       cardTheme: CardThemeData(
         elevation: AppSizes.elevationS,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusCard),
         ),
         color: AppColors.cardDark,
       ),
 
-      // Text theme with Nunito font
-      textTheme:
-          GoogleFonts.nunitoTextTheme(ThemeData.dark().textTheme).copyWith(
-        displayLarge: GoogleFonts.nunito(
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textPrimaryDark,
-        ),
-        displayMedium: GoogleFonts.nunito(
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textPrimaryDark,
-        ),
-        displaySmall: GoogleFonts.nunito(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textPrimaryDark,
-        ),
-        headlineMedium: GoogleFonts.nunito(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimaryDark,
-        ),
-        titleLarge: GoogleFonts.nunito(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimaryDark,
-        ),
-        titleMedium: GoogleFonts.nunito(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimaryDark,
-        ),
-        bodyLarge: GoogleFonts.nunito(
-          fontSize: 16,
-          fontWeight: FontWeight.normal,
-          color: AppColors.textPrimaryDark,
-        ),
-        bodyMedium: GoogleFonts.nunito(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-          color: AppColors.textPrimaryDark,
-        ),
-        labelLarge: GoogleFonts.nunito(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-      ),
+      // Text theme with Nunito font (following spec)
+      textTheme: GoogleFonts.nunitoTextTheme(ThemeData.dark().textTheme)
+          .copyWith(
+            // H1: 28px, Nunito Bold (Page titles)
+            displayLarge: GoogleFonts.nunito(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimaryDark,
+            ),
+            // H2: 24px, Nunito SemiBold (Section headers)
+            displayMedium: GoogleFonts.nunito(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryDark,
+            ),
+            // H3: 20px, Nunito SemiBold (Card titles)
+            displaySmall: GoogleFonts.nunito(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryDark,
+            ),
+            headlineMedium: GoogleFonts.nunito(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryDark,
+            ),
+            titleLarge: GoogleFonts.nunito(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryDark,
+            ),
+            titleMedium: GoogleFonts.nunito(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryDark,
+            ),
+            // Body Large: 18px (Important text)
+            bodyLarge: GoogleFonts.nunito(
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+              color: AppColors.textPrimaryDark,
+            ),
+            // Body Medium: 16px (Primary content)
+            bodyMedium: GoogleFonts.nunito(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+              color: AppColors.textPrimaryDark,
+            ),
+            // Body Small: 14px (Secondary text)
+            bodySmall: GoogleFonts.nunito(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+              color: AppColors.textSecondaryDark,
+            ),
+            // Caption: 12px (Labels, hints)
+            labelSmall: GoogleFonts.nunito(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+              color: AppColors.textSecondaryDark,
+            ),
+            labelLarge: GoogleFonts.nunito(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
 
-      // Button themes
+      // Button themes (Border Radius: 12px per spec)
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: AppSizes.elevationS,
           backgroundColor: AppColors.primaryLight,
           foregroundColor: Colors.black,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+            borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           textStyle: GoogleFonts.nunito(
             fontSize: 16,
@@ -315,10 +359,12 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primaryLight,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+            borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           side: const BorderSide(color: AppColors.primaryLight, width: 2),
           textStyle: GoogleFonts.nunito(
@@ -331,8 +377,10 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primaryLight,
-          minimumSize:
-              const Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+          minimumSize: const Size(
+            AppSizes.buttonMinWidth,
+            AppSizes.buttonHeight,
+          ),
           textStyle: GoogleFonts.nunito(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -340,7 +388,7 @@ class AppTheme {
         ),
       ),
 
-      // Input decoration theme
+      // Input decoration theme (Border Radius: 8px per spec)
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceDark,
@@ -349,19 +397,19 @@ class AppTheme {
           vertical: AppSizes.paddingM,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.borderDark),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.borderDark),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.primaryLight, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusM),
+          borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.error),
         ),
         labelStyle: GoogleFonts.nunito(
