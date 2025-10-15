@@ -303,21 +303,24 @@ class _MedicineListPageState extends State<MedicineListPage>
   ) async {
     return showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(AppLocalizations.of(context)!.deleteConfirmation),
-        content: Text('Are you sure you want to delete "$medicineName"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(AppLocalizations.of(context)!.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text(AppLocalizations.of(context)!.delete),
-          ),
-        ],
-      ),
+      builder: (dialogContext) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.deleteConfirmation),
+          content: Text('Are you sure you want to delete "$medicineName"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: Text(l10n.delete),
+            ),
+          ],
+        );
+      },
     );
   }
 
