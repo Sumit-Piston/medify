@@ -70,6 +70,11 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         ),
       ),
       body: BlocListener<MedicineCubit, MedicineState>(
+        listenWhen: (previous, current) {
+          // Only listen to relevant state changes
+          return (current is MedicineOperationSuccess || current is MedicineError) &&
+                 previous != current;
+        },
         listener: (context, state) async {
           if (state is MedicineOperationSuccess) {
             // Schedule notifications for the medicine if it was successfully saved
@@ -99,30 +104,42 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
 
             // Show success message
             if (mounted) {
+              // Clear any existing snackbars first
+              ScaffoldMessenger.of(context).clearSnackBars();
+              
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
                   backgroundColor: Colors.green,
                   behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 2),
                 ),
               );
-            }
 
-            // Go back to previous screen
-            if (mounted) {
+              // Wait a bit before navigating to ensure snackbar is visible
+              await Future.delayed(const Duration(milliseconds: 500));
+
+              // Navigate back with success result
               Navigator.of(context).pop(true);
             }
           }
 
           if (state is MedicineError) {
+            // Clear any existing snackbars
+            if (mounted) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+            }
+            
             // Show error message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
           }
         },
         child: Form(

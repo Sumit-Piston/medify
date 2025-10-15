@@ -53,6 +53,9 @@ dev_dependencies:
   # Launcher icon generation
   flutter_launcher_icons: ^0.14.1
 
+  # Asset code generation
+  flutter_gen_runner: ^5.7.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -107,3 +110,12 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/images/Medify.png"
   # Remove default Flutter icon
   remove_alpha_ios: true
+
+# Flutter Gen Configuration for type-safe asset access
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
+  integrations:
+    flutter_svg: false
+  assets:
+    enabled: true

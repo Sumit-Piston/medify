@@ -32,6 +32,14 @@ class _MedicineListPageState extends State<MedicineListPage> {
     _loadTodaysLogs();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload data when page becomes visible (e.g., switching tabs or returning from another page)
+    _loadMedicines();
+    _loadTodaysLogs();
+  }
+
   void _loadMedicines() {
     context.read<MedicineCubit>().loadMedicines();
   }
@@ -72,7 +80,15 @@ class _MedicineListPageState extends State<MedicineListPage> {
         ],
       ),
       body: BlocConsumer<MedicineCubit, MedicineState>(
+        listenWhen: (previous, current) {
+          // Prevent duplicate listeners from IndexedStack
+          return (current is MedicineOperationSuccess || current is MedicineError) &&
+                 previous != current;
+        },
         listener: (context, state) {
+          // Clear any existing snackbars first
+          ScaffoldMessenger.of(context).clearSnackBars();
+          
           // Show snackbar on operations
           if (state is MedicineOperationSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(

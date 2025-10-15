@@ -25,6 +25,7 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   List<Medicine> _medicines = [];
   List<MedicineLog> _logs = [];
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -32,23 +33,83 @@ class _SchedulePageState extends State<SchedulePage> {
     _loadData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload data when page becomes visible (e.g., switching tabs)
+    _loadData();
+  }
+
   void _loadData() {
     context.read<MedicineCubit>().loadActiveMedicines();
-    context.read<MedicineLogCubit>().loadTodayLogs();
+    if (_isToday()) {
+      context.read<MedicineLogCubit>().loadTodayLogs();
+    } else {
+      context.read<MedicineLogCubit>().loadLogsByDate(_selectedDate);
+    }
+  }
+
+  bool _isToday() {
+    final now = DateTime.now();
+    return _selectedDate.year == now.year &&
+           _selectedDate.month == now.month &&
+           _selectedDate.day == now.day;
+  }
+
+  String _getTitle() {
+    if (_isToday()) {
+      return 'Today';
+    }
+    final now = DateTime.now();
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    
+    if (_selectedDate.year == yesterday.year &&
+        _selectedDate.month == yesterday.month &&
+        _selectedDate.day == yesterday.day) {
+      return 'Yesterday';
+    }
+    if (_selectedDate.year == tomorrow.year &&
+        _selectedDate.month == tomorrow.month &&
+        _selectedDate.day == tomorrow.day) {
+      return 'Tomorrow';
+    }
+    // Format: "Mon, Jan 15"
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return '${days[_selectedDate.weekday - 1]}, ${months[_selectedDate.month - 1]} ${_selectedDate.day}';
+  }
+
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      helpText: 'Select Date',
+      cancelText: 'Cancel',
+      confirmText: 'OK',
+    );
+    
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+      _loadData();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Today'), // Per spec: "Today" + calendar icon
+        title: Text(_getTitle()),
         centerTitle: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              // Future: Show date picker for viewing other days
-            },
+            onPressed: _selectDate,
             tooltip: 'Select date',
           ),
           IconButton(
@@ -72,8 +133,15 @@ class _SchedulePageState extends State<SchedulePage> {
       body: MultiBlocListener(
         listeners: [
           BlocListener<MedicineLogCubit, MedicineLogState>(
+            listenWhen: (previous, current) {
+              // Only listen when this page is visible (prevent duplicate toasts)
+              return current is MedicineLogOperationSuccess && 
+                     previous != current;
+            },
             listener: (context, state) {
               if (state is MedicineLogOperationSuccess) {
+                // Clear any existing snackbars first
+                ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.message),

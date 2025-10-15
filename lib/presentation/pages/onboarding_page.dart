@@ -5,6 +5,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/services/preferences_service.dart';
 import '../../core/di/injection_container.dart';
+import '../../gen/assets.gen.dart';
 import 'main_navigation_page.dart';
 
 /// Onboarding page with 3 screens
@@ -180,18 +181,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Large icon
-          Container(
-            width: AppSizes.iconOnboarding,
-            height: AppSizes.iconOnboarding,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.medication,
-              size: 48,
-              color: AppColors.primary,
+          // App Logo
+          ClipOval(
+            child: Container(
+              width: AppSizes.iconOnboarding,
+              height: AppSizes.iconOnboarding,
+              padding: const EdgeInsets.all(AppSizes.spacing16),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Assets.icons.medifyIcon.image(fit: BoxFit.contain),
             ),
           ),
           const SizedBox(height: AppSizes.spacing32),
