@@ -23,21 +23,19 @@ class MedicineListPage extends StatefulWidget {
   State<MedicineListPage> createState() => _MedicineListPageState();
 }
 
-class _MedicineListPageState extends State<MedicineListPage> {
+class _MedicineListPageState extends State<MedicineListPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
     // Load medicines and today's logs when page opens
-    _loadMedicines();
-    _loadTodaysLogs();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Reload data when page becomes visible (e.g., switching tabs or returning from another page)
-    _loadMedicines();
-    _loadTodaysLogs();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadMedicines();
+      _loadTodaysLogs();
+    });
   }
 
   void _loadMedicines() {
@@ -51,6 +49,7 @@ class _MedicineListPageState extends State<MedicineListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Medify'), // Per spec: "Medify" (H2)

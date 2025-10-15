@@ -110,6 +110,8 @@ class TodaysSummaryCard extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -148,13 +150,17 @@ class TodaysSummaryCard extends StatelessWidget {
                   size: AppSizes.iconM,
                 ),
                 const SizedBox(width: AppSizes.spacing8),
-                Text(
-                  totalDoses > 0
-                      ? '$takenDoses of $totalDoses doses taken ($progress%)'
-                      : 'No doses scheduled today',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.95),
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    totalDoses > 0
+                        ? '$takenDoses of $totalDoses doses taken ($progress%)'
+                        : 'No doses scheduled today',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.95),
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

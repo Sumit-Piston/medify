@@ -134,7 +134,12 @@ class MedicineLogCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(medicine.name, style: theme.textTheme.titleLarge),
+                      Text(
+                        medicine.name,
+                        style: theme.textTheme.titleLarge,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       const SizedBox(height: 2),
                       Text(
                         medicine.dosage,
@@ -143,6 +148,8 @@ class MedicineLogCard extends StatelessWidget {
                             alpha: 0.7,
                           ),
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

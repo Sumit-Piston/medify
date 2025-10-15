@@ -153,52 +153,57 @@ class MedicineCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.paddingS),
 
-                // Reminder time chips
-                Wrap(
-                  spacing: AppSizes.paddingS,
-                  runSpacing: AppSizes.paddingS,
-                  children: medicine.reminderTimes.map((seconds) {
-                    final time = DateTimeUtils.secondsToDateTime(seconds);
-                    final timeString = DateTimeUtils.formatTime(time);
-                    final timeOfDay = DateTimeUtils.getTimeOfDayString(time);
+                // Reminder time chips (with overflow protection)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 120),
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      spacing: AppSizes.paddingS,
+                      runSpacing: AppSizes.paddingS,
+                      children: medicine.reminderTimes.map((seconds) {
+                        final time = DateTimeUtils.secondsToDateTime(seconds);
+                        final timeString = DateTimeUtils.formatTime(time);
+                        final timeOfDay = DateTimeUtils.getTimeOfDayString(time);
 
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.paddingM,
-                        vertical: AppSizes.paddingS,
-                      ),
-                      decoration: BoxDecoration(
-                        color: medicine.isActive
-                            ? AppColors.primaryLight.withValues(alpha: 0.15)
-                            : AppColors.textDisabledLight.withValues(
-                                alpha: 0.1,
-                              ),
-                        borderRadius: BorderRadius.circular(AppSizes.radiusXL),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _getTimeOfDayIcon(timeOfDay),
-                            size: 14,
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.paddingM,
+                            vertical: AppSizes.paddingS,
+                          ),
+                          decoration: BoxDecoration(
                             color: medicine.isActive
-                                ? AppColors.primaryDark
-                                : AppColors.textDisabledLight,
+                                ? AppColors.primaryLight.withValues(alpha: 0.15)
+                                : AppColors.textDisabledLight.withValues(
+                                    alpha: 0.1,
+                                  ),
+                            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            timeString,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: medicine.isActive
-                                  ? AppColors.primaryDark
-                                  : AppColors.textDisabledLight,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _getTimeOfDayIcon(timeOfDay),
+                                size: 14,
+                                color: medicine.isActive
+                                    ? AppColors.primaryDark
+                                    : AppColors.textDisabledLight,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                timeString,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: medicine.isActive
+                                      ? AppColors.primaryDark
+                                      : AppColors.textDisabledLight,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ],
 
