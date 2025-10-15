@@ -48,8 +48,10 @@ class NotificationService {
       await _createNotificationChannel();
 
       // Android initialization settings
+      // Use @mipmap/ic_launcher instead of @drawable/ic_notification
+      // because vector drawables don't work in release builds for notifications
       const androidSettings = AndroidInitializationSettings(
-        'ic_notification',
+        '@mipmap/ic_launcher',
       );
 
       // iOS initialization settings
@@ -295,7 +297,7 @@ class NotificationService {
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
-        icon: 'ic_notification',
+        icon: '@mipmap/ic_launcher',
         enableVibration: true,
         playSound: true,
         styleInformation: const BigTextStyleInformation(
@@ -544,7 +546,7 @@ class NotificationService {
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
-        icon: 'ic_notification',
+        icon: '@mipmap/ic_launcher',
         // Remove custom sound if not provided
         // sound: RawResourceAndroidNotificationSound('notification_sound'),
         enableVibration: true,
@@ -670,7 +672,7 @@ class NotificationService {
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
-        icon: 'ic_notification',
+        icon: '@mipmap/ic_launcher',
         // Show notification even when app is in foreground
         visibility: NotificationVisibility.public,
       );

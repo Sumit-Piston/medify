@@ -9,6 +9,7 @@
 ## ✅ GOOD NEWS: Build Successful!
 
 Your release APK has been built successfully:
+
 - **Location:** `build/app/outputs/flutter-apk/app-release.apk`
 - **Size:** 63.4MB
 - **Status:** ✅ No build errors
@@ -20,6 +21,7 @@ Your release APK has been built successfully:
 ### **Method 1: Install on Physical Android Device** (RECOMMENDED)
 
 #### **Step 1: Enable Developer Options**
+
 1. Open **Settings** on your Android device
 2. Go to **About Phone**
 3. Tap **Build Number** 7 times
@@ -27,11 +29,13 @@ Your release APK has been built successfully:
 5. Enable **USB Debugging**
 
 #### **Step 2: Connect Device to Mac**
+
 1. Connect your Android device via USB cable
 2. On your phone, accept "Allow USB Debugging" prompt
 3. Choose **File Transfer** mode (not just charging)
 
 #### **Step 3: Install ADB (if not installed)**
+
 ```bash
 # Install Android SDK Platform Tools
 brew install --cask android-platform-tools
@@ -41,6 +45,7 @@ adb version
 ```
 
 #### **Step 4: Install the APK**
+
 ```bash
 cd /Users/sumitpal/Dev/Personal/medify
 
@@ -55,6 +60,7 @@ adb install -r build/app/outputs/flutter-apk/medify-v1.0.0.apk
 ```
 
 #### **Step 5: Launch the App**
+
 Find "Medify" in your app drawer and tap to open!
 
 ---
@@ -62,6 +68,7 @@ Find "Medify" in your app drawer and tap to open!
 ### **Method 2: Share APK File Directly**
 
 #### **Via Google Drive / Email:**
+
 1. Upload `build/app/outputs/flutter-apk/app-release.apk` to Google Drive
 2. Open the link on your Android phone
 3. Download the APK
@@ -70,6 +77,7 @@ Find "Medify" in your app drawer and tap to open!
 6. Install and open!
 
 #### **Via AirDrop (if you have Android nearby):**
+
 1. Use any file sharing app
 2. Share the APK file from Mac to Android
 3. Install on Android device
@@ -92,6 +100,7 @@ fvm flutter run --release
 ### **Issue 1: "adb: command not found"**
 
 **Solution:**
+
 ```bash
 # Install Android SDK Platform Tools
 brew install --cask android-platform-tools
@@ -111,6 +120,7 @@ adb version
 ### **Issue 2: "Device not found" when running adb devices**
 
 **Solutions:**
+
 1. **Check USB Debugging is enabled** on phone
 2. **Revoke and re-authorize USB debugging:**
    - Settings → Developer Options → Revoke USB Debugging Authorizations
@@ -131,6 +141,7 @@ adb version
 This means a debug version is already installed.
 
 **Solution:**
+
 ```bash
 # Uninstall old version first
 adb uninstall com.medify.medify
@@ -144,6 +155,7 @@ adb install -r build/app/outputs/flutter-apk/app-release.apk
 ### **Issue 4: App installs but crashes on launch**
 
 **Possible causes:**
+
 1. **ObjectBox database issue** - Release mode may need additional ProGuard rules
 2. **Missing permissions** - Check if all permissions are granted
 
@@ -152,6 +164,7 @@ adb install -r build/app/outputs/flutter-apk/app-release.apk
 #### **A. Check if ObjectBox needs ProGuard rules**
 
 Create/update `android/app/proguard-rules.pro`:
+
 ```proguard
 # ObjectBox
 -keep class io.objectbox.** { *; }
@@ -174,6 +187,7 @@ Create/update `android/app/proguard-rules.pro`:
 ```
 
 Then update `android/app/build.gradle.kts`:
+
 ```kotlin
 buildTypes {
     release {
@@ -190,6 +204,7 @@ buildTypes {
 ```
 
 #### **B. Check logcat for crash details**
+
 ```bash
 # View real-time logs
 adb logcat | grep -i flutter
@@ -203,7 +218,9 @@ adb logcat > crash_log.txt
 ### **Issue 5: "Installation failed - Unknown reason"**
 
 **Solutions:**
+
 1. **Clear cache and rebuild:**
+
    ```bash
    fvm flutter clean
    fvm flutter pub get
@@ -225,6 +242,7 @@ adb logcat > crash_log.txt
 Once installed, test these critical features:
 
 ### **✅ Checklist:**
+
 - [ ] App launches without crashing
 - [ ] Can add a medicine
 - [ ] Notifications work
@@ -243,6 +261,7 @@ Once installed, test these critical features:
 For actual Play Store submission, you need a signed release build.
 
 ### **Step 1: Create Keystore**
+
 ```bash
 keytool -genkey -v -keystore ~/medify-release-key.jks \
   -keyalg RSA -keysize 2048 -validity 10000 \
@@ -250,7 +269,9 @@ keytool -genkey -v -keystore ~/medify-release-key.jks \
 ```
 
 ### **Step 2: Create key.properties**
+
 Create `android/key.properties`:
+
 ```properties
 storePassword=YOUR_STORE_PASSWORD
 keyPassword=YOUR_KEY_PASSWORD
@@ -259,6 +280,7 @@ storeFile=/Users/sumitpal/medify-release-key.jks
 ```
 
 ### **Step 3: Update build.gradle.kts**
+
 ```kotlin
 // Load keystore
 val keystoreProperties = Properties()
@@ -288,16 +310,19 @@ android {
 ```
 
 ### **Step 4: Build Signed APK**
+
 ```bash
 fvm flutter build apk --release --split-per-abi
 ```
 
 This creates 3 APKs (one for each architecture):
+
 - `app-arm64-v8a-release.apk` (64-bit ARM)
 - `app-armeabi-v7a-release.apk` (32-bit ARM)
 - `app-x86_64-release.apk` (x86 64-bit)
 
 ### **Step 5: Build App Bundle (Recommended for Play Store)**
+
 ```bash
 fvm flutter build appbundle --release
 ```
@@ -305,6 +330,7 @@ fvm flutter build appbundle --release
 This creates `build/app/outputs/bundle/release/app-release.aab`
 
 **App Bundle is better because:**
+
 - Smaller download size for users
 - Google Play optimizes for each device
 - Required for apps over 100MB
@@ -348,16 +374,16 @@ fvm flutter build apk --release
 
 ## 📱 WHAT'S THE DIFFERENCE: Debug vs Release?
 
-| Feature | Debug Build | Release Build |
-|---------|-------------|---------------|
-| Size | ~80-100MB | ~60-70MB |
-| Performance | Slower | Optimized |
-| Hot Reload | ✅ Yes | ❌ No |
-| DevTools | ✅ Yes | ❌ No |
-| Assertions | ✅ Enabled | ❌ Disabled |
-| Obfuscation | ❌ No | ✅ Yes (with ProGuard) |
-| Debugging | ✅ Easy | ❌ Harder |
-| **Use For** | Development | Production/Testing |
+| Feature     | Debug Build | Release Build          |
+| ----------- | ----------- | ---------------------- |
+| Size        | ~80-100MB   | ~60-70MB               |
+| Performance | Slower      | Optimized              |
+| Hot Reload  | ✅ Yes      | ❌ No                  |
+| DevTools    | ✅ Yes      | ❌ No                  |
+| Assertions  | ✅ Enabled  | ❌ Disabled            |
+| Obfuscation | ❌ No       | ✅ Yes (with ProGuard) |
+| Debugging   | ✅ Easy     | ❌ Harder              |
+| **Use For** | Development | Production/Testing     |
 
 ---
 
@@ -366,7 +392,9 @@ fvm flutter build apk --release
 If your app works in debug but crashes in release:
 
 ### **1. Check for print/debug statements**
+
 Remove or wrap with `kDebugMode`:
+
 ```dart
 import 'package:flutter/foundation.dart';
 
@@ -376,18 +404,23 @@ if (kDebugMode) {
 ```
 
 ### **2. Check for missing ProGuard rules**
+
 See Issue #4 solution above
 
 ### **3. Check for reflection/dynamic code**
+
 ObjectBox, JSON serialization might need special rules
 
 ### **4. Test in profile mode first**
+
 ```bash
 fvm flutter run --profile
 ```
+
 This is between debug and release - helps identify issues
 
 ### **5. Enable source maps for better error messages**
+
 ```bash
 fvm flutter build apk --release --source-maps
 ```
@@ -407,6 +440,7 @@ fvm flutter build apk --release --source-maps
 ## 🚀 NEXT STEPS
 
 1. **Install ADB tools** (if not already)
+
    ```bash
    brew install --cask android-platform-tools
    ```
@@ -414,6 +448,7 @@ fvm flutter build apk --release --source-maps
 2. **Connect Android device** via USB
 
 3. **Install and test** the release APK
+
    ```bash
    adb install -r build/app/outputs/flutter-apk/app-release.apk
    ```
@@ -439,5 +474,3 @@ If you encounter issues:
 **Your release build is ready to test!** 🎉
 
 Let me know which installation method you'd like to use, or if you encounter any issues!
-
-
