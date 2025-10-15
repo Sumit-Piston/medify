@@ -1,5 +1,52 @@
 import 'package:intl/intl.dart';
 
+/// Time period of the day
+enum TimeOfDayPeriod {
+  morning,    // 5 AM - 12 PM
+  afternoon,  // 12 PM - 5 PM
+  evening,    // 5 PM - 9 PM
+  night;      // 9 PM - 5 AM
+
+  String get label {
+    switch (this) {
+      case TimeOfDayPeriod.morning:
+        return 'Morning';
+      case TimeOfDayPeriod.afternoon:
+        return 'Afternoon';
+      case TimeOfDayPeriod.evening:
+        return 'Evening';
+      case TimeOfDayPeriod.night:
+        return 'Night';
+    }
+  }
+
+  String get emoji {
+    switch (this) {
+      case TimeOfDayPeriod.morning:
+        return '☀️';
+      case TimeOfDayPeriod.afternoon:
+        return '🌤️';
+      case TimeOfDayPeriod.evening:
+        return '🌙';
+      case TimeOfDayPeriod.night:
+        return '🌃';
+    }
+  }
+
+  String get timeRange {
+    switch (this) {
+      case TimeOfDayPeriod.morning:
+        return '5 AM - 12 PM';
+      case TimeOfDayPeriod.afternoon:
+        return '12 PM - 5 PM';
+      case TimeOfDayPeriod.evening:
+        return '5 PM - 9 PM';
+      case TimeOfDayPeriod.night:
+        return '9 PM - 5 AM';
+    }
+  }
+}
+
 /// Utility class for date and time operations
 class DateTimeUtils {
   DateTimeUtils._();
@@ -91,6 +138,37 @@ class DateTimeUtils {
     } else {
       return 'Night';
     }
+  }
+
+  /// Get time of day period enum
+  static TimeOfDayPeriod getTimeOfDayPeriod(DateTime time) {
+    final hour = time.hour;
+    if (hour >= 5 && hour < 12) {
+      return TimeOfDayPeriod.morning;
+    } else if (hour >= 12 && hour < 17) {
+      return TimeOfDayPeriod.afternoon;
+    } else if (hour >= 17 && hour < 21) {
+      return TimeOfDayPeriod.evening;
+    } else {
+      return TimeOfDayPeriod.night;
+    }
+  }
+
+  /// Group items by time of day period
+  static Map<TimeOfDayPeriod, List<T>> groupByTimeOfDay<T>(
+    List<T> items,
+    DateTime Function(T) getDateTime,
+  ) {
+    final Map<TimeOfDayPeriod, List<T>> grouped = {};
+    
+    for (final item in items) {
+      final dateTime = getDateTime(item);
+      final period = getTimeOfDayPeriod(dateTime);
+      grouped.putIfAbsent(period, () => []);
+      grouped[period]!.add(item);
+    }
+    
+    return grouped;
   }
 }
 

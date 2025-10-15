@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/utils/date_time_utils.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/medicine.dart';
@@ -175,16 +176,16 @@ class _SchedulePageState extends State<SchedulePage>
                 _medicines = medicineState.medicines;
               }
 
-                  return BlocBuilder<MedicineLogCubit, MedicineLogState>(
-                    builder: (context, logState) {
-                      if (logState is MedicineLogLoading ||
-                          medicineState is MedicineLoading) {
-                        // Use shimmer loading instead of circular progress
-                        return const ShimmerLoadingList(
-                          itemCount: 5,
-                          shimmerWidget: ShimmerMedicineLogCard(),
-                        );
-                      }
+              return BlocBuilder<MedicineLogCubit, MedicineLogState>(
+                builder: (context, logState) {
+                  if (logState is MedicineLogLoading ||
+                      medicineState is MedicineLoading) {
+                    // Use shimmer loading instead of circular progress
+                    return const ShimmerLoadingList(
+                      itemCount: 5,
+                      shimmerWidget: ShimmerMedicineLogCard(),
+                    );
+                  }
 
                   if (logState is MedicineLogLoaded) {
                     _logs = logState.logs;
@@ -206,6 +207,20 @@ class _SchedulePageState extends State<SchedulePage>
                         ? (takenCount / totalCount * 100).round()
                         : 0;
 
+                    // Group logs by time of day
+                    final groupedLogs = DateTimeUtils.groupByTimeOfDay(
+                      _logs,
+                      (log) => log.scheduledTime,
+                    );
+
+                    // Sort periods in chronological order
+                    final sortedPeriods = [
+                      TimeOfDayPeriod.morning,
+                      TimeOfDayPeriod.afternoon,
+                      TimeOfDayPeriod.evening,
+                      TimeOfDayPeriod.night,
+                    ];
+
                     return ListView(
                       padding: const EdgeInsets.all(AppSizes.paddingM),
                       children: [
@@ -218,63 +233,20 @@ class _SchedulePageState extends State<SchedulePage>
                         ),
                         const SizedBox(height: AppSizes.paddingL),
 
-                        // Section: Overdue
-                        ..._buildSection(
-                          context,
-                          'Overdue',
-                          _logs
-                              .where(
-                                (log) =>
-                                    log.isOverdue &&
-                                    log.status == MedicineLogStatus.pending,
-                              )
-                              .toList(),
-                          Icons.warning,
-                          AppColors.error,
-                        ),
+                        // Time-based sections
+                        ...sortedPeriods.expand((period) {
+                          final logsForPeriod = groupedLogs[period] ?? [];
+                          if (logsForPeriod.isEmpty) return <Widget>[];
 
-                        // Section: Upcoming
-                        ..._buildSection(
-                          context,
-                          'Upcoming',
-                          _logs
-                              .where(
-                                (log) =>
-                                    !log.isOverdue &&
-                                    log.status == MedicineLogStatus.pending,
-                              )
-                              .toList(),
-                          Icons.schedule,
-                          AppColors.warning,
-                        ),
-
-                        // Section: Completed
-                        ..._buildSection(
-                          context,
-                          'Completed',
-                          _logs
-                              .where(
-                                (log) => log.status == MedicineLogStatus.taken,
-                              )
-                              .toList(),
-                          Icons.check_circle,
-                          AppColors.success,
-                        ),
-
-                        // Section: Skipped/Missed
-                        ..._buildSection(
-                          context,
-                          'Skipped/Missed',
-                          _logs
-                              .where(
-                                (log) =>
-                                    log.status == MedicineLogStatus.skipped ||
-                                    log.status == MedicineLogStatus.missed,
-                              )
-                              .toList(),
-                          Icons.cancel,
-                          AppColors.textDisabledLight,
-                        ),
+                          return [
+                            _buildTimeBasedSection(
+                              context,
+                              period,
+                              logsForPeriod,
+                            ),
+                            const SizedBox(height: AppSizes.paddingM),
+                          ];
+                        }),
                       ],
                     );
                   }
@@ -375,45 +347,83 @@ class _SchedulePageState extends State<SchedulePage>
     );
   }
 
-  /// Build a section of logs
-  List<Widget> _buildSection(
+  /// Build time-based section with expansion tile
+  Widget _buildTimeBasedSection(
     BuildContext context,
-    String title,
+    TimeOfDayPeriod period,
     List<MedicineLog> logs,
-    IconData icon,
-    Color color,
   ) {
-    if (logs.isEmpty) return [];
+    final theme = Theme.of(context);
 
-    return [
-      Row(
-        children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: AppSizes.paddingS),
-          Text(
-            '$title (${logs.length})',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
+    // Count statuses
+    final pending = logs
+        .where((log) => log.status == MedicineLogStatus.pending)
+        .length;
+    final taken = logs
+        .where((log) => log.status == MedicineLogStatus.taken)
+        .length;
+    final overdue = logs
+        .where(
+          (log) => log.isOverdue && log.status == MedicineLogStatus.pending,
+        )
+        .length;
+
+    return Card(
+      child: Theme(
+        data: theme.copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded:
+              pending > 0 || overdue > 0, // Expand if has pending/overdue
+          title: Row(
+            children: [
+              Text(period.emoji, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: AppSizes.paddingS),
+              Text(
+                period.label,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: AppSizes.paddingS),
+              Text(
+                period.timeRange,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              '${logs.length} medicine${logs.length == 1 ? '' : 's'}'
+              '${taken > 0 ? ' • $taken taken' : ''}'
+              '${pending > 0 ? ' • $pending pending' : ''}'
+              '${overdue > 0 ? ' • $overdue overdue' : ''}',
+              style: theme.textTheme.bodySmall,
             ),
           ),
-        ],
-      ),
-      const SizedBox(height: AppSizes.paddingM),
-      ...logs.map((log) {
-        final medicine = _getMedicineForLog(log);
-        if (medicine == null) return const SizedBox.shrink();
+          children: logs.map((log) {
+            final medicine = _getMedicineForLog(log);
+            if (medicine == null) return const SizedBox.shrink();
 
-        return MedicineLogCard(
-          medicine: medicine,
-          log: log,
-          onTaken: () => _markAsTaken(log.id!),
-          onSkip: () => _markAsSkipped(log.id!),
-          onSnooze: (minutes) => _snoozeLog(log.id!, minutes),
-        );
-      }),
-      const SizedBox(height: AppSizes.paddingM),
-    ];
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.paddingM,
+                vertical: AppSizes.paddingS,
+              ),
+              child: MedicineLogCard(
+                medicine: medicine,
+                log: log,
+                onTaken: () => _markAsTaken(log.id!),
+                onSkip: () => _markAsSkipped(log.id!),
+                onSnooze: (minutes) => _snoozeLog(log.id!, minutes),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   /// Get medicine for a log
