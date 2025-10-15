@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
 import '../../core/services/notification_service.dart';
@@ -67,7 +67,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _isEditMode ? AppStrings.editMedicine : AppStrings.addMedicine,
+          _isEditMode ? AppLocalizations.of(context)!.editMedicine : AppLocalizations.of(context)!.addMedicine,
         ),
         centerTitle: true,
       ),
@@ -177,7 +177,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
 
               // Medicine Name
               CustomTextField(
-                label: AppStrings.medicineName,
+                label: AppLocalizations.of(context)!.medicineName,
                 hint: 'e.g., Aspirin',
                 controller: _nameController,
                 validator: Validators.medicineName,
@@ -192,7 +192,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
 
               // Dosage
               CustomTextField(
-                label: AppStrings.dosage,
+                label: AppLocalizations.of(context)!.dosage,
                 hint: 'e.g., 500mg, 2 tablets',
                 controller: _dosageController,
                 validator: Validators.dosage,
@@ -245,7 +245,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
 
               // Notes (Optional)
               CustomTextField(
-                label: '${AppStrings.notes} (Optional)',
+                label: '${AppLocalizations.of(context)!.notes} (Optional)',
                 hint: 'e.g., Take with food',
                 controller: _notesController,
                 prefixIcon: const Icon(Icons.note),
@@ -359,7 +359,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
               // Cancel button
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text(AppStrings.cancel),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
             ],
           ),
@@ -497,7 +497,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     if (_reminderTimes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(AppStrings.errorScheduleRequired),
+          content: Text(AppLocalizations.of(context)!.errorScheduleRequired),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
         ),

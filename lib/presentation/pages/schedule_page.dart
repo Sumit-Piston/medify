@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
-import '../../core/constants/app_strings.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/utils/date_time_utils.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/shimmer_loading.dart';
@@ -193,8 +193,8 @@ class _SchedulePageState extends State<SchedulePage>
                     if (_logs.isEmpty) {
                       return EmptyState(
                         icon: Icons.calendar_today,
-                        title: AppStrings.noReminders,
-                        message: AppStrings.allCaughtUp,
+                        title: AppLocalizations.of(context)!.noReminders,
+                        message: AppLocalizations.of(context)!.allCaughtUp,
                       );
                     }
 
@@ -253,7 +253,7 @@ class _SchedulePageState extends State<SchedulePage>
 
                   return EmptyState(
                     icon: Icons.calendar_today,
-                    title: AppStrings.noReminders,
+                    title: AppLocalizations.of(context)!.noReminders,
                     message: 'Add some medicines to see your schedule',
                   );
                 },
