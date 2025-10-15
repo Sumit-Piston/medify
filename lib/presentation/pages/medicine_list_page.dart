@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/shimmer_loading.dart';
@@ -108,7 +108,7 @@ class _MedicineListPageState extends State<MedicineListPage>
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
                 action: SnackBarAction(
-                  label: AppStrings.retry,
+                  label: AppLocalizations.of(context)!.retry,
                   textColor: Colors.white,
                   onPressed: _loadMedicines,
                 ),
@@ -129,9 +129,9 @@ class _MedicineListPageState extends State<MedicineListPage>
             if (state.medicines.isEmpty) {
               return EmptyState(
                 icon: Icons.medication,
-                title: AppStrings.noMedicines,
-                message: AppStrings.addYourFirstMedicine,
-                actionText: AppStrings.addMedicine,
+                title: AppLocalizations.of(context)!.noMedicines,
+                message: AppLocalizations.of(context)!.addYourFirstMedicine,
+                actionText: AppLocalizations.of(context)!.addMedicine,
                 onAction: () => _navigateToAddMedicine(),
               );
             }
@@ -273,9 +273,9 @@ class _MedicineListPageState extends State<MedicineListPage>
           // Show empty state for initial/error states
           return EmptyState(
             icon: Icons.medication,
-            title: AppStrings.noMedicines,
-            message: AppStrings.addYourFirstMedicine,
-            actionText: AppStrings.addMedicine,
+            title: AppLocalizations.of(context)!.noMedicines,
+            message: AppLocalizations.of(context)!.addYourFirstMedicine,
+            actionText: AppLocalizations.of(context)!.addMedicine,
             onAction: () => _navigateToAddMedicine(),
           );
         },
@@ -287,7 +287,7 @@ class _MedicineListPageState extends State<MedicineListPage>
             return const SizedBox.shrink();
           }
           return FloatingActionButton(
-            tooltip: AppStrings.addMedicine,
+            tooltip: AppLocalizations.of(context)!.addMedicine,
             onPressed: _navigateToAddMedicine,
             child: const Icon(Icons.add),
           );
@@ -304,17 +304,17 @@ class _MedicineListPageState extends State<MedicineListPage>
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(AppStrings.deleteConfirmation),
+        title: const Text(AppLocalizations.of(context)!.deleteConfirmation),
         content: Text('Are you sure you want to delete "$medicineName"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(AppStrings.cancel),
+            child: const Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text(AppStrings.delete),
+            child: const Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
