@@ -31,6 +31,9 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   // List to store selected reminder times (as seconds since midnight)
   final List<int> _reminderTimes = [];
 
+  // Selected intake timing
+  MedicineIntakeTiming _selectedIntakeTiming = MedicineIntakeTiming.anytime;
+
   bool get _isEditMode => widget.medicine != null;
 
   @override
@@ -47,6 +50,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     _dosageController.text = medicine.dosage;
     _notesController.text = medicine.notes ?? '';
     _reminderTimes.addAll(medicine.reminderTimes);
+    _selectedIntakeTiming = medicine.intakeTiming;
   }
 
   @override
@@ -71,10 +75,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
             // Schedule notifications for the medicine if it was successfully saved
             try {
               final notificationService = getIt<NotificationService>();
-              
+
               // Check permission first
-              final hasPermission =
-                  await notificationService.areNotificationsEnabled();
+              final hasPermission = await notificationService
+                  .areNotificationsEnabled();
               if (!hasPermission) {
                 final granted = await notificationService.requestPermissions();
                 if (!granted && mounted) {
@@ -103,7 +107,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                 ),
               );
             }
-            
+
             // Go back to previous screen
             if (mounted) {
               Navigator.of(context).pop(true);
@@ -170,6 +174,45 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                 validator: Validators.dosage,
                 prefixIcon: const Icon(Icons.medical_information),
                 keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: AppSizes.paddingM),
+
+              // Intake Timing
+              Text(
+                'When to take',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: AppSizes.paddingS),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.paddingM,
+                    vertical: AppSizes.paddingS,
+                  ),
+                  child: DropdownButtonFormField<MedicineIntakeTiming>(
+                    initialValue: _selectedIntakeTiming,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        _getIntakeTimingIcon(_selectedIntakeTiming),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    items: MedicineIntakeTiming.values.map((timing) {
+                      return DropdownMenuItem(
+                        value: timing,
+                        child: Text(timing.label),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedIntakeTiming = value;
+                        });
+                      }
+                    },
+                  ),
+                ),
               ),
               const SizedBox(height: AppSizes.paddingM),
 
@@ -356,6 +399,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       name: _nameController.text.trim(),
       dosage: _dosageController.text.trim(),
       reminderTimes: _reminderTimes,
+      intakeTiming: _selectedIntakeTiming,
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
@@ -389,6 +433,24 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         return Icons.bedtime;
       default:
         return Icons.access_time;
+    }
+  }
+
+  /// Get icon for intake timing
+  IconData _getIntakeTimingIcon(MedicineIntakeTiming timing) {
+    switch (timing) {
+      case MedicineIntakeTiming.beforeFood:
+        return Icons.restaurant_menu;
+      case MedicineIntakeTiming.afterFood:
+        return Icons.dinner_dining;
+      case MedicineIntakeTiming.withFood:
+        return Icons.fastfood;
+      case MedicineIntakeTiming.empty:
+        return Icons.no_meals;
+      case MedicineIntakeTiming.beforeSleep:
+        return Icons.bedtime;
+      case MedicineIntakeTiming.anytime:
+        return Icons.schedule;
     }
   }
 }

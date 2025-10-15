@@ -83,6 +83,28 @@ class MedicineCard extends StatelessWidget {
                                 : AppColors.textDisabledLight,
                           ),
                         ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              _getIntakeTimingIcon(medicine.intakeTiming),
+                              size: 14,
+                              color: medicine.isActive
+                                  ? AppColors.primary
+                                  : AppColors.textDisabledLight,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              medicine.intakeTiming.label,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: medicine.isActive
+                                    ? AppColors.primary
+                                    : AppColors.textDisabledLight,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -236,6 +258,24 @@ class MedicineCard extends StatelessWidget {
         return Icons.bedtime;
       default:
         return Icons.access_time;
+    }
+  }
+
+  /// Get icon for intake timing
+  IconData _getIntakeTimingIcon(MedicineIntakeTiming timing) {
+    switch (timing) {
+      case MedicineIntakeTiming.beforeFood:
+        return Icons.restaurant_menu;
+      case MedicineIntakeTiming.afterFood:
+        return Icons.dinner_dining;
+      case MedicineIntakeTiming.withFood:
+        return Icons.fastfood;
+      case MedicineIntakeTiming.empty:
+        return Icons.no_meals;
+      case MedicineIntakeTiming.beforeSleep:
+        return Icons.bedtime;
+      case MedicineIntakeTiming.anytime:
+        return Icons.schedule;
     }
   }
 }
