@@ -37,6 +37,17 @@ dependencies:
   path: ^1.9.0
   shared_preferences: ^2.3.3
 
+  # Charts & Visualizations (Phase 2)
+  fl_chart: ^0.69.0
+
+  # Calendar & History (Phase 2)
+  table_calendar: ^3.1.2
+  csv: ^6.0.0
+  share_plus: ^10.1.2
+
+  # UI Enhancements (Phase 2)
+  shimmer: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
