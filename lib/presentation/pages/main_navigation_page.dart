@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_strings.dart';
 import 'medicine_list_page.dart';
 import 'schedule_page.dart';
+import 'statistics_page.dart';
 
 /// Main navigation page with bottom navigation bar
 class MainNavigationPage extends StatefulWidget {
@@ -14,7 +15,11 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [SchedulePage(), MedicineListPage()];
+  final List<Widget> _pages = const [
+    SchedulePage(),
+    MedicineListPage(),
+    StatisticsPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +42,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             icon: Icon(Icons.medication_outlined),
             selectedIcon: Icon(Icons.medication),
             label: AppStrings.medicines,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bar_chart_outlined),
+            selectedIcon: Icon(Icons.bar_chart),
+            label: 'Statistics',
           ),
         ],
       ),

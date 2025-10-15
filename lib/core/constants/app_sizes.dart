@@ -5,7 +5,9 @@ class AppSizes {
   // Spacing scale (4px base unit)
   static const double spacing4 = 4.0; // Micro spacing
   static const double spacing8 = 8.0; // Small spacing
+  static const double spacing12 = 12.0; // Smaller medium spacing
   static const double spacing16 = 16.0; // Medium spacing
+  static const double spacing20 = 20.0; // Larger medium spacing
   static const double spacing24 = 24.0; // Large spacing
   static const double spacing32 = 32.0; // Extra large spacing
 
