@@ -331,5 +331,10 @@
         "example": "2:30 PM"
       }
     }
-  }
+  },
+  "language": "Language",
+  "selectLanguage": "Select your preferred language",
+  "english": "English",
+  "hindi": "हिंदी",
+  "bengali": "বাংলা"
 }

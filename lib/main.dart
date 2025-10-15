@@ -14,13 +14,16 @@ import 'presentation/blocs/history/history_cubit.dart';
 import 'presentation/pages/main_navigation_page.dart';
 import 'presentation/pages/onboarding_page.dart';
 
+// Global key to access MyApp state from anywhere
+final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize dependencies
   await initializeDependencies();
 
-  runApp(const MyApp());
+  runApp(MyApp(key: myAppKey));
 }
 
 class MyApp extends StatefulWidget {
@@ -33,6 +36,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final PreferencesService _prefsService;
   late ThemeMode _themeMode;
+  Locale? _locale;
 
   @override
   void initState() {
@@ -52,6 +56,13 @@ class _MyAppState extends State<MyApp> {
   void updateThemeMode(ThemeMode themeMode) {
     setState(() {
       _themeMode = themeMode;
+    });
+  }
+
+  /// Update locale
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
     });
   }
 
@@ -77,6 +88,7 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
+        locale: _locale,
         // Localization support
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -86,9 +98,8 @@ class _MyAppState extends State<MyApp> {
         ],
         supportedLocales: const [
           Locale('en'), // English
-          // Future: Add more languages here
-          // Locale('hi'), // Hindi
-          // Locale('bn'), // Bengali
+          Locale('hi'), // Hindi
+          Locale('bn'), // Bengali
         ],
         home: _prefsService.isFirstLaunch
             ? const OnboardingPage()

@@ -5,6 +5,7 @@ import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../main.dart';
 import '../blocs/settings/settings_cubit.dart';
 import '../blocs/settings/settings_state.dart';
 import 'history_page.dart';
@@ -41,6 +42,7 @@ class _SettingsView extends StatelessWidget {
                 _buildSectionHeader('App', theme),
                 _buildThemeSetting(context, state, theme),
                 const SizedBox(height: AppSizes.spacing8),
+                _buildLanguageSetting(context, theme),
 
                 const SizedBox(height: AppSizes.spacing24),
 
@@ -163,6 +165,77 @@ class _SettingsView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildLanguageSetting(BuildContext context, ThemeData theme) {
+    final l10n = AppLocalizations.of(context)!;
+    final currentLocale = Localizations.localeOf(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.spacing16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.language,
+                  color: AppColors.primary,
+                  size: AppSizes.iconM,
+                ),
+                const SizedBox(width: AppSizes.spacing16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.language, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: AppSizes.spacing4),
+                      Text(
+                        l10n.selectLanguage,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSizes.spacing16),
+            SegmentedButton<String>(
+              segments: [
+                ButtonSegment(
+                  value: 'en',
+                  label: Text(l10n.english),
+                  icon: const Text('🇬🇧', style: TextStyle(fontSize: 20)),
+                ),
+                ButtonSegment(
+                  value: 'hi',
+                  label: Text(l10n.hindi),
+                  icon: const Text('🇮🇳', style: TextStyle(fontSize: 20)),
+                ),
+                ButtonSegment(
+                  value: 'bn',
+                  label: Text(l10n.bengali),
+                  icon: const Text('🇧🇩', style: TextStyle(fontSize: 20)),
+                ),
+              ],
+              selected: {currentLocale.languageCode},
+              onSelectionChanged: (Set<String> newSelection) {
+                _changeLanguage(context, newSelection.first);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _changeLanguage(BuildContext context, String languageCode) {
+    // Update the app's locale by rebuilding with the new locale
+    final newLocale = Locale(languageCode);
+    
+    // Update the locale using the global key
+    myAppKey.currentState?.setLocale(newLocale);
   }
 
   Widget _buildNotificationsSetting(

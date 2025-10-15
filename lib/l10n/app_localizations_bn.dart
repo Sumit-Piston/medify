@@ -4,15 +4,15 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+/// The translations for Bengali Bangla (`bn`).
+class AppLocalizationsBn extends AppLocalizations {
+  AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
   String get appName => 'Medify';
 
   @override
-  String get appTagline => 'Never Miss Your Medicine';
+  String get appTagline => 'আপনার স্বাস্থ্য যাত্রার সঙ্গী';
 
   @override
   String get yes => 'Yes';
@@ -24,16 +24,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'বাতিল করুন';
 
   @override
-  String get save => 'Save';
+  String get save => 'সংরক্ষণ করুন';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'মুছুন';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'সম্পাদনা';
 
   @override
   String get done => 'Done';
@@ -42,22 +42,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'পুনরায় চেষ্টা করুন';
 
   @override
-  String get loading => 'Loading...';
+  String get loading => 'লোড হচ্ছে...';
 
   @override
-  String get error => 'Error';
+  String get error => 'ত্রুটি';
 
   @override
-  String get success => 'Success';
+  String get success => 'সফলতা';
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'এড়িয়ে যান';
 
   @override
-  String get next => 'Next';
+  String get next => 'পরবর্তী';
 
   @override
   String get back => 'Back';
@@ -66,92 +66,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
-  String get onboardingTitle1 => 'Welcome to Medify';
+  String get onboardingTitle1 => 'Medify তে স্বাগতম';
 
   @override
-  String get onboardingDesc1 => 'Your personal medicine reminder and tracker';
+  String get onboardingDesc1 =>
+      'আপনার ওষুধ ট্র্যাক করুন এবং কখনোই কোনো ডোজ মিস করবেন না';
 
   @override
-  String get onboardingTitle2 => 'Never Miss a Dose';
+  String get onboardingTitle2 => 'সময়মতো রিমাইন্ডার';
 
   @override
-  String get onboardingDesc2 => 'Get timely reminders for all your medications';
+  String get onboardingDesc2 =>
+      'আপনার প্রতিটি ওষুধের জন্য স্মার্ট নোটিফিকেশন পান';
 
   @override
-  String get onboardingTitle3 => 'Track Your Progress';
+  String get onboardingTitle3 => 'আপনার অগ্রগতি ট্র্যাক করুন';
 
   @override
   String get onboardingDesc3 =>
-      'Keep track of your medication history and adherence';
+      'বিস্তারিত পরিসংখ্যান এবং ইতিহাস দিয়ে আপনার পালন পর্যবেক্ষণ করুন';
 
   @override
-  String get getStarted => 'Get Started';
+  String get getStarted => 'শুরু করুন';
 
   @override
-  String get medicines => 'Medicines';
+  String get medicines => 'ওষুধ';
 
   @override
-  String get addMedicine => 'Add Medicine';
+  String get addMedicine => 'ওষুধ যোগ করুন';
 
   @override
-  String get editMedicine => 'Edit Medicine';
+  String get editMedicine => 'ওষুধ সম্পাদনা করুন';
 
   @override
   String get deleteMedicine => 'Delete Medicine';
 
   @override
-  String get medicineName => 'Medicine Name';
+  String get medicineName => 'ওষুধের নাম';
 
   @override
-  String get dosage => 'Dosage';
+  String get dosage => 'ডোজ';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'সময়সূচী';
 
   @override
-  String get notes => 'Notes';
+  String get notes => 'নোট';
 
   @override
-  String get noMedicines => 'No medicines added yet';
+  String get noMedicines => 'কোনো ওষুধ নেই';
 
   @override
-  String get addYourFirstMedicine => 'Add your first medicine';
+  String get addYourFirstMedicine => 'আপনার প্রথম ওষুধ যোগ করুন';
 
   @override
-  String get intakeTiming => 'Intake Timing';
+  String get intakeTiming => 'ওষুধ সেবনের সময়';
 
   @override
-  String get beforeFood => 'Before Food';
+  String get beforeFood => 'খাবারের আগে';
 
   @override
-  String get withFood => 'With Food';
+  String get withFood => 'খাবারের সাথে';
 
   @override
-  String get afterFood => 'After Food';
+  String get afterFood => 'খাবারের পরে';
 
   @override
-  String get anytime => 'Anytime';
+  String get anytime => 'যেকোনো সময়';
 
   @override
-  String get active => 'Active';
+  String get active => 'সক্রিয়';
 
   @override
-  String get inactive => 'Inactive';
+  String get inactive => 'নিষ্ক্রিয়';
 
   @override
   String get reminders => 'Reminders';
 
   @override
-  String get todaysSchedule => 'Today\'s Schedule';
+  String get todaysSchedule => 'আজকের সময়সূচী';
 
   @override
   String get upcomingReminders => 'Upcoming Reminders';
 
   @override
-  String get noReminders => 'No reminders for today';
+  String get noReminders => 'কোনো রিমাইন্ডার নেই';
 
   @override
-  String get allCaughtUp => 'You\'re all caught up!';
+  String get allCaughtUp => 'সব শেষ! আজকের জন্য কোনো ওষুধ নেই।';
 
   @override
   String get reminderTimes => 'Reminder Times';
@@ -160,7 +162,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addReminderTime => 'Add Reminder Time';
 
   @override
-  String get selectTime => 'Select Time';
+  String get selectTime => 'সময় নির্বাচন করুন';
 
   @override
   String get timeAlreadyPassed => 'Time Already Passed';
@@ -176,19 +178,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get addAnyway => 'Add Anyway';
+  String get addAnyway => 'যাইহোক যোগ করুন';
 
   @override
-  String get markAsTaken => 'Mark as Taken';
+  String get markAsTaken => 'নেওয়া হিসেবে চিহ্নিত করুন';
 
   @override
-  String get taken => 'Taken';
+  String get taken => 'নেওয়া হয়েছে';
 
   @override
-  String get snooze => 'Snooze';
+  String get snooze => 'স্নুজ';
 
   @override
-  String get undo => 'Undo';
+  String get undo => 'পূর্বাবস্থায় ফিরুন';
 
   @override
   String get snoozeFor => 'Snooze for:';
@@ -197,22 +199,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markAsSkipped => 'Mark as Skipped';
 
   @override
-  String get morning => 'Morning';
+  String get morning => 'সকাল';
 
   @override
-  String get afternoon => 'Afternoon';
+  String get afternoon => 'দুপুর';
 
   @override
-  String get evening => 'Evening';
+  String get evening => 'সন্ধ্যা';
 
   @override
-  String get night => 'Night';
+  String get night => 'রাত';
 
   @override
   String get daily => 'Daily';
 
   @override
-  String get today => 'Today';
+  String get today => 'আজ';
 
   @override
   String get yesterday => 'Yesterday';
@@ -221,19 +223,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tomorrow => 'Tomorrow';
 
   @override
-  String get pending => 'Pending';
+  String get pending => 'অপেক্ষমাণ';
 
   @override
-  String get missed => 'Missed';
+  String get missed => 'মিস হয়েছে';
 
   @override
   String get completed => 'Completed';
 
   @override
-  String get snoozed => 'Snoozed';
+  String get snoozed => 'স্নুজ করা হয়েছে';
 
   @override
-  String get skipped => 'Skipped';
+  String get skipped => 'এড়িয়ে গেছে';
 
   @override
   String get overdue => 'OVERDUE';
@@ -243,17 +245,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationPermissionDesc =>
-      'We need notification permission to remind you about your medicines';
+      'নিশ্চিত করতে যে আপনি কখনোই কোনো ডোজ মিস করবেন না, আমাদের নোটিফিকেশন পাঠানোর অনুমতি দিন।';
 
   @override
   String get grantPermission => 'Grant Permission';
 
   @override
-  String get notificationTitle => 'Time to take your medicine';
+  String get notificationTitle => 'ওষুধের সময়!';
 
   @override
   String notificationBody(String medicineName, String dosage) {
-    return 'It\'s time to take $medicineName ($dosage). Don\'t forget your medicine!';
+    return '$medicineName নেওয়ার সময় - $dosage';
   }
 
   @override
@@ -275,13 +277,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorInvalidInput => 'Please check your input';
 
   @override
-  String get errorMedicineNameRequired => 'Medicine name is required';
+  String get errorMedicineNameRequired => 'অনুগ্রহ করে ওষুধের নাম লিখুন';
 
   @override
-  String get errorDosageRequired => 'Dosage is required';
+  String get errorDosageRequired => 'অনুগ্রহ করে ডোজ লিখুন';
 
   @override
-  String get errorScheduleRequired => 'At least one time is required';
+  String get errorScheduleRequired => 'অনুগ্রহ করে কমপক্ষে একটি সময় যোগ করুন';
 
   @override
   String get errorLoadingData => 'Error loading data';
@@ -293,19 +295,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorDeletingData => 'Error deleting data';
 
   @override
-  String get snooze15min => '15 minutes';
+  String get snooze15min => '১৫ মিনিট';
 
   @override
-  String get snooze30min => '30 minutes';
+  String get snooze30min => '৩০ মিনিট';
 
   @override
-  String get snooze1hour => '1 hour';
+  String get snooze1hour => '১ ঘন্টা';
 
   @override
   String get snooze5min => 'Snooze (5 min)';
 
   @override
-  String get deleteConfirmation => 'Delete Confirmation';
+  String get deleteConfirmation => 'আপনি কি সত্যিই এই ওষুধটি মুছতে চান?';
 
   @override
   String get deleteMedicineConfirmation =>
@@ -316,13 +318,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will delete all associated reminders and history';
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'সেটিংস';
 
   @override
   String get app => 'App';
 
   @override
-  String get theme => 'Theme';
+  String get theme => 'থিম';
 
   @override
   String get lightMode => 'Light Mode';
@@ -334,7 +336,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemDefault => 'System Default';
 
   @override
-  String get notifications => 'Notifications';
+  String get notifications => 'নোটিফিকেশন';
 
   @override
   String get snoozeDuration => 'Snooze Duration';
@@ -343,13 +345,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snoozeDurationDesc => 'Default snooze duration for reminders';
 
   @override
-  String get about => 'About';
+  String get about => 'সম্পর্কে';
 
   @override
-  String get version => 'Version';
+  String get version => 'সংস্করণ';
 
   @override
-  String get medicineHistory => 'Medicine History';
+  String get medicineHistory => 'ওষুধের ইতিহাস';
 
   @override
   String get viewHistory => 'View complete medicine history';
@@ -369,10 +371,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutDialogDesc =>
-      'A simple and accessible medicine reminder app designed for everyone, especially elderly users.';
+      'Medify একটি ব্যাপক ওষুধ রিমাইন্ডার এবং ট্র্যাকার অ্যাপ যা আপনাকে আপনার স্বাস্থ্যের শীর্ষে থাকতে সাহায্য করে।';
 
   @override
-  String get copyrightNotice => '© 2025 Medify. All rights reserved.';
+  String get copyrightNotice => '© ২০২৫ Medify। সমস্ত অধিকার সংরক্ষিত।';
 
   @override
   String get addMedicineInstruction =>
@@ -391,7 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exampleNotes => 'e.g., Take with food';
 
   @override
-  String get statistics => 'Statistics';
+  String get statistics => 'পরিসংখ্যান';
 
   @override
   String get overview => 'Overview';
@@ -400,13 +402,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adherence => 'Adherence';
 
   @override
-  String get currentStreak => 'Current Streak';
+  String get currentStreak => 'বর্তমান স্ট্রিক';
 
   @override
-  String get bestStreak => 'Best Streak';
+  String get bestStreak => 'সেরা স্ট্রিক';
 
   @override
-  String get days => 'days';
+  String get days => 'দিন';
 
   @override
   String get medicinesTracked => 'Medicines Tracked';
@@ -418,29 +420,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get takenToday => 'Taken Today';
 
   @override
-  String get adherenceRate => 'Adherence Rate';
+  String get adherenceRate => 'পালন হার';
 
   @override
   String get adherenceTrend => 'Adherence Trend';
 
   @override
-  String get last30Days => 'Last 30 Days';
+  String get last30Days => 'শেষ ৩০ দিন';
 
   @override
-  String get last7Days => 'Last 7 Days';
+  String get last7Days => 'শেষ ৭ দিন';
 
   @override
-  String get medicineBreakdown => 'Medicine Breakdown';
+  String get medicineBreakdown => 'ওষুধ বিবরণ';
 
   @override
-  String get noDataAvailable => 'Not enough data yet';
+  String get noDataAvailable => 'কোনো ডেটা উপলব্ধ নেই';
 
   @override
   String get startTrackingMessage =>
       'Start tracking your medicines to see statistics';
 
   @override
-  String get history => 'History';
+  String get history => 'ইতিহাস';
 
   @override
   String get medicineLog => 'Medicine Log';
@@ -458,7 +460,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportData => 'Export Data';
 
   @override
-  String get exportToCsv => 'Export to CSV';
+  String get exportToCsv => 'CSV তে রপ্তানি করুন';
 
   @override
   String get dataExportedSuccess => 'Data exported successfully';
@@ -571,10 +573,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get language => 'Language';
+  String get language => 'ভাষা';
 
   @override
-  String get selectLanguage => 'Select your preferred language';
+  String get selectLanguage => 'ভাষা নির্বাচন করুন';
 
   @override
   String get english => 'English';

@@ -10,6 +10,7 @@
 ## ✅ TECHNICAL REQUIREMENTS
 
 ### App Build
+
 - [x] **Release APK built successfully** (65.0MB)
 - [x] **App icon configured** (`medify-icon.png`)
 - [x] **Splash screen implemented** (Native splash)
@@ -18,6 +19,7 @@
 - [ ] **Signed APK/AAB created** (Need to sign for Play Store)
 
 ### App Configuration
+
 - [x] **Package name:** `com.medify.medify`
 - [x] **Version code:** 1
 - [x] **Version name:** 1.0.0
@@ -27,12 +29,14 @@
 - [x] **App ID:** Unique and valid
 
 ### Permissions
+
 - [x] **Notifications** (POST_NOTIFICATIONS for Android 13+)
 - [x] **Schedule exact alarms** (SCHEDULE_EXACT_ALARM)
 - [x] **Boot completed** (RECEIVE_BOOT_COMPLETED for rescheduling)
 - [x] **All permissions documented** in `AndroidManifest.xml`
 
 ### Features
+
 - [x] **Medicine management** (Add, Edit, Delete)
 - [x] **Reminder notifications** (Local notifications)
 - [x] **Today's schedule** (Time-based grouping)
@@ -43,6 +47,7 @@
 - [x] **Notification actions** (Tap=Taken, Snooze, Skip)
 
 ### Localization
+
 - [x] **English support** (100+ strings)
 - [x] **i18n infrastructure ready** (Easy to add languages)
 - [x] **All strings localized** (No hardcoded strings)
@@ -54,11 +59,13 @@
 ### Store Listing
 
 #### App Details
+
 - [ ] **App name:** Medify - Medicine Reminder (max 50 characters)
 - [ ] **Short description:** Never miss your medicine with smart reminders (max 80 characters)
 - [ ] **Full description:** (max 4000 characters)
 
 **Suggested Full Description:**
+
 ```
 Medify - Your Personal Medicine Reminder & Tracker
 
@@ -127,12 +134,14 @@ Keywords: medicine reminder, pill reminder, medication tracker, health app, medi
 #### Graphics Assets (Required)
 
 1. **App Icon** ✅
+
    - [x] 512 x 512 PNG
    - [x] Location: `assets/images/Medify.png`
    - [x] 32-bit PNG with alpha
    - [x] Status: Ready
 
 2. **Feature Graphic** ⚠️
+
    - [ ] 1024 x 500 PNG/JPEG
    - [ ] Required for Play Store listing
    - [ ] **Action:** Create feature graphic with:
@@ -142,6 +151,7 @@ Keywords: medicine reminder, pill reminder, medication tracker, health app, medi
      - Teal color scheme (#00BFA5)
 
 3. **Screenshots** ⚠️ (Minimum 2, Maximum 8)
+
    - [ ] **Screenshot 1:** Today's Schedule (with medicines)
    - [ ] **Screenshot 2:** Medicine List
    - [ ] **Screenshot 3:** Add Medicine form
@@ -158,12 +168,14 @@ Keywords: medicine reminder, pill reminder, medication tracker, health app, medi
    - [ ] **Status:** Optional for v1.0
 
 #### Categorization
+
 - [ ] **Category:** Medical
 - [ ] **Tags:** health, medicine, reminder, pill tracker, medication
 - [ ] **Content rating:** Everyone
 - [ ] **Target audience:** Adults 18+, Seniors 50+
 
 #### Contact Details
+
 - [ ] **Developer name:** [Your Name/Company]
 - [ ] **Email address:** [Your support email]
 - [ ] **Website:** [Optional]
@@ -174,6 +186,7 @@ Keywords: medicine reminder, pill reminder, medication tracker, health app, medi
 ## 📄 REQUIRED DOCUMENTS
 
 ### Privacy Policy ⚠️
+
 - [ ] **Privacy policy created** (REQUIRED)
 - [ ] **Hosted publicly** (URL accessible)
 - [ ] **Covers:**
@@ -184,6 +197,7 @@ Keywords: medicine reminder, pill reminder, medication tracker, health app, medi
   - Contact information
 
 **Suggested Privacy Policy:**
+
 ```
 Privacy Policy for Medify
 
@@ -211,6 +225,7 @@ For questions about privacy, contact: [your-email@example.com]
 ```
 
 ### Terms of Service (Optional)
+
 - [ ] Terms of service (if applicable)
 
 ---
@@ -218,7 +233,9 @@ For questions about privacy, contact: [your-email@example.com]
 ## 🔐 APP SIGNING
 
 ### Create Upload Key
+
 - [ ] **Generate keystore:**
+
 ```bash
 keytool -genkey -v -keystore ~/upload-keystore.jks \
   -keyalg RSA -keysize 2048 -validity 10000 \
@@ -226,7 +243,9 @@ keytool -genkey -v -keystore ~/upload-keystore.jks \
 ```
 
 ### Create key.properties
+
 - [ ] **File:** `android/key.properties`
+
 ```properties
 storePassword=<password>
 keyPassword=<password>
@@ -235,13 +254,17 @@ storeFile=/Users/sumitpal/upload-keystore.jks
 ```
 
 ### Update build.gradle
+
 - [ ] **Configure signing** in `android/app/build.gradle.kts`
 
 ### Build Signed Release
+
 - [ ] **Build App Bundle:**
+
 ```bash
 flutter build appbundle --release
 ```
+
 - [ ] **Location:** `build/app/outputs/bundle/release/app-release.aab`
 - [ ] **Size:** Should be < 150MB
 
@@ -250,6 +273,7 @@ flutter build appbundle --release
 ## 🧪 TESTING CHECKLIST
 
 ### Functionality Testing
+
 - [x] **Add medicine** - Works
 - [x] **Edit medicine** - Works
 - [x] **Delete medicine** - Works
@@ -263,6 +287,7 @@ flutter build appbundle --release
 - [ ] **Test on Android 13+** (Permission changes)
 
 ### UI/UX Testing
+
 - [x] **Light theme** - Works
 - [x] **Dark theme** - Works
 - [x] **Large text support** - Works
@@ -273,6 +298,7 @@ flutter build appbundle --release
 - [x] **Animations** - Works (staggered, confetti)
 
 ### Edge Cases
+
 - [ ] **No medicines added** - Empty state shows
 - [ ] **No reminders today** - Empty state shows
 - [ ] **Notification permissions denied** - App still works
@@ -285,22 +311,28 @@ flutter build appbundle --release
 ## 📋 CONTENT RATING QUESTIONNAIRE
 
 ### Violence
+
 - [ ] No violent content
 
 ### Sexual Content
+
 - [ ] No sexual content
 
 ### Profanity
+
 - [ ] No profane language
 
 ### Controlled Substances
+
 - [ ] App is about legitimate medication management
 - [ ] No illegal drug references
 
 ### Gambling
+
 - [ ] No gambling content
 
 ### User-Generated Content
+
 - [ ] No user-generated content shared
 
 **Expected Rating:** Everyone
@@ -310,6 +342,7 @@ flutter build appbundle --release
 ## 🚀 PRE-SUBMISSION CHECKLIST
 
 ### Final Checks
+
 - [ ] **App tested on real device** (not just emulator)
 - [ ] **All features working** as expected
 - [ ] **No crashes** or major bugs
@@ -323,6 +356,7 @@ flutter build appbundle --release
 - [ ] **All permissions** explained to users
 
 ### Documentation
+
 - [x] **README.md** - Present
 - [x] **User guide** - In app (onboarding)
 - [ ] **Support email** set up
@@ -333,11 +367,13 @@ flutter build appbundle --release
 ## 📊 PLAY CONSOLE SETUP
 
 ### Account Requirements
+
 - [ ] **Google Play Console account** ($25 one-time fee)
 - [ ] **Developer account verified**
 - [ ] **Payment profile** set up (if paid app)
 
 ### App Setup
+
 - [ ] **Create new app** in Play Console
 - [ ] **Select default language** (English)
 - [ ] **App or game** (App)
@@ -345,6 +381,7 @@ flutter build appbundle --release
 - [ ] **Declare if app has ads** (No)
 
 ### Store Presence
+
 - [ ] **Main store listing** completed
 - [ ] **Graphics assets** uploaded
 - [ ] **Content rating** completed
@@ -352,12 +389,14 @@ flutter build appbundle --release
 - [ ] **News apps** declaration (No)
 
 ### Release
+
 - [ ] **Create production release**
 - [ ] **Upload AAB** file
 - [ ] **Release name:** v1.0.0
 - [ ] **Release notes** written
 
 **Suggested Release Notes:**
+
 ```
 🎉 Medify v1.0.0 - Initial Release
 
@@ -383,12 +422,14 @@ Never miss a dose again!
 ## 🎯 POST-SUBMISSION
 
 ### After Upload
+
 - [ ] **Submit for review**
 - [ ] **Wait for approval** (typically 2-7 days)
 - [ ] **Monitor for rejections**
 - [ ] **Respond to review feedback** if any
 
 ### After Approval
+
 - [ ] **Monitor crash reports** in Play Console
 - [ ] **Check user reviews**
 - [ ] **Respond to user feedback**
@@ -399,6 +440,7 @@ Never miss a dose again!
 ## 📈 OPTIONAL ENHANCEMENTS (v1.1.0)
 
 ### Future Updates
+
 - [ ] **Hindi localization** (~3 hours)
 - [ ] **Bengali localization** (~3 hours)
 - [ ] **Language switcher** (~2 hours)
@@ -415,6 +457,7 @@ Never miss a dose again!
 ## 📞 SUPPORT
 
 ### User Support
+
 - [ ] **Support email** active
 - [ ] **FAQ page** (optional)
 - [ ] **In-app help** (consider adding)
@@ -424,12 +467,14 @@ Never miss a dose again!
 ## ✅ SUMMARY
 
 ### Ready ✅
+
 - App built and tested
 - All features working
 - Localization complete
 - Code quality excellent
 
 ### Need Action ⚠️
+
 1. **Create signing key** (10 minutes)
 2. **Build signed AAB** (5 minutes)
 3. **Create screenshots** (30 minutes)
@@ -447,10 +492,9 @@ Never miss a dose again!
 Your Medify app is **production-ready** and waiting for Play Store submission!
 
 **Estimated timeline:**
+
 - Prep work: 2-3 hours
 - Review time: 2-7 days
 - **Total to live:** ~1 week
 
 **Good luck with your launch! 🚀**
-
-
