@@ -496,7 +496,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     // Check if at least one reminder time is set
     if (_reminderTimes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(AppLocalizations.of(context)!.errorScheduleRequired),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
