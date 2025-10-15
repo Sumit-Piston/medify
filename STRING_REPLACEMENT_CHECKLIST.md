@@ -7,11 +7,13 @@
 ---
 
 ## ✅ COMPLETED
+
 - [x] main.dart (localization setup)
 
 ## ⏳ IN PROGRESS
 
 ### Pages (8 files):
+
 - [ ] onboarding_page.dart
 - [ ] settings_page.dart
 - [ ] medicine_list_page.dart
@@ -22,6 +24,7 @@
 - [ ] main_navigation_page.dart
 
 ### Widgets (3 files):
+
 - [ ] medicine_card.dart
 - [ ] medicine_log_card.dart
 - [ ] loading_indicator.dart
@@ -29,4 +32,3 @@
 ---
 
 **Approach:** One file at a time, test after each change, commit frequently
-
