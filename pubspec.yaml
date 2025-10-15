@@ -50,6 +50,9 @@ dev_dependencies:
   # Native splash screen generation
   flutter_native_splash: ^2.4.3
 
+  # Launcher icon generation
+  flutter_launcher_icons: ^0.14.1
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -94,3 +97,13 @@ flutter_native_splash:
 
   # Full screen (recommended for splash screens)
   fullscreen: true
+
+# Flutter Launcher Icons Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/Medify.png"
+  adaptive_icon_background: "#FAFAFA"
+  adaptive_icon_foreground: "assets/images/Medify.png"
+  # Remove default Flutter icon
+  remove_alpha_ios: true

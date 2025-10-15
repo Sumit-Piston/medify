@@ -44,7 +44,7 @@ class NotificationService {
 
       // Android initialization settings
       const androidSettings = AndroidInitializationSettings(
-        '@mipmap/ic_launcher',
+        'ic_notification',
       );
 
       // iOS initialization settings
@@ -312,7 +312,7 @@ class NotificationService {
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
-        icon: '@mipmap/ic_launcher',
+        icon: 'ic_notification',
         // Remove custom sound if not provided
         // sound: RawResourceAndroidNotificationSound('notification_sound'),
         enableVibration: true,
@@ -432,7 +432,7 @@ class NotificationService {
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
-        icon: '@mipmap/ic_launcher',
+        icon: 'ic_notification',
         // Show notification even when app is in foreground
         visibility: NotificationVisibility.public,
       );
