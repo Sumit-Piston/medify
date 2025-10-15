@@ -29,7 +29,7 @@ class _SettingsView extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: false),
+      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           if (state is SettingsLoaded) {
@@ -262,10 +262,7 @@ class _SettingsView extends StatelessWidget {
       child: ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Assets.icons.medifyIcon.image(
-            width: 32,
-            height: 32,
-          ),
+          child: Assets.icons.medifyIcon.image(width: 32, height: 32),
         ),
         title: Text('Version', style: theme.textTheme.titleMedium),
         subtitle: Text('1.0.0', style: theme.textTheme.bodySmall),
@@ -280,10 +277,7 @@ class _SettingsView extends StatelessWidget {
       applicationVersion: '1.0.0',
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Assets.icons.medifyIcon.image(
-          width: 64,
-          height: 64,
-        ),
+        child: Assets.icons.medifyIcon.image(width: 64, height: 64),
       ),
       children: [
         const SizedBox(height: 16),

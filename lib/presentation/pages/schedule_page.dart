@@ -52,8 +52,8 @@ class _SchedulePageState extends State<SchedulePage> {
   bool _isToday() {
     final now = DateTime.now();
     return _selectedDate.year == now.year &&
-           _selectedDate.month == now.month &&
-           _selectedDate.day == now.day;
+        _selectedDate.month == now.month &&
+        _selectedDate.day == now.day;
   }
 
   String _getTitle() {
@@ -63,7 +63,7 @@ class _SchedulePageState extends State<SchedulePage> {
     final now = DateTime.now();
     final yesterday = DateTime(now.year, now.month, now.day - 1);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    
+
     if (_selectedDate.year == yesterday.year &&
         _selectedDate.month == yesterday.month &&
         _selectedDate.day == yesterday.day) {
@@ -75,8 +75,20 @@ class _SchedulePageState extends State<SchedulePage> {
       return 'Tomorrow';
     }
     // Format: "Mon, Jan 15"
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return '${days[_selectedDate.weekday - 1]}, ${months[_selectedDate.month - 1]} ${_selectedDate.day}';
   }
@@ -91,7 +103,7 @@ class _SchedulePageState extends State<SchedulePage> {
       cancelText: 'Cancel',
       confirmText: 'OK',
     );
-    
+
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
@@ -105,7 +117,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_getTitle()),
-        centerTitle: false,
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_today),
@@ -121,9 +133,7 @@ class _SchedulePageState extends State<SchedulePage> {
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
             tooltip: 'Settings',
@@ -135,8 +145,8 @@ class _SchedulePageState extends State<SchedulePage> {
           BlocListener<MedicineLogCubit, MedicineLogState>(
             listenWhen: (previous, current) {
               // Only listen when this page is visible (prevent duplicate toasts)
-              return current is MedicineLogOperationSuccess && 
-                     previous != current;
+              return current is MedicineLogOperationSuccess &&
+                  previous != current;
             },
             listener: (context, state) {
               if (state is MedicineLogOperationSuccess) {

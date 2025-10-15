@@ -54,7 +54,7 @@ class _MedicineListPageState extends State<MedicineListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Medify'), // Per spec: "Medify" (H2)
-        centerTitle: false,
+        centerTitle: true,
         actions: [
           // Refresh button
           IconButton(
@@ -70,9 +70,7 @@ class _MedicineListPageState extends State<MedicineListPage> {
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
             tooltip: 'Settings',
@@ -82,13 +80,14 @@ class _MedicineListPageState extends State<MedicineListPage> {
       body: BlocConsumer<MedicineCubit, MedicineState>(
         listenWhen: (previous, current) {
           // Prevent duplicate listeners from IndexedStack
-          return (current is MedicineOperationSuccess || current is MedicineError) &&
-                 previous != current;
+          return (current is MedicineOperationSuccess ||
+                  current is MedicineError) &&
+              previous != current;
         },
         listener: (context, state) {
           // Clear any existing snackbars first
           ScaffoldMessenger.of(context).clearSnackBars();
-          
+
           // Show snackbar on operations
           if (state is MedicineOperationSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(

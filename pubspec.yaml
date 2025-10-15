@@ -70,21 +70,21 @@ flutter:
 
 # Flutter Native Splash Configuration
 flutter_native_splash:
-  # Logo image
-  image: assets/icons/medify-icon.png
+  # Logo image (using main logo)
+  image: assets/images/Medify.png
 
   # Background color (using Medify's light background color)
   color: "#FAFAFA"
 
   # Dark mode configuration
   color_dark: "#111827"
-  image_dark: assets/icons/medify-icon.png
+  image_dark: assets/images/Medify.png
 
   # Android 12+ specific settings
   android_12:
-    image: assets/icons/medify-icon.png
+    image: assets/images/Medify.png
     color: "#FAFAFA"
-    image_dark: assets/icons/medify-icon.png
+    image_dark: assets/images/Medify.png
     color_dark: "#111827"
 
   # Web configuration (optional)

@@ -68,12 +68,14 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         title: Text(
           _isEditMode ? AppStrings.editMedicine : AppStrings.addMedicine,
         ),
+        centerTitle: true,
       ),
       body: BlocListener<MedicineCubit, MedicineState>(
         listenWhen: (previous, current) {
           // Only listen to relevant state changes
-          return (current is MedicineOperationSuccess || current is MedicineError) &&
-                 previous != current;
+          return (current is MedicineOperationSuccess ||
+                  current is MedicineError) &&
+              previous != current;
         },
         listener: (context, state) async {
           if (state is MedicineOperationSuccess) {
@@ -106,7 +108,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
             if (mounted) {
               // Clear any existing snackbars first
               ScaffoldMessenger.of(context).clearSnackBars();
-              
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -129,7 +131,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
             if (mounted) {
               ScaffoldMessenger.of(context).clearSnackBars();
             }
-            
+
             // Show error message
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
