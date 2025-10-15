@@ -257,9 +257,9 @@ class _SettingsView extends StatelessWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const HistoryPage()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => const HistoryPage()));
         },
       ),
     );

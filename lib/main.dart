@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
-import 'core/constants/app_strings.dart';
 import 'core/di/injection_container.dart';
 import 'core/services/navigation_service.dart';
 import 'core/services/preferences_service.dart';
@@ -72,7 +71,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<HistoryCubit>(create: (context) => getIt<HistoryCubit>()),
       ],
       child: MaterialApp(
-        title: AppStrings.appName,
+        title: 'Medify',
         debugShowCheckedModeBanner: false,
         navigatorKey: NavigationService().navigatorKey,
         theme: AppTheme.lightTheme,
