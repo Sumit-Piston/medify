@@ -106,61 +106,178 @@ class _SettingsView extends StatelessWidget {
     SettingsLoaded state,
     ThemeData theme,
   ) {
+    String getThemeLabel(ThemeMode mode) {
+      switch (mode) {
+        case ThemeMode.light:
+          return 'Light';
+        case ThemeMode.dark:
+          return 'Dark';
+        case ThemeMode.system:
+          return 'System';
+      }
+    }
+
+    IconData getThemeIcon(ThemeMode mode) {
+      switch (mode) {
+        case ThemeMode.light:
+          return Icons.light_mode;
+        case ThemeMode.dark:
+          return Icons.dark_mode;
+        case ThemeMode.system:
+          return Icons.settings_brightness;
+      }
+    }
+
     return Card(
-      child: Padding(
+      child: ListTile(
+        leading: Icon(
+          getThemeIcon(state.themeMode),
+          color: AppColors.primary,
+        ),
+        title: Text('Theme', style: theme.textTheme.titleMedium),
+        subtitle: Text(
+          getThemeLabel(state.themeMode),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_drop_down),
+        onTap: () => _showThemeDialog(context, state),
+      ),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context, SettingsLoaded state) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(AppSizes.spacing16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.palette_outlined,
-                  color: AppColors.primary,
-                  size: AppSizes.iconM,
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                const SizedBox(width: AppSizes.spacing16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Theme', style: theme.textTheme.titleMedium),
-                      const SizedBox(height: AppSizes.spacing4),
-                      Text(
-                        'Choose your preferred theme',
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.spacing8,
+                vertical: AppSizes.spacing8,
+              ),
+              child: Text(
+                'Select Theme',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ),
+            const SizedBox(height: AppSizes.spacing8),
+            _buildThemeOption(
+              context,
+              state,
+              ThemeMode.light,
+              'Light',
+              'Bright and clean',
+              Icons.light_mode,
+            ),
+            _buildThemeOption(
+              context,
+              state,
+              ThemeMode.dark,
+              'Dark',
+              'Easy on the eyes',
+              Icons.dark_mode,
+            ),
+            _buildThemeOption(
+              context,
+              state,
+              ThemeMode.system,
+              'System',
+              'Follow device settings',
+              Icons.settings_brightness,
             ),
             const SizedBox(height: AppSizes.spacing16),
-            SegmentedButton<ThemeMode>(
-              segments: const [
-                ButtonSegment(
-                  value: ThemeMode.light,
-                  label: Text('Light'),
-                  icon: Icon(Icons.light_mode),
-                ),
-                ButtonSegment(
-                  value: ThemeMode.dark,
-                  label: Text('Dark'),
-                  icon: Icon(Icons.dark_mode),
-                ),
-                ButtonSegment(
-                  value: ThemeMode.system,
-                  label: Text('System'),
-                  icon: Icon(Icons.settings_brightness),
-                ),
-              ],
-              selected: {state.themeMode},
-              onSelectionChanged: (Set<ThemeMode> newSelection) {
-                context.read<SettingsCubit>().updateThemeMode(
-                  newSelection.first,
-                );
-              },
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    SettingsLoaded state,
+    ThemeMode mode,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
+    final isSelected = state.themeMode == mode;
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: () {
+        context.read<SettingsCubit>().updateThemeMode(mode);
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(AppSizes.spacing12),
+        margin: const EdgeInsets.only(bottom: AppSizes.spacing8),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.1)
+              : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppColors.primary : Colors.grey[600],
+              size: 28,
             ),
+            const SizedBox(width: AppSizes.spacing16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected ? AppColors.primary : null,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.primary,
+                size: 24,
+              ),
           ],
         ),
       ),
@@ -171,71 +288,162 @@ class _SettingsView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final currentLocale = Localizations.localeOf(context);
 
+    String getCurrentLanguageLabel() {
+      switch (currentLocale.languageCode) {
+        case 'en':
+          return '🇬🇧 ${l10n.english}';
+        case 'hi':
+          return '🇮🇳 ${l10n.hindi}';
+        case 'bn':
+          return '🇧🇩 ${l10n.bengali}';
+        default:
+          return l10n.english;
+      }
+    }
+
     return Card(
-      child: Padding(
+      child: ListTile(
+        leading: const Icon(
+          Icons.language,
+          color: AppColors.primary,
+        ),
+        title: Text(l10n.language, style: theme.textTheme.titleMedium),
+        subtitle: Text(
+          getCurrentLanguageLabel(),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_drop_down),
+        onTap: () => _showLanguageDialog(context),
+      ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final currentLocale = Localizations.localeOf(context);
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(AppSizes.spacing16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(
-                  Icons.language,
-                  color: AppColors.primary,
-                  size: AppSizes.iconM,
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                const SizedBox(width: AppSizes.spacing16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.language, style: theme.textTheme.titleMedium),
-                      const SizedBox(height: AppSizes.spacing4),
-                      Text(
-                        l10n.selectLanguage,
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.spacing8,
+                vertical: AppSizes.spacing8,
+              ),
+              child: Text(
+                l10n.selectLanguage,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ),
+            const SizedBox(height: AppSizes.spacing8),
+            _buildLanguageOption(
+              context,
+              currentLocale,
+              'en',
+              l10n.english,
+              '🇬🇧',
+            ),
+            _buildLanguageOption(
+              context,
+              currentLocale,
+              'hi',
+              l10n.hindi,
+              '🇮🇳',
+            ),
+            _buildLanguageOption(
+              context,
+              currentLocale,
+              'bn',
+              l10n.bengali,
+              '🇧🇩',
             ),
             const SizedBox(height: AppSizes.spacing16),
-            SegmentedButton<String>(
-              segments: [
-                ButtonSegment(
-                  value: 'en',
-                  label: Text(l10n.english),
-                  icon: const Text('🇬🇧', style: TextStyle(fontSize: 20)),
-                ),
-                ButtonSegment(
-                  value: 'hi',
-                  label: Text(l10n.hindi),
-                  icon: const Text('🇮🇳', style: TextStyle(fontSize: 20)),
-                ),
-                ButtonSegment(
-                  value: 'bn',
-                  label: Text(l10n.bengali),
-                  icon: const Text('🇧🇩', style: TextStyle(fontSize: 20)),
-                ),
-              ],
-              selected: {currentLocale.languageCode},
-              onSelectionChanged: (Set<String> newSelection) {
-                _changeLanguage(context, newSelection.first);
-              },
-            ),
           ],
         ),
       ),
     );
   }
 
-  void _changeLanguage(BuildContext context, String languageCode) {
-    // Update the app's locale by rebuilding with the new locale
-    final newLocale = Locale(languageCode);
+  Widget _buildLanguageOption(
+    BuildContext context,
+    Locale currentLocale,
+    String languageCode,
+    String title,
+    String flag,
+  ) {
+    final isSelected = currentLocale.languageCode == languageCode;
+    final theme = Theme.of(context);
 
-    // Update the locale using the global key
-    myAppKey.currentState?.setLocale(newLocale);
+    return InkWell(
+      onTap: () {
+        myAppKey.currentState?.setLocale(Locale(languageCode));
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(AppSizes.spacing12),
+        margin: const EdgeInsets.only(bottom: AppSizes.spacing8),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.1)
+              : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            Text(
+              flag,
+              style: const TextStyle(fontSize: 32),
+            ),
+            const SizedBox(width: AppSizes.spacing16),
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: isSelected ? AppColors.primary : null,
+                ),
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.primary,
+                size: 24,
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildNotificationsSetting(
@@ -267,52 +475,159 @@ class _SettingsView extends StatelessWidget {
     SettingsLoaded state,
     ThemeData theme,
   ) {
+    String getSnoozeDurationLabel(int duration) {
+      if (duration == 15) return '15 minutes';
+      if (duration == 30) return '30 minutes';
+      if (duration == 60) return '1 hour';
+      return '$duration minutes';
+    }
+
     return Card(
-      child: Padding(
+      child: ListTile(
+        leading: const Icon(
+          Icons.snooze,
+          color: AppColors.primary,
+        ),
+        title: Text('Snooze Duration', style: theme.textTheme.titleMedium),
+        subtitle: Text(
+          getSnoozeDurationLabel(state.snoozeDuration),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_drop_down),
+        onTap: () => _showSnoozeDurationDialog(context, state),
+      ),
+    );
+  }
+
+  void _showSnoozeDurationDialog(BuildContext context, SettingsLoaded state) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(AppSizes.spacing16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(
-                  Icons.snooze,
-                  color: AppColors.primary,
-                  size: AppSizes.iconM,
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                const SizedBox(width: AppSizes.spacing16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Snooze Duration',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppSizes.spacing4),
-                      Text(
-                        'Default snooze time for reminders',
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.spacing8,
+                vertical: AppSizes.spacing8,
+              ),
+              child: Text(
+                'Select Snooze Duration',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ),
+            const SizedBox(height: AppSizes.spacing8),
+            _buildSnoozeDurationOption(
+              context,
+              state,
+              15,
+              '15 minutes',
+              'Quick reminder',
+            ),
+            _buildSnoozeDurationOption(
+              context,
+              state,
+              30,
+              '30 minutes',
+              'Standard delay',
+            ),
+            _buildSnoozeDurationOption(
+              context,
+              state,
+              60,
+              '1 hour',
+              'Longer break',
             ),
             const SizedBox(height: AppSizes.spacing16),
-            SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(value: 15, label: Text('15 min')),
-                ButtonSegment(value: 30, label: Text('30 min')),
-                ButtonSegment(value: 60, label: Text('1 hour')),
-              ],
-              selected: {state.snoozeDuration},
-              onSelectionChanged: (Set<int> newSelection) {
-                context.read<SettingsCubit>().updateSnoozeDuration(
-                  newSelection.first,
-                );
-              },
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSnoozeDurationOption(
+    BuildContext context,
+    SettingsLoaded state,
+    int duration,
+    String title,
+    String subtitle,
+  ) {
+    final isSelected = state.snoozeDuration == duration;
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: () {
+        context.read<SettingsCubit>().updateSnoozeDuration(duration);
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(AppSizes.spacing12),
+        margin: const EdgeInsets.only(bottom: AppSizes.spacing8),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.1)
+              : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.timer,
+              color: isSelected ? AppColors.primary : Colors.grey[600],
+              size: 28,
             ),
+            const SizedBox(width: AppSizes.spacing16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected ? AppColors.primary : null,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.primary,
+                size: 24,
+              ),
           ],
         ),
       ),
