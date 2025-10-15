@@ -270,10 +270,18 @@ class _MedicineListPageState extends State<MedicineListPage>
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: AppStrings.addMedicine,
-        onPressed: _navigateToAddMedicine,
-        child: const Icon(Icons.add),
+      floatingActionButton: BlocBuilder<MedicineCubit, MedicineState>(
+        builder: (context, state) {
+          // Hide FAB when list is empty (empty state has its own button)
+          if (state is MedicineLoaded && state.medicines.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          return FloatingActionButton(
+            tooltip: AppStrings.addMedicine,
+            onPressed: _navigateToAddMedicine,
+            child: const Icon(Icons.add),
+          );
+        },
       ),
     );
   }
