@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/utils/date_time_utils.dart';
@@ -222,7 +223,11 @@ class MedicineLogCard extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: ElevatedButton.icon(
-                      onPressed: onTaken,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        _showSuccessAnimation(context);
+                        onTaken?.call();
+                      },
                       icon: const Icon(Icons.check, size: 18),
                       label: const Text('Taken'),
                       style: ElevatedButton.styleFrom(
@@ -239,7 +244,10 @@ class MedicineLogCard extends StatelessWidget {
                   // Snooze button
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => _showSnoozeOptions(context),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        _showSnoozeOptions(context);
+                      },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSizes.paddingS,
@@ -253,7 +261,10 @@ class MedicineLogCard extends StatelessWidget {
                   // Skip button
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: onSkip,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        onSkip?.call();
+                      },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSizes.paddingS,
@@ -290,6 +301,7 @@ class MedicineLogCard extends StatelessWidget {
               leading: const Icon(Icons.snooze),
               title: const Text('15 minutes'),
               onTap: () {
+                HapticFeedback.selectionClick();
                 Navigator.pop(context);
                 onSnooze?.call(15);
               },
@@ -298,6 +310,7 @@ class MedicineLogCard extends StatelessWidget {
               leading: const Icon(Icons.snooze),
               title: const Text('30 minutes'),
               onTap: () {
+                HapticFeedback.selectionClick();
                 Navigator.pop(context);
                 onSnooze?.call(30);
               },
@@ -306,6 +319,7 @@ class MedicineLogCard extends StatelessWidget {
               leading: const Icon(Icons.snooze),
               title: const Text('1 hour'),
               onTap: () {
+                HapticFeedback.selectionClick();
                 Navigator.pop(context);
                 onSnooze?.call(60);
               },
@@ -314,6 +328,51 @@ class MedicineLogCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Show success animation
+  void _showSuccessAnimation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black26,
+      builder: (context) {
+        // Auto-dismiss after 600ms
+        Future.delayed(const Duration(milliseconds: 600), () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+
+        return Center(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 400),
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: value,
+                child: Opacity(
+                  opacity: value,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: AppColors.success,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

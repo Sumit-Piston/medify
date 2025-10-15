@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/utils/date_time_utils.dart';
@@ -163,7 +164,9 @@ class MedicineCard extends StatelessWidget {
                       children: medicine.reminderTimes.map((seconds) {
                         final time = DateTimeUtils.secondsToDateTime(seconds);
                         final timeString = DateTimeUtils.formatTime(time);
-                        final timeOfDay = DateTimeUtils.getTimeOfDayString(time);
+                        final timeOfDay = DateTimeUtils.getTimeOfDayString(
+                          time,
+                        );
 
                         return Container(
                           padding: const EdgeInsets.symmetric(
@@ -176,7 +179,9 @@ class MedicineCard extends StatelessWidget {
                                 : AppColors.textDisabledLight.withValues(
                                     alpha: 0.1,
                                   ),
-                            borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+                            borderRadius: BorderRadius.circular(
+                              AppSizes.radiusXL,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
