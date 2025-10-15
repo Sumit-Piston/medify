@@ -6,6 +6,7 @@ import '../../domain/repositories/medicine_repository.dart';
 import '../../domain/repositories/medicine_log_repository.dart';
 import '../../presentation/blocs/medicine/medicine_cubit.dart';
 import '../../presentation/blocs/medicine_log/medicine_log_cubit.dart';
+import '../../presentation/blocs/statistics/statistics_cubit.dart';
 import '../services/notification_service.dart';
 import '../services/preferences_service.dart';
 
@@ -44,6 +45,10 @@ Future<void> initializeDependencies() async {
 
   getIt.registerFactory<MedicineLogCubit>(
     () => MedicineLogCubit(getIt<MedicineLogRepository>()),
+  );
+
+  getIt.registerFactory<StatisticsCubit>(
+    () => StatisticsCubit(getIt<MedicineLogRepository>()),
   );
 }
 
