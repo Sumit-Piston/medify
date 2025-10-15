@@ -3,7 +3,6 @@ import '../../domain/entities/medicine.dart';
 import '../../domain/repositories/medicine_repository.dart';
 import '../datasources/objectbox_service.dart';
 import '../models/medicine_model.dart';
-import '../models/medicine_log_model.dart';
 import '../../objectbox.g.dart';
 
 /// Implementation of MedicineRepository using ObjectBox
