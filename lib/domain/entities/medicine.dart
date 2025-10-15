@@ -1,11 +1,25 @@
 import 'package:equatable/equatable.dart';
 
+/// Enum for medicine intake timing
+enum MedicineIntakeTiming {
+  beforeFood('Before Food'),
+  afterFood('After Food'),
+  withFood('With Food'),
+  empty('Empty Stomach'),
+  anytime('Anytime'),
+  beforeSleep('Before Sleep');
+
+  final String label;
+  const MedicineIntakeTiming(this.label);
+}
+
 /// Medicine entity representing a medication to be tracked
 class Medicine extends Equatable {
   final int? id;
   final String name;
   final String dosage;
   final List<int> reminderTimes; // Stored as seconds since midnight
+  final MedicineIntakeTiming intakeTiming; // When to take the medicine
   final bool isActive;
   final String? notes;
   final DateTime createdAt;
@@ -16,6 +30,7 @@ class Medicine extends Equatable {
     required this.name,
     required this.dosage,
     required this.reminderTimes,
+    this.intakeTiming = MedicineIntakeTiming.anytime,
     this.isActive = true,
     this.notes,
     required this.createdAt,
@@ -28,6 +43,7 @@ class Medicine extends Equatable {
     String? name,
     String? dosage,
     List<int>? reminderTimes,
+    MedicineIntakeTiming? intakeTiming,
     bool? isActive,
     String? notes,
     DateTime? createdAt,
@@ -38,6 +54,7 @@ class Medicine extends Equatable {
       name: name ?? this.name,
       dosage: dosage ?? this.dosage,
       reminderTimes: reminderTimes ?? this.reminderTimes,
+      intakeTiming: intakeTiming ?? this.intakeTiming,
       isActive: isActive ?? this.isActive,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
@@ -47,14 +64,14 @@ class Medicine extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        dosage,
-        reminderTimes,
-        isActive,
-        notes,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    name,
+    dosage,
+    reminderTimes,
+    intakeTiming,
+    isActive,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
 }
-

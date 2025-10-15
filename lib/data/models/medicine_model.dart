@@ -10,6 +10,7 @@ class MedicineModel {
   String name;
   String dosage;
   List<int> reminderTimes; // Stored as seconds since midnight
+  int intakeTiming; // Store as int (enum index)
   bool isActive;
   String? notes;
 
@@ -24,6 +25,7 @@ class MedicineModel {
     required this.name,
     required this.dosage,
     required this.reminderTimes,
+    this.intakeTiming = 4, // Default to anytime (index 4)
     this.isActive = true,
     this.notes,
     required this.createdAt,
@@ -37,6 +39,7 @@ class MedicineModel {
       name: medicine.name,
       dosage: medicine.dosage,
       reminderTimes: medicine.reminderTimes,
+      intakeTiming: medicine.intakeTiming.index,
       isActive: medicine.isActive,
       notes: medicine.notes,
       createdAt: medicine.createdAt,
@@ -51,6 +54,7 @@ class MedicineModel {
       name: name,
       dosage: dosage,
       reminderTimes: reminderTimes,
+      intakeTiming: MedicineIntakeTiming.values[intakeTiming],
       isActive: isActive,
       notes: notes,
       createdAt: createdAt,
@@ -58,4 +62,3 @@ class MedicineModel {
     );
   }
 }
-
