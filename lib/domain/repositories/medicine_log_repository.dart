@@ -1,4 +1,5 @@
 import '../entities/medicine_log.dart';
+import '../entities/statistics.dart';
 
 /// Repository interface for MedicineLog operations
 abstract class MedicineLogRepository {
@@ -49,5 +50,40 @@ abstract class MedicineLogRepository {
 
   /// Stream of logs for a specific medicine
   Stream<List<MedicineLog>> watchLogsByMedicineId(int medicineId);
-}
 
+  // ==================== Statistics Methods ====================
+
+  /// Get overall statistics for a date range
+  /// If no dates provided, returns all-time statistics
+  Future<MedicineStatistics> getStatistics({
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
+  /// Get statistics for the last N days
+  Future<MedicineStatistics> getStatisticsForDays(int days);
+
+  /// Get current consecutive streak of days with 100% adherence
+  Future<int> getCurrentStreak();
+
+  /// Get best streak ever achieved
+  Future<int> getBestStreak();
+
+  /// Get daily completion data for charts
+  Future<Map<DateTime, int>> getDailyCompletion(int days);
+
+  /// Get daily scheduled data for charts
+  Future<Map<DateTime, int>> getDailyScheduled(int days);
+
+  /// Get per-medicine adherence rates
+  Future<Map<int, double>> getMedicineAdherenceRates({
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
+  /// Get detailed statistics per medicine
+  Future<List<MedicineStatisticsDetail>> getMedicineStatisticsDetails({
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+}
