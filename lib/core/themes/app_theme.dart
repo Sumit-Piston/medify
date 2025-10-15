@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
 
-/// App theme configuration with Nunito font family
+/// App theme configuration with Nunito font family (local fonts)
 class AppTheme {
   AppTheme._();
+
+  // Base text style with Nunito font family
+  static const TextStyle _baseTextStyle = TextStyle(fontFamily: 'Nunito');
 
   /// Light theme
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+
+      // Set default font family
+      fontFamily: 'Nunito',
 
       // Color scheme
       colorScheme: ColorScheme.light(
@@ -36,7 +41,7 @@ class AppTheme {
         centerTitle: true,
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.nunito(
+        titleTextStyle: _baseTextStyle.copyWith(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -55,65 +60,65 @@ class AppTheme {
       // Text theme with Nunito font (following spec)
       // H1: 28px Bold, H2: 24px SemiBold, H3: 20px SemiBold
       // Body Large: 18px, Body Medium: 16px, Body Small: 14px, Caption: 12px
-      textTheme: GoogleFonts.nunitoTextTheme().copyWith(
+      textTheme: TextTheme(
         // H1: 28px, Nunito Bold (Page titles)
-        displayLarge: GoogleFonts.nunito(
+        displayLarge: _baseTextStyle.copyWith(
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: AppColors.textPrimaryLight,
         ),
         // H2: 24px, Nunito SemiBold (Section headers)
-        displayMedium: GoogleFonts.nunito(
+        displayMedium: _baseTextStyle.copyWith(
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
         // H3: 20px, Nunito SemiBold (Card titles)
-        displaySmall: GoogleFonts.nunito(
+        displaySmall: _baseTextStyle.copyWith(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
-        headlineMedium: GoogleFonts.nunito(
+        headlineMedium: _baseTextStyle.copyWith(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
-        titleLarge: GoogleFonts.nunito(
+        titleLarge: _baseTextStyle.copyWith(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
-        titleMedium: GoogleFonts.nunito(
+        titleMedium: _baseTextStyle.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryLight,
         ),
         // Body Large: 18px (Important text)
-        bodyLarge: GoogleFonts.nunito(
+        bodyLarge: _baseTextStyle.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           color: AppColors.textPrimaryLight,
         ),
         // Body Medium: 16px (Primary content)
-        bodyMedium: GoogleFonts.nunito(
+        bodyMedium: _baseTextStyle.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.normal,
           color: AppColors.textPrimaryLight,
         ),
         // Body Small: 14px (Secondary text)
-        bodySmall: GoogleFonts.nunito(
+        bodySmall: _baseTextStyle.copyWith(
           fontSize: 14,
           fontWeight: FontWeight.normal,
           color: AppColors.textSecondaryLight,
         ),
         // Caption: 12px (Labels, hints)
-        labelSmall: GoogleFonts.nunito(
+        labelSmall: _baseTextStyle.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.normal,
           color: AppColors.textSecondaryLight,
         ),
-        labelLarge: GoogleFonts.nunito(
+        labelLarge: _baseTextStyle.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: Colors.white,
@@ -133,7 +138,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -151,7 +156,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           side: const BorderSide(color: AppColors.primary, width: 2),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -165,7 +170,7 @@ class AppTheme {
             AppSizes.buttonMinWidth,
             AppSizes.buttonHeight,
           ),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -196,11 +201,11 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.error),
         ),
-        labelStyle: GoogleFonts.nunito(
+        labelStyle: _baseTextStyle.copyWith(
           fontSize: 16,
           color: AppColors.textSecondaryLight,
         ),
-        hintStyle: GoogleFonts.nunito(
+        hintStyle: _baseTextStyle.copyWith(
           fontSize: 16,
           color: AppColors.textDisabledLight,
         ),
@@ -230,6 +235,9 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
 
+      // Set default font family
+      fontFamily: 'Nunito',
+
       // Color scheme
       colorScheme: ColorScheme.dark(
         primary: AppColors.primaryLight,
@@ -253,7 +261,7 @@ class AppTheme {
         centerTitle: true,
         backgroundColor: AppColors.surfaceDark,
         foregroundColor: AppColors.textPrimaryDark,
-        titleTextStyle: GoogleFonts.nunito(
+        titleTextStyle: _baseTextStyle.copyWith(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: AppColors.textPrimaryDark,
@@ -270,71 +278,70 @@ class AppTheme {
       ),
 
       // Text theme with Nunito font (following spec)
-      textTheme: GoogleFonts.nunitoTextTheme(ThemeData.dark().textTheme)
-          .copyWith(
-            // H1: 28px, Nunito Bold (Page titles)
-            displayLarge: GoogleFonts.nunito(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimaryDark,
-            ),
-            // H2: 24px, Nunito SemiBold (Section headers)
-            displayMedium: GoogleFonts.nunito(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryDark,
-            ),
-            // H3: 20px, Nunito SemiBold (Card titles)
-            displaySmall: GoogleFonts.nunito(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryDark,
-            ),
-            headlineMedium: GoogleFonts.nunito(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryDark,
-            ),
-            titleLarge: GoogleFonts.nunito(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryDark,
-            ),
-            titleMedium: GoogleFonts.nunito(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryDark,
-            ),
-            // Body Large: 18px (Important text)
-            bodyLarge: GoogleFonts.nunito(
-              fontSize: 18,
-              fontWeight: FontWeight.normal,
-              color: AppColors.textPrimaryDark,
-            ),
-            // Body Medium: 16px (Primary content)
-            bodyMedium: GoogleFonts.nunito(
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              color: AppColors.textPrimaryDark,
-            ),
-            // Body Small: 14px (Secondary text)
-            bodySmall: GoogleFonts.nunito(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
-              color: AppColors.textSecondaryDark,
-            ),
-            // Caption: 12px (Labels, hints)
-            labelSmall: GoogleFonts.nunito(
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-              color: AppColors.textSecondaryDark,
-            ),
-            labelLarge: GoogleFonts.nunito(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
+      textTheme: TextTheme(
+        // H1: 28px, Nunito Bold (Page titles)
+        displayLarge: _baseTextStyle.copyWith(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimaryDark,
+        ),
+        // H2: 24px, Nunito SemiBold (Section headers)
+        displayMedium: _baseTextStyle.copyWith(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryDark,
+        ),
+        // H3: 20px, Nunito SemiBold (Card titles)
+        displaySmall: _baseTextStyle.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryDark,
+        ),
+        headlineMedium: _baseTextStyle.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryDark,
+        ),
+        titleLarge: _baseTextStyle.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryDark,
+        ),
+        titleMedium: _baseTextStyle.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryDark,
+        ),
+        // Body Large: 18px (Important text)
+        bodyLarge: _baseTextStyle.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textPrimaryDark,
+        ),
+        // Body Medium: 16px (Primary content)
+        bodyMedium: _baseTextStyle.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textPrimaryDark,
+        ),
+        // Body Small: 14px (Secondary text)
+        bodySmall: _baseTextStyle.copyWith(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textSecondaryDark,
+        ),
+        // Caption: 12px (Labels, hints)
+        labelSmall: _baseTextStyle.copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: AppColors.textSecondaryDark,
+        ),
+        labelLarge: _baseTextStyle.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
 
       // Button themes (Border Radius: 12px per spec)
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -349,7 +356,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -367,7 +374,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.radiusButton),
           ),
           side: const BorderSide(color: AppColors.primaryLight, width: 2),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -381,7 +388,7 @@ class AppTheme {
             AppSizes.buttonMinWidth,
             AppSizes.buttonHeight,
           ),
-          textStyle: GoogleFonts.nunito(
+          textStyle: _baseTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -412,11 +419,11 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSizes.radiusInput),
           borderSide: const BorderSide(color: AppColors.error),
         ),
-        labelStyle: GoogleFonts.nunito(
+        labelStyle: _baseTextStyle.copyWith(
           fontSize: 16,
           color: AppColors.textSecondaryDark,
         ),
-        hintStyle: GoogleFonts.nunito(
+        hintStyle: _baseTextStyle.copyWith(
           fontSize: 16,
           color: AppColors.textDisabledDark,
         ),
