@@ -96,31 +96,31 @@ class MedicineLogCard extends StatelessWidget {
                 ),
 
                 const Spacer(),
-
-                // Overdue indicator
-                if (isOverdue && isPending)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSizes.paddingS,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.error,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusS),
-                    ),
-                    child: Text(
-                      'OVERDUE',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: AppSizes.paddingM),
 
+            // Overdue indicator
+            if (isOverdue && isPending)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.paddingS,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.error,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusS),
+                ),
+                child: Text(
+                  'OVERDUE',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            const SizedBox(height: AppSizes.paddingS),
             // Medicine details
             Row(
               children: [
