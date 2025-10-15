@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/injection_container.dart';
 import '../../../core/services/notification_service.dart';
@@ -72,7 +73,39 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> updateMedicine(Medicine medicine) async {
     try {
       emit(MedicineLoading());
+      
+      // CRITICAL FIX: Get old medicine to check if reminder times changed
+      final oldMedicine = await _medicineRepository.getMedicineById(medicine.id!);
+      
+      // Update the medicine
       final updatedMedicine = await _medicineRepository.updateMedicine(medicine);
+      
+      // Check if reminder times changed
+      final timesChanged = oldMedicine != null && 
+          !listEquals(oldMedicine.reminderTimes, updatedMedicine.reminderTimes);
+      
+      if (timesChanged) {
+        // Delete today's logs for this medicine to prevent duplicates
+        try {
+          final logRepository = getIt<MedicineLogRepository>();
+          final todayLogs = await logRepository.getTodayLogs();
+          final medicineLogsToday = todayLogs.where(
+            (log) => log.medicineId == medicine.id!
+          ).toList();
+          
+          for (final log in medicineLogsToday) {
+            await logRepository.deleteLog(log.id!);
+          }
+          
+          // Generate new logs for today with updated times
+          final newLogs = LogGenerator.generateTodayLogs(updatedMedicine);
+          for (final log in newLogs) {
+            await logRepository.addLog(log);
+          }
+        } catch (e) {
+          // Silently handle log regeneration errors
+        }
+      }
       
       // Reschedule notifications for the updated medicine
       try {

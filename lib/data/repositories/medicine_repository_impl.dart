@@ -3,6 +3,7 @@ import '../../domain/entities/medicine.dart';
 import '../../domain/repositories/medicine_repository.dart';
 import '../datasources/objectbox_service.dart';
 import '../models/medicine_model.dart';
+import '../models/medicine_log_model.dart';
 import '../../objectbox.g.dart';
 
 /// Implementation of MedicineRepository using ObjectBox
@@ -57,6 +58,20 @@ class MedicineRepositoryImpl implements MedicineRepository {
 
   @override
   Future<void> deleteMedicine(int id) async {
+    // CRITICAL FIX: Delete all logs associated with this medicine first
+    // to prevent orphaned logs in database
+    final logsQuery = _objectBoxService.medicineLogBox
+        .query(MedicineLogModel_.medicineId.equals(id))
+        .build();
+    final logs = logsQuery.find();
+    logsQuery.close();
+    
+    // Delete all logs for this medicine
+    for (final log in logs) {
+      _objectBoxService.medicineLogBox.remove(log.id);
+    }
+    
+    // Now delete the medicine itself
     _objectBoxService.medicineBox.remove(id);
     _notifyListeners();
   }

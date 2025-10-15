@@ -30,12 +30,14 @@
 
 **Problem:**
 When a medicine is deleted, its associated logs are NOT deleted. This causes:
+
 - Orphaned logs in database (logs with `medicineId` pointing to non-existent medicine)
 - Schedule page crashes when trying to display medicine name for orphaned logs
 - Statistics calculations include orphaned logs
 - Database grows unnecessarily
 
 **Current Code:**
+
 ```dart
 @override
 Future<void> deleteMedicine(int id) async {
@@ -45,6 +47,7 @@ Future<void> deleteMedicine(int id) async {
 ```
 
 **Solution:**
+
 ```dart
 @override
 Future<void> deleteMedicine(int id) async {
@@ -54,11 +57,11 @@ Future<void> deleteMedicine(int id) async {
       .build();
   final logs = logsQuery.find();
   logsQuery.close();
-  
+
   for (final log in logs) {
     _objectBoxService.medicineLogBox.remove(log.id);
   }
-  
+
   // Now delete the medicine
   _objectBoxService.medicineBox.remove(id);
   _notifyListeners();
@@ -66,6 +69,7 @@ Future<void> deleteMedicine(int id) async {
 ```
 
 **Impact if not fixed:**
+
 - ⚠️ App crashes when displaying schedule with orphaned logs
 - ⚠️ Statistics page shows incorrect data
 - ⚠️ Database grows without bound
@@ -83,26 +87,29 @@ Future<void> deleteMedicine(int id) async {
 
 **Problem:**
 When updating a medicine (especially changing reminder times), the app does NOT:
+
 1. Delete old logs for today
 2. Check for existing logs before creating new ones
 
 **Scenario:**
+
 1. User adds medicine with 9:00 AM reminder → Log created for today at 9:00 AM
 2. User edits medicine, changes time to 10:00 AM
 3. **BUG:** Old 9:00 AM log still exists, new 10:00 AM log is NOT created for today
 4. Next day: Two logs exist (9:00 AM and 10:00 AM)
 
 **Current Code:**
+
 ```dart
 Future<void> updateMedicine(Medicine medicine) async {
   try {
     emit(MedicineLoading());
     final updatedMedicine = await _medicineRepository.updateMedicine(medicine);
-    
+
     // Only reschedules notifications, doesn't handle existing logs!
     final notificationService = getIt<NotificationService>();
     await notificationService.scheduleMedicineReminders(updatedMedicine);
-    
+
     emit(const MedicineOperationSuccess('Medicine updated successfully'));
     await loadMedicines();
   } catch (e) {
@@ -112,23 +119,24 @@ Future<void> updateMedicine(Medicine medicine) async {
 ```
 
 **Solution:**
+
 ```dart
 Future<void> updateMedicine(Medicine medicine) async {
   try {
     emit(MedicineLoading());
-    
+
     // Get old reminder times before update
     final oldMedicine = await _medicineRepository.getMedicineById(medicine.id!);
-    
+
     // Update the medicine
     final updatedMedicine = await _medicineRepository.updateMedicine(medicine);
-    
+
     // Check if reminder times changed
     final timesChanged = !listEquals(
-      oldMedicine?.reminderTimes, 
+      oldMedicine?.reminderTimes,
       updatedMedicine.reminderTimes
     );
-    
+
     if (timesChanged) {
       // Delete today's logs for this medicine
       final logRepository = getIt<MedicineLogRepository>();
@@ -136,22 +144,22 @@ Future<void> updateMedicine(Medicine medicine) async {
       final medicineLogsToday = todayLogs.where(
         (log) => log.medicineId == medicine.id!
       ).toList();
-      
+
       for (final log in medicineLogsToday) {
         await logRepository.deleteLog(log.id!);
       }
-      
+
       // Generate new logs for today with updated times
       final newLogs = LogGenerator.generateTodayLogs(updatedMedicine);
       for (final log in newLogs) {
         await logRepository.addLog(log);
       }
     }
-    
+
     // Reschedule notifications
     final notificationService = getIt<NotificationService>();
     await notificationService.scheduleMedicineReminders(updatedMedicine);
-    
+
     emit(const MedicineOperationSuccess('Medicine updated successfully'));
     await loadMedicines();
   } catch (e) {
@@ -161,6 +169,7 @@ Future<void> updateMedicine(Medicine medicine) async {
 ```
 
 **Impact if not fixed:**
+
 - ⚠️ Users see wrong reminder times
 - ⚠️ Statistics are inaccurate
 - ⚠️ Confusing UX (old times still show)
@@ -180,11 +189,12 @@ Future<void> updateMedicine(Medicine medicine) async {
 The `markAsSkipped` method has a **compilation error** - missing `model` variable declaration.
 
 **Current Code (Line 116-126):**
+
 ```dart
 @override
 Future<MedicineLog> markAsSkipped(int id) async {
   // LINE 117 IS MISSING: final model = _objectBoxService.medicineLogBox.get(id);
-  
+
   if (model == null) {  // ❌ ERROR: 'model' is not defined!
     throw Exception('Log not found');
   }
@@ -197,6 +207,7 @@ Future<MedicineLog> markAsSkipped(int id) async {
 ```
 
 **Solution:**
+
 ```dart
 @override
 Future<MedicineLog> markAsSkipped(int id) async {
@@ -213,6 +224,7 @@ Future<MedicineLog> markAsSkipped(int id) async {
 ```
 
 **Impact if not fixed:**
+
 - ⚠️ App crashes when user taps "Skip" button
 - ⚠️ Critical feature is completely broken
 - ⚠️ Negative user reviews
@@ -233,6 +245,7 @@ Future<MedicineLog> markAsSkipped(int id) async {
 Medicines that remain "pending" after their scheduled time are not automatically marked as "missed". Statistics show inaccurate adherence rates.
 
 **Current Behavior:**
+
 - Medicine scheduled for 9:00 AM
 - User doesn't take it
 - At 11:00 PM, it's still showing as "pending" (but overdue)
@@ -240,6 +253,7 @@ Medicines that remain "pending" after their scheduled time are not automatically
 
 **Solution:**
 Add a background task or daily check to mark overdue logs as "missed":
+
 ```dart
 // Add to medicine_log_repository_impl.dart
 Future<void> markOverdueLogsAsMissed() async {
@@ -258,6 +272,7 @@ Future<void> markOverdueLogsAsMissed() async {
 **Workaround:** The `isOverdue` getter correctly identifies overdue logs, so UI shows them as overdue. Just not marked as "missed" in database.
 
 **Impact if not fixed:**
+
 - ⏳ Minor: Statistics slightly inaccurate
 - ⏳ Users can't filter by "missed" medicines
 - ⏳ History doesn't clearly show missed doses
@@ -276,28 +291,30 @@ Future<void> markOverdueLogsAsMissed() async {
 `generateTodayLogs()` doesn't check if logs already exist before creating them. If called multiple times, creates duplicates.
 
 **Scenario:**
+
 1. User adds medicine → Logs generated
 2. App crashes
 3. User reopens app, adds same medicine again → Duplicate logs created
 
 **Solution:**
+
 ```dart
 // Add duplicate check before adding logs
 Future<void> addMedicine(Medicine medicine) async {
   try {
     emit(MedicineLoading());
     final savedMedicine = await _medicineRepository.addMedicine(medicine);
-    
+
     // Generate today's logs for the medicine
     try {
       final logRepository = getIt<MedicineLogRepository>();
       final todayLogs = await logRepository.getTodayLogs();
-      
+
       // Check if logs already exist for this medicine today
       final existingLogs = todayLogs.where(
         (log) => log.medicineId == savedMedicine.id!
       ).toList();
-      
+
       if (existingLogs.isEmpty) {  // ✅ Only create if none exist
         final logs = LogGenerator.generateTodayLogs(savedMedicine);
         for (final log in logs) {
@@ -307,13 +324,14 @@ Future<void> addMedicine(Medicine medicine) async {
     } catch (e) {
       // Silently handle log generation errors
     }
-    
+
     // ... rest of code
   }
 }
 ```
 
 **Impact if not fixed:**
+
 - ⏳ Minor: Rare edge case
 - ⏳ Could create duplicate notifications
 - ⏳ Database inconsistency
@@ -351,13 +369,14 @@ Form validation doesn't check if at least one reminder time is added.
 User can save a medicine with 0 reminder times → No logs generated → Medicine never appears in schedule
 
 **Solution:**
+
 ```dart
 Future<void> _saveMedicine() async {
   // Validate form
   if (!_formKey.currentState!.validate()) {
     return;
   }
-  
+
   // ✅ ADD THIS CHECK
   if (_reminderTimes.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -368,12 +387,13 @@ Future<void> _saveMedicine() async {
     );
     return;
   }
-  
+
   // ... rest of save logic
 }
 ```
 
 **Impact if not fixed:**
+
 - ⏳ Users confused why medicine doesn't appear
 - ⏳ Poor UX
 - ⏳ Support requests
@@ -392,15 +412,16 @@ Future<void> _saveMedicine() async {
 When snoozing, a NEW notification is created with ID 999, but the original notification is NOT canceled. User gets 2 notifications.
 
 **Solution:**
+
 ```dart
 Future<void> _handleSnoozeAction(...) async {
   try {
     final snoozeDuration = 5;
-    
+
     // ✅ ADD THIS: Cancel original notification
     final originalNotificationId = _generateNotificationId(medicineId, /* timeIndex needed */);
     await _notifications.cancel(originalNotificationId);
-    
+
     // Then schedule snoozed notification
     // ... existing code
   }
@@ -410,6 +431,7 @@ Future<void> _handleSnoozeAction(...) async {
 **Challenge:** Need to know the original `timeIndex` to cancel correct notification. Might need to pass in payload.
 
 **Impact if not fixed:**
+
 - ⏳ User gets 2 notifications (original + snoozed)
 - ⏳ Confusing UX
 - ⏳ Annoying for users
@@ -462,17 +484,20 @@ Future<void> _handleSnoozeAction(...) async {
 ## 📊 PRIORITY MATRIX
 
 ### **MUST FIX before Play Store (2-3 hours):**
+
 1. ✅ Fix orphaned logs on medicine delete (30 min)
 2. ✅ Fix duplicate logs on medicine update (1 hour)
 3. ✅ Fix `markAsSkipped` compilation error (5 min)
 4. ✅ Add reminder time validation (15 min)
 
 ### **SHOULD FIX before Play Store (2-3 hours):**
+
 5. ⏳ Fix snooze notification duplication (1 hour)
 6. ⏳ Add duplicate log prevention (30 min)
 7. ⏳ Calendar filter persistence (30 min)
 
 ### **CAN WAIT for v1.1 (future update):**
+
 8. ⏭️ Automatic "missed" status (background task)
 9. ⏭️ Error logging/analytics
 10. ⏭️ Stream controller cleanup
@@ -482,7 +507,9 @@ Future<void> _handleSnoozeAction(...) async {
 ## 🎯 RECOMMENDED ACTION PLAN
 
 ### **Plan A: Quick Fix (2-3 hours) - RECOMMENDED**
+
 Fix only CRITICAL issues (1-3):
+
 - ✅ Orphaned logs cleanup
 - ✅ Update medicine log handling
 - ✅ markAsSkipped bug
@@ -493,7 +520,9 @@ Fix only CRITICAL issues (1-3):
 ---
 
 ### **Plan B: Thorough Fix (4-6 hours)**
+
 Fix CRITICAL + HIGH + selected MEDIUM:
+
 - All of Plan A
 - ✅ Snooze notification fix
 - ✅ Duplicate prevention
@@ -504,6 +533,7 @@ Fix CRITICAL + HIGH + selected MEDIUM:
 ---
 
 ### **Plan C: Perfect (8-10 hours)**
+
 Fix everything including background tasks
 
 **Result:** Perfect app, but diminishing returns
@@ -515,6 +545,7 @@ Fix everything including background tasks
 **Go with Plan A (Quick Fix)**
 
 **Why:**
+
 1. Fixes all app-breaking bugs
 2. Only 2-3 hours of work
 3. Remaining issues are minor/rare
@@ -522,6 +553,7 @@ Fix everything including background tasks
 5. Add Plan B fixes in v1.1 update
 
 **The 3 critical issues are:**
+
 1. Orphaned logs (app crash potential)
 2. Log duplication on update (user confusion)
 3. Skip button crash (broken feature)
@@ -533,16 +565,19 @@ Fix everything including background tasks
 ## 🚀 NEXT STEPS
 
 **Option 1:** ✅ **Fix Critical Issues Now** (2-3 hours)
+
 - I'll implement fixes for issues #1, #2, #3, #7
 - Test thoroughly
 - Then proceed to Play Store prep
 
 **Option 2:** ⏸️ **Test First, Fix Later**
+
 - You test the app thoroughly
 - Confirm which issues you encounter
 - Then we fix based on real usage
 
 **Option 3:** 🎯 **Fix Everything** (4-6 hours)
+
 - Implement all fixes (issues #1-8)
 - Maximum polish
 - Then Play Store
@@ -552,5 +587,3 @@ Fix everything including background tasks
 **Which option would you like to proceed with?** 🤔
 
 I recommend **Option 1** - let's fix the critical bugs now (2-3 hours), then launch!
-
-
