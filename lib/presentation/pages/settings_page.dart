@@ -233,7 +233,7 @@ class _SettingsView extends StatelessWidget {
   void _changeLanguage(BuildContext context, String languageCode) {
     // Update the app's locale by rebuilding with the new locale
     final newLocale = Locale(languageCode);
-    
+
     // Update the locale using the global key
     myAppKey.currentState?.setLocale(newLocale);
   }
