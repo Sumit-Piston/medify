@@ -48,6 +48,7 @@ dependencies:
   # UI Enhancements (Phase 2)
   shimmer: ^3.0.0
   flutter_staggered_animations: ^1.1.1
+  confetti: ^0.7.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
@@ -182,6 +183,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                 validator: Validators.medicineName,
                 prefixIcon: const Icon(Icons.medication),
                 keyboardType: TextInputType.text,
+                autofocus: !_isEditMode, // Auto-focus for new medicines
+                maxLength: 50, // Standard max length
+                textCapitalization: TextCapitalization.words,
+                semanticLabel: 'Medicine name input field',
               ),
               const SizedBox(height: AppSizes.paddingM),
 
@@ -193,6 +198,9 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                 validator: Validators.dosage,
                 prefixIcon: const Icon(Icons.medical_information),
                 keyboardType: TextInputType.text,
+                maxLength: 30, // Standard max length
+                textCapitalization: TextCapitalization.sentences,
+                semanticLabel: 'Dosage information input field',
               ),
               const SizedBox(height: AppSizes.paddingM),
 
@@ -242,7 +250,12 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                 controller: _notesController,
                 prefixIcon: const Icon(Icons.note),
                 maxLines: 3,
+                maxLength: 200, // Standard max length for notes
                 keyboardType: TextInputType.multiline,
+                textCapitalization: TextCapitalization.sentences,
+                showValidationIndicator:
+                    false, // Optional field, no validation indicator
+                semanticLabel: 'Additional notes input field, optional',
               ),
               const SizedBox(height: AppSizes.paddingL),
 
@@ -385,12 +398,92 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         return;
       }
 
+      // Check if picked time has already passed today (for new medicines only)
+      if (!_isEditMode) {
+        final now = DateTime.now();
+        final currentSeconds = (now.hour * 3600) + (now.minute * 60);
+
+        if (seconds < currentSeconds) {
+          // Time has passed, show confirmation dialog
+          final shouldAdd = await _showPastTimeDialog(picked);
+          if (!shouldAdd) return;
+        }
+      }
+
       setState(() {
         _reminderTimes.add(seconds);
         // Sort times chronologically
         _reminderTimes.sort();
       });
     }
+  }
+
+  /// Show dialog for past time confirmation
+  Future<bool> _showPastTimeDialog(TimeOfDay time) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          icon: Icon(
+            Icons.schedule,
+            size: 48,
+            color: theme.colorScheme.secondary,
+          ),
+          title: const Text('Time Already Passed'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'The time ${time.format(context)} has already passed today.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.paddingM),
+              Container(
+                padding: const EdgeInsets.all(AppSizes.paddingM),
+                decoration: BoxDecoration(
+                  color: AppColors.info.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusM),
+                  border: Border.all(
+                    color: AppColors.info.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: AppSizes.paddingS),
+                    Expanded(
+                      child: Text(
+                        'First reminder will be scheduled for tomorrow at ${time.format(context)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Add Anyway'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false;
   }
 
   /// Validate and save medicine

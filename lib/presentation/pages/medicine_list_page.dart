@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
@@ -179,7 +180,7 @@ class _MedicineListPageState extends State<MedicineListPage>
                     ),
                   ),
 
-                  // Medicine List
+                  // Medicine List with Staggered Animation
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSizes.spacing16,
@@ -187,63 +188,72 @@ class _MedicineListPageState extends State<MedicineListPage>
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final medicine = state.medicines[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: AppSizes.spacing8,
-                          ),
-                          child: Dismissible(
-                            key: Key(medicine.id.toString()),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (direction) async {
-                              return await _showDeleteConfirmation(
-                                context,
-                                medicine.name,
-                              );
-                            },
-                            onDismissed: (direction) {
-                              context.read<MedicineCubit>().deleteMedicine(
-                                medicine.id!,
-                              );
-                            },
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(
-                                right: AppSizes.paddingL,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.error,
-                                borderRadius: BorderRadius.circular(
-                                  AppSizes.radiusCard,
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSizes.spacing8,
                                 ),
-                              ),
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                    color: Colors.white,
-                                    size: AppSizes.iconL,
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                child: Dismissible(
+                                  key: Key(medicine.id.toString()),
+                                  direction: DismissDirection.endToStart,
+                                  confirmDismiss: (direction) async {
+                                    return await _showDeleteConfirmation(
+                                      context,
+                                      medicine.name,
+                                    );
+                                  },
+                                  onDismissed: (direction) {
+                                    context.read<MedicineCubit>().deleteMedicine(
+                                      medicine.id!,
+                                    );
+                                  },
+                                  background: Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.only(
+                                      right: AppSizes.paddingL,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.error,
+                                      borderRadius: BorderRadius.circular(
+                                        AppSizes.radiusCard,
+                                      ),
+                                    ),
+                                    child: const Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.delete,
+                                          color: Colors.white,
+                                          size: AppSizes.iconL,
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Delete',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
+                                  child: MedicineCard(
+                                    medicine: medicine,
+                                    onTap: () =>
+                                        _navigateToEditMedicine(medicine.id!),
+                                    onToggleActive: () {
+                                      context
+                                          .read<MedicineCubit>()
+                                          .toggleMedicineStatus(medicine.id!);
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: MedicineCard(
-                              medicine: medicine,
-                              onTap: () =>
-                                  _navigateToEditMedicine(medicine.id!),
-                              onToggleActive: () {
-                                context
-                                    .read<MedicineCubit>()
-                                    .toggleMedicineStatus(medicine.id!);
-                              },
                             ),
                           ),
                         );
