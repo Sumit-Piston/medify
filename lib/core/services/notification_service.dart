@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -5,7 +6,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../../domain/entities/medicine.dart';
+import '../../domain/entities/medicine_log.dart';
+import '../../domain/repositories/medicine_log_repository.dart';
+import '../di/injection_container.dart';
 import '../utils/date_time_utils.dart';
+import 'navigation_service.dart';
 
 /// Service for managing local notifications
 /// Handles foreground, background, and terminated app states
@@ -136,19 +141,246 @@ class NotificationService {
   }
 
   /// Handle notification tap (when app is in foreground or background)
-  void _onNotificationTapped(NotificationResponse response) {
-    _log('Notification tapped: ${response.payload}');
-    // TODO: Implement navigation to specific medicine or log screen
-    // Example: Navigate to schedule page or medicine detail page
-    // Can parse payload to determine action
-    // For now, this is a placeholder
+  void _onNotificationTapped(NotificationResponse response) async {
+    _log('Notification tapped: ${response.payload}, action: ${response.actionId}');
+    
+    try {
+      // Parse payload
+      if (response.payload == null || response.payload!.isEmpty) {
+        _log('Empty payload, ignoring tap');
+        return;
+      }
+
+      final Map<String, dynamic> payload = jsonDecode(response.payload!);
+      final int medicineId = payload['medicineId'];
+      final int scheduledSeconds = payload['scheduledSeconds'];
+      
+      // Get medicine log repository
+      final medicineLogRepository = getIt<MedicineLogRepository>();
+      
+      // Convert scheduledSeconds to DateTime for today
+      final scheduledDateTime = DateTimeUtils.secondsToDateTime(scheduledSeconds);
+      
+      // Find or create today's log for this medicine at this time
+      final todayLogs = await medicineLogRepository.getTodayLogs();
+      MedicineLog? log = todayLogs.cast<MedicineLog?>().firstWhere(
+        (l) => l!.medicineId == medicineId && 
+               l.scheduledTime.hour == scheduledDateTime.hour &&
+               l.scheduledTime.minute == scheduledDateTime.minute,
+        orElse: () => null,
+      );
+
+      // Handle different actions
+      if (response.actionId == 'snooze') {
+        // Snooze action
+        await _handleSnoozeAction(medicineId, scheduledSeconds, log);
+      } else if (response.actionId == 'skip') {
+        // Skip action
+        await _handleSkipAction(medicineId, scheduledSeconds, log, medicineLogRepository);
+      } else {
+        // Default tap: Mark as taken and navigate to home
+        await _handleTakenAction(medicineId, scheduledSeconds, log, medicineLogRepository);
+        
+        // Navigate to home page (main navigation page)
+        final context = NavigationService().context;
+        if (context != null) {
+          // Already on main navigation page, just refresh
+          _log('Navigating to home page');
+        }
+      }
+    } catch (e) {
+      _log('Error handling notification tap: $e', isError: true);
+    }
   }
 
   /// Handle background notification tap (static method required)
   @pragma('vm:entry-point')
-  static void _onBackgroundNotificationTapped(NotificationResponse response) {
-    developer.log('Background notification tapped: ${response.payload}');
-    // TODO: Implement background navigation if needed
+  static void _onBackgroundNotificationTapped(NotificationResponse response) async {
+    developer.log('Background notification tapped: ${response.payload}, action: ${response.actionId}');
+    
+    try {
+      // Parse payload
+      if (response.payload == null || response.payload!.isEmpty) {
+        developer.log('Empty payload, ignoring tap');
+        return;
+      }
+
+      final Map<String, dynamic> payload = jsonDecode(response.payload!);
+      final int medicineId = payload['medicineId'];
+      final int scheduledSeconds = payload['scheduledSeconds'];
+      
+      // Get medicine log repository
+      final medicineLogRepository = getIt<MedicineLogRepository>();
+      
+      // Convert scheduledSeconds to DateTime for today
+      final scheduledDateTime = DateTimeUtils.secondsToDateTime(scheduledSeconds);
+      
+      // Find or create today's log for this medicine at this time
+      final todayLogs = await medicineLogRepository.getTodayLogs();
+      MedicineLog? log = todayLogs.cast<MedicineLog?>().firstWhere(
+        (l) => l!.medicineId == medicineId && 
+               l.scheduledTime.hour == scheduledDateTime.hour &&
+               l.scheduledTime.minute == scheduledDateTime.minute,
+        orElse: () => null,
+      );
+
+      // Handle different actions
+      if (response.actionId == 'snooze') {
+        // Snooze action
+        await NotificationService()._handleSnoozeAction(medicineId, scheduledSeconds, log);
+      } else if (response.actionId == 'skip') {
+        // Skip action
+        await NotificationService()._handleSkipAction(medicineId, scheduledSeconds, log, medicineLogRepository);
+      } else {
+        // Default tap: Mark as taken (navigation will happen when app opens)
+        await NotificationService()._handleTakenAction(medicineId, scheduledSeconds, log, medicineLogRepository);
+      }
+    } catch (e) {
+      developer.log('Error handling background notification tap: $e');
+    }
+  }
+
+  /// Handle "Mark as Taken" action
+  Future<void> _handleTakenAction(
+    int medicineId,
+    int scheduledSeconds,
+    MedicineLog? log,
+    MedicineLogRepository medicineLogRepository,
+  ) async {
+    try {
+      if (log != null) {
+        // Update existing log
+        await medicineLogRepository.markAsTaken(log.id!);
+        _log('Marked log ${log.id} as taken');
+      } else {
+        // Create new log and mark as taken
+        final scheduledDateTime = DateTimeUtils.secondsToDateTime(scheduledSeconds);
+        final newLog = MedicineLog(
+          medicineId: medicineId,
+          scheduledTime: scheduledDateTime,
+          takenTime: DateTime.now(),
+          status: MedicineLogStatus.taken,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await medicineLogRepository.addLog(newLog);
+        _log('Created new log and marked as taken');
+      }
+    } catch (e) {
+      _log('Error handling taken action: $e', isError: true);
+    }
+  }
+
+  /// Handle "Snooze" action
+  Future<void> _handleSnoozeAction(
+    int medicineId,
+    int scheduledSeconds,
+    MedicineLog? log,
+  ) async {
+    try {
+      // Snooze for 5 minutes as per user requirement
+      final snoozeDuration = 5; // 5 minutes
+      
+      _log('Snoozing notification for $snoozeDuration minutes');
+      
+      // Schedule a one-time notification after snooze duration
+      final snoozeTime = DateTime.now().add(Duration(minutes: snoozeDuration));
+      final tzDateTime = tz.TZDateTime.from(snoozeTime, tz.local);
+      
+      // Get medicine name (we'll need to query it)
+      // For now, use a generic message
+      final androidDetails = AndroidNotificationDetails(
+        _channelId,
+        _channelName,
+        channelDescription: _channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: 'ic_notification',
+        enableVibration: true,
+        playSound: true,
+        styleInformation: const BigTextStyleInformation(
+          'Don\'t forget to take your medicine!',
+        ),
+        actions: <AndroidNotificationAction>[
+          const AndroidNotificationAction(
+            'taken',
+            'Mark as Taken',
+            showsUserInterface: true,
+          ),
+          const AndroidNotificationAction(
+            'skip',
+            'Skip',
+            showsUserInterface: false,
+          ),
+        ],
+      );
+
+      const iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      // Create payload
+      final payload = jsonEncode({
+        'medicineId': medicineId,
+        'scheduledSeconds': scheduledSeconds,
+        'isSnoozed': true,
+      });
+
+      // Generate unique ID for snoozed notification
+      final snoozeNotificationId = _generateNotificationId(medicineId, 999);
+      
+      await _notifications.zonedSchedule(
+        snoozeNotificationId,
+        '💊 Reminder: Time to take your medicine',
+        'Snoozed reminder',
+        tzDateTime,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      );
+
+      _log('Snoozed notification scheduled for $snoozeTime');
+    } catch (e) {
+      _log('Error handling snooze action: $e', isError: true);
+    }
+  }
+
+  /// Handle "Skip" action
+  Future<void> _handleSkipAction(
+    int medicineId,
+    int scheduledSeconds,
+    MedicineLog? log,
+    MedicineLogRepository medicineLogRepository,
+  ) async {
+    try {
+      if (log != null) {
+        // Update existing log
+        await medicineLogRepository.markAsSkipped(log.id!);
+        _log('Marked log ${log.id} as skipped');
+      } else {
+        // Create new log and mark as skipped
+        final scheduledDateTime = DateTimeUtils.secondsToDateTime(scheduledSeconds);
+        final newLog = MedicineLog(
+          medicineId: medicineId,
+          scheduledTime: scheduledDateTime,
+          takenTime: null,
+          status: MedicineLogStatus.skipped,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await medicineLogRepository.addLog(newLog);
+        _log('Created new log and marked as skipped');
+      }
+    } catch (e) {
+      _log('Error handling skip action: $e', isError: true);
+    }
   }
 
   /// Request notification permissions (handles Android 13+ and iOS)
@@ -321,16 +553,16 @@ class NotificationService {
         styleInformation: BigTextStyleInformation(
           'It\'s time to take $medicineName ($dosage). Don\'t forget your medicine!',
         ),
-        // Action buttons (optional - can add Taken, Snooze, Skip)
+        // Action buttons: Snooze (5 mins) and Skip
         actions: <AndroidNotificationAction>[
           const AndroidNotificationAction(
-            'taken',
-            'Mark as Taken',
-            showsUserInterface: true,
+            'snooze',
+            'Snooze (5 min)',
+            showsUserInterface: false,
           ),
           const AndroidNotificationAction(
-            'snooze',
-            'Snooze',
+            'skip',
+            'Skip',
             showsUserInterface: false,
           ),
         ],
@@ -359,6 +591,12 @@ class NotificationService {
         iOS: iosDetails,
       );
 
+      // Create payload with medicineId and scheduled time
+      final payload = jsonEncode({
+        'medicineId': medicineId,
+        'scheduledSeconds': seconds,
+      });
+
       // Schedule the notification
       await _notifications.zonedSchedule(
         notificationId,
@@ -368,7 +606,7 @@ class NotificationService {
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
-        payload: 'medicine_$medicineId',
+        payload: payload,
       );
 
       _log('Notification scheduled successfully: ID $notificationId');
