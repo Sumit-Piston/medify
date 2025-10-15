@@ -2,10 +2,10 @@ import 'package:intl/intl.dart';
 
 /// Time period of the day
 enum TimeOfDayPeriod {
-  morning,    // 5 AM - 12 PM
-  afternoon,  // 12 PM - 5 PM
-  evening,    // 5 PM - 9 PM
-  night;      // 9 PM - 5 AM
+  morning, // 5 AM - 12 PM
+  afternoon, // 12 PM - 5 PM
+  evening, // 5 PM - 9 PM
+  night; // 9 PM - 5 AM
 
   String get label {
     switch (this) {
@@ -160,15 +160,14 @@ class DateTimeUtils {
     DateTime Function(T) getDateTime,
   ) {
     final Map<TimeOfDayPeriod, List<T>> grouped = {};
-    
+
     for (final item in items) {
       final dateTime = getDateTime(item);
       final period = getTimeOfDayPeriod(dateTime);
       grouped.putIfAbsent(period, () => []);
       grouped[period]!.add(item);
     }
-    
+
     return grouped;
   }
 }
-
