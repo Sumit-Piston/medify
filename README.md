@@ -2,27 +2,36 @@
 
 Never miss your medicine with Medify, a simple and accessible medicine reminder app designed for everyone, especially elderly users.
 
-## ✨ Status: Phase 1 MVP Complete! 🎉
+## ✨ Status: Ready for Play Store Submission! 🎉
 
-**Current Version:** 1.0.0-mvp  
-**Status:** ✅ Fully Functional with Professional UI
+**Current Version:** 1.0.0  
+**Status:** ✅ Production Ready with Professional UI & Branding
 
 ### What's Working
 
 - ✅ Complete Medicine CRUD operations
+- ✅ Medicine intake timing (before/after food, etc.)
 - ✅ Today's Schedule with progress tracking
-- ✅ Local notifications (iOS & Android)
+- ✅ Local notifications (iOS & Android, foreground & background)
+- ✅ Onboarding flow for first-time users
+- ✅ Settings page with theme & notification preferences
 - ✅ Beautiful Teal-themed UI with Nunito typography
 - ✅ Today's Summary Card with gradient background
 - ✅ Accessibility-first design (44px tap targets, high contrast)
-- ✅ Light & Dark mode support
-- ✅ Bottom navigation
+- ✅ Light & Dark mode support with persistence
+- ✅ Native splash screen with Medify branding
+- ✅ Custom app icon and notification icon
+- ✅ Professional Android branding
 
 ## 📚 Documentation
 
 All detailed documentation is available in [`lib/docs/`](lib/docs/):
 
+- **[Play Store Publishing Checklist](lib/docs/PLAYSTORE_PUBLISHING_CHECKLIST.md)** - 🚀 Complete guide to launch
 - **[Quick Start Guide](lib/docs/QUICK_START_REFINED_UI.md)** - Get started quickly
+- **[Onboarding & Settings](lib/docs/ONBOARDING_AND_SETTINGS_COMPLETE.md)** - User onboarding & preferences
+- **[Notification Service Refactor](lib/docs/NOTIFICATION_SERVICE_REFACTORED.md)** - Advanced notification implementation
+- **[Splash Screen Implementation](lib/docs/SPLASH_SCREEN_IMPLEMENTATION.md)** - Native splash screen guide
 - **[Setup Complete](lib/docs/SETUP_COMPLETE.md)** - Initial setup documentation
 - **[Project Structure](lib/docs/PROJECT_STRUCTURE.md)** - Architecture overview
 - **[Notification System](lib/docs/NOTIFICATION_SYSTEM.md)** - Technical notification docs
@@ -33,14 +42,17 @@ All detailed documentation is available in [`lib/docs/`](lib/docs/):
 
 ## 🎯 Features
 
-- **Medicine Management**: Add, edit, and delete medications easily
-- **Smart Reminders**: Get timely notifications for all your medications
+- **Medicine Management**: Add, edit, and delete medications easily with intake timing options
+- **Smart Reminders**: Get timely notifications for all your medications (foreground & background)
 - **Today's Schedule**: View all doses for today with progress tracking
 - **Progress Visualization**: See your adherence with progress bars and percentages
 - **Today's Summary Card**: Beautiful gradient card showing next dose and progress
+- **Onboarding Flow**: Friendly 3-screen introduction for first-time users
+- **Settings & Preferences**: Customize theme, notifications, and snooze duration
 - **Accessibility**: Large buttons (56px), clear typography, and high contrast
-- **Dark Mode**: Automatic dark mode support with Teal color scheme
-- **Offline First**: All data stored locally with ObjectBox
+- **Dark Mode**: Full dark mode support with Teal color scheme and theme persistence
+- **Native Splash Screen**: Professional branded splash screen (light & dark)
+- **Offline First**: All data stored locally with ObjectBox - 100% privacy-focused
 
 ## 🏗️ Architecture
 
@@ -102,6 +114,14 @@ lib/
 - `flutter_local_notifications` - Push notifications
 - `timezone` - Timezone support
 - `permission_handler` - App permissions
+- `shared_preferences` - Local preferences storage
+
+### Dev Tools
+
+- `build_runner` - Code generation
+- `objectbox_generator` - ObjectBox entity generation
+- `flutter_native_splash` - Splash screen generation
+- `flutter_launcher_icons` - App icon generation
 
 ## 🚀 Getting Started
 
@@ -189,38 +209,46 @@ lib/
 
 ## 📱 Development Phases
 
-### Phase 1: MVP ✅ **COMPLETE!**
+### Phase 1: Core MVP ✅ **COMPLETE!**
 
 - [x] Project setup with FVM, BLoC, ObjectBox
 - [x] Professional theme system with Nunito font
 - [x] Clean architecture structure
 - [x] Medicine CRUD operations with validation
+- [x] Medicine intake timing field (before/after food, etc.)
 - [x] List and form screens with custom widgets
-- [x] Notification system integration
+- [x] Notification system integration (foreground & background)
 - [x] Reminder scheduling with timezone support
 - [x] Today's Schedule page with progress tracking
 - [x] Medicine logging (taken, missed, skipped)
 - [x] Today's Summary Card with gradient background
 - [x] Bottom navigation
-- [x] Light/dark theme fully implemented
+- [x] Light/dark theme with persistence
 - [x] UI Design System (100% spec compliant)
+- [x] Onboarding flow (3 screens)
+- [x] Settings page (theme, notifications, snooze preferences)
+- [x] Native splash screen (light & dark modes)
+- [x] Android branding (app icon, name, notification icon)
 
-### Phase 2: Enhanced Features (Optional)
+### Phase 2: Enhanced Features 🚀 **NEXT UP**
 
-- [ ] Onboarding flow (3 screens)
-- [ ] Settings page (theme toggle, notification preferences)
+- [ ] Notification actions (Taken, Snooze, Skip buttons)
 - [ ] Time-based sections (Morning/Afternoon/Evening/Night)
-- [ ] Medicine history view
-- [ ] Statistics and adherence streak tracking
+- [ ] Medicine history view with calendar
+- [ ] Statistics dashboard with charts
+- [ ] Adherence streak tracking & rewards
 - [ ] Empty state illustrations
-- [ ] Enhanced notification modal
+- [ ] Enhanced notification styling
+- [ ] Widget for home screen (optional)
 
-### Phase 3: Polish & Release (Optional)
+### Phase 3: Polish & Release ✅ **READY!**
 
+- [x] App store branding (icon, splash)
+- [ ] App store assets (screenshots, feature graphic)
+- [ ] Privacy Policy & Terms of Service
 - [ ] Unit and widget tests
 - [ ] Integration tests
-- [ ] App store assets (screenshots, icons)
-- [ ] App store submission
+- [ ] App store submission (Play Store first)
 - [ ] Performance optimization
 - [ ] Accessibility audit with screen reader
 
