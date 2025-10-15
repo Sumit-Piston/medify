@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
-import '../../core/constants/app_strings.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/services/preferences_service.dart';
 import '../../core/di/injection_container.dart';
 import '../../gen/assets.gen.dart';
+import '../../l10n/app_localizations.dart';
 import 'main_navigation_page.dart';
 
 /// Onboarding page with 3 screens
@@ -146,8 +146,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             },
                             child: Text(
                               _currentPage == 0
-                                  ? AppStrings.getStarted
-                                  : 'Next',
+                                  ? AppLocalizations.of(context)!.getStarted
+                                  : AppLocalizations.of(context)!.next,
                             ),
                           ),
                         ),
@@ -198,7 +198,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           // Title
           Text(
-            AppStrings.onboardingTitle1,
+            AppLocalizations.of(context)!.onboardingTitle1,
             style: theme.textTheme.displayLarge?.copyWith(
               color: AppColors.primary,
             ),
@@ -208,7 +208,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           // Description
           Text(
-            AppStrings.onboardingDesc1,
+            AppLocalizations.of(context)!.onboardingDesc1,
             style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
@@ -216,7 +216,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           // Tagline
           Text(
-            AppStrings.appTagline,
+            AppLocalizations.of(context)!.appTagline,
             style: theme.textTheme.titleMedium?.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
@@ -236,7 +236,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           // Title
           Text(
-            AppStrings.onboardingTitle2,
+            AppLocalizations.of(context)!.onboardingTitle2,
             style: theme.textTheme.displayLarge?.copyWith(
               color: AppColors.primary,
             ),
@@ -246,7 +246,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           // Description
           Text(
-            AppStrings.onboardingDesc2,
+            AppLocalizations.of(context)!.onboardingDesc2,
             style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
@@ -314,7 +314,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           // Description
           Text(
-            AppStrings.notificationPermissionDesc,
+            AppLocalizations.of(context)!.notificationPermissionDesc,
             style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
