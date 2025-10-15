@@ -270,10 +270,10 @@ class _SettingsView extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.info_outline, color: AppColors.info),
         title: Text(
-          'About ${AppStrings.appName}',
+          'About ${AppLocalizations.of(context)!.appName}',
           style: theme.textTheme.titleMedium,
         ),
-        subtitle: Text(AppStrings.appTagline, style: theme.textTheme.bodySmall),
+        subtitle: Text(AppLocalizations.of(context)!.appTagline, style: theme.textTheme.bodySmall),
         onTap: () => _showAboutDialog(context),
       ),
     );
@@ -295,7 +295,7 @@ class _SettingsView extends StatelessWidget {
   void _showAboutDialog(BuildContext context) {
     showAboutDialog(
       context: context,
-      applicationName: AppStrings.appName,
+      applicationName: AppLocalizations.of(context)!.appName,
       applicationVersion: '1.0.0',
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -303,13 +303,13 @@ class _SettingsView extends StatelessWidget {
       ),
       children: [
         const SizedBox(height: 16),
-        const Text(AppStrings.appTagline, style: TextStyle(fontSize: 16)),
+        Text(AppLocalizations.of(context)!.appTagline, style: const TextStyle(fontSize: 16)),
         const SizedBox(height: 16),
-        const Text(
-          'A simple and accessible medicine reminder app designed for everyone, especially elderly users.',
+        Text(
+          AppLocalizations.of(context)!.aboutDialogDesc,
         ),
         const SizedBox(height: 16),
-        const Text('© 2025 Medify. All rights reserved.'),
+        Text(AppLocalizations.of(context)!.copyrightNotice),
       ],
     );
   }
@@ -325,7 +325,7 @@ class _SettingsView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(AppStrings.cancel),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
