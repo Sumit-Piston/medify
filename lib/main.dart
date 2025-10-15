@@ -9,6 +9,7 @@ import 'core/themes/app_theme.dart';
 import 'presentation/blocs/medicine/medicine_cubit.dart';
 import 'presentation/blocs/medicine_log/medicine_log_cubit.dart';
 import 'presentation/blocs/statistics/statistics_cubit.dart';
+import 'presentation/blocs/history/history_cubit.dart';
 import 'presentation/pages/main_navigation_page.dart';
 import 'presentation/pages/onboarding_page.dart';
 
@@ -66,6 +67,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<StatisticsCubit>(
           create: (context) => getIt<StatisticsCubit>(),
         ),
+        BlocProvider<HistoryCubit>(create: (context) => getIt<HistoryCubit>()),
       ],
       child: MaterialApp(
         title: AppStrings.appName,

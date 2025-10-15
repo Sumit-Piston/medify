@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/widgets/empty_state.dart';
-import '../../core/widgets/loading_indicator.dart';
+import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/statistics.dart';
 import '../blocs/statistics/statistics_cubit.dart';
 import '../blocs/statistics/statistics_state.dart';
@@ -53,7 +53,17 @@ class _StatisticsPageState extends State<StatisticsPage>
       body: BlocBuilder<StatisticsCubit, StatisticsState>(
         builder: (context, state) {
           if (state is StatisticsLoading) {
-            return const LoadingIndicator(message: 'Loading statistics...');
+            // Use shimmer loading for statistics
+            return ListView(
+              padding: const EdgeInsets.all(AppSizes.spacing16),
+              children: const [
+                ShimmerStatisticsCard(),
+                SizedBox(height: AppSizes.spacing16),
+                ShimmerStatisticsCard(),
+                SizedBox(height: AppSizes.spacing16),
+                ShimmerStatisticsCard(),
+              ],
+            );
           }
 
           if (state is StatisticsError) {

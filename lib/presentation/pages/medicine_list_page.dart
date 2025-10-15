@@ -4,7 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/widgets/empty_state.dart';
-import '../../core/widgets/loading_indicator.dart';
+import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/medicine_log.dart';
 import '../blocs/medicine/medicine_cubit.dart';
 import '../blocs/medicine/medicine_state.dart';
@@ -115,10 +115,14 @@ class _MedicineListPageState extends State<MedicineListPage>
             );
           }
         },
-        builder: (context, state) {
-          if (state is MedicineLoading) {
-            return const LoadingIndicator(message: 'Loading medicines...');
-          }
+            builder: (context, state) {
+              if (state is MedicineLoading) {
+                // Use shimmer loading instead of circular progress
+                return const ShimmerLoadingList(
+                  itemCount: 4,
+                  shimmerWidget: ShimmerMedicineCard(),
+                );
+              }
 
           if (state is MedicineLoaded) {
             if (state.medicines.isEmpty) {

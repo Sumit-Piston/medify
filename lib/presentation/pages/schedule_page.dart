@@ -4,7 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/empty_state.dart';
-import '../../core/widgets/loading_indicator.dart';
+import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/medicine.dart';
 import '../../domain/entities/medicine_log.dart';
 import '../blocs/medicine/medicine_cubit.dart';
@@ -175,14 +175,16 @@ class _SchedulePageState extends State<SchedulePage>
                 _medicines = medicineState.medicines;
               }
 
-              return BlocBuilder<MedicineLogCubit, MedicineLogState>(
-                builder: (context, logState) {
-                  if (logState is MedicineLogLoading ||
-                      medicineState is MedicineLoading) {
-                    return const LoadingIndicator(
-                      message: 'Loading schedule...',
-                    );
-                  }
+                  return BlocBuilder<MedicineLogCubit, MedicineLogState>(
+                    builder: (context, logState) {
+                      if (logState is MedicineLogLoading ||
+                          medicineState is MedicineLoading) {
+                        // Use shimmer loading instead of circular progress
+                        return const ShimmerLoadingList(
+                          itemCount: 5,
+                          shimmerWidget: ShimmerMedicineLogCard(),
+                        );
+                      }
 
                   if (logState is MedicineLogLoaded) {
                     _logs = logState.logs;
