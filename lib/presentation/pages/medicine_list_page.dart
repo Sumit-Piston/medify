@@ -115,14 +115,14 @@ class _MedicineListPageState extends State<MedicineListPage>
             );
           }
         },
-            builder: (context, state) {
-              if (state is MedicineLoading) {
-                // Use shimmer loading instead of circular progress
-                return const ShimmerLoadingList(
-                  itemCount: 4,
-                  shimmerWidget: ShimmerMedicineCard(),
-                );
-              }
+        builder: (context, state) {
+          if (state is MedicineLoading) {
+            // Use shimmer loading instead of circular progress
+            return const ShimmerLoadingList(
+              itemCount: 4,
+              shimmerWidget: ShimmerMedicineCard(),
+            );
+          }
 
           if (state is MedicineLoaded) {
             if (state.medicines.isEmpty) {
@@ -270,10 +270,10 @@ class _MedicineListPageState extends State<MedicineListPage>
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
+        tooltip: AppStrings.addMedicine,
         onPressed: _navigateToAddMedicine,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Medicine'),
+        child: const Icon(Icons.add),
       ),
     );
   }
