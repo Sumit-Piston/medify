@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'core/constants/app_strings.dart';
 import 'core/di/injection_container.dart';
 import 'core/services/navigation_service.dart';
@@ -76,6 +78,19 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
+        // Localization support
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          // Future: Add more languages here
+          // Locale('hi'), // Hindi
+          // Locale('bn'), // Bengali
+        ],
         home: _prefsService.isFirstLaunch
             ? const OnboardingPage()
             : const MainNavigationPage(),
