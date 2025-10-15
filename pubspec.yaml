@@ -47,9 +47,50 @@ dev_dependencies:
   build_runner: ^2.4.14
   objectbox_generator: ^5.0.0
 
+  # Native splash screen generation
+  flutter_native_splash: ^2.4.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+
+  # Assets
+  assets:
+    - assets/images/
+    - assets/icons/
+
+# Flutter Native Splash Configuration
+flutter_native_splash:
+  # Logo image
+  image: assets/images/Medify.png
+
+  # Background color (using Medify's light background color)
+  color: "#FAFAFA"
+
+  # Dark mode configuration
+  color_dark: "#111827"
+  image_dark: assets/images/Medify.png
+
+  # Android 12+ specific settings
+  android_12:
+    image: assets/images/Medify.png
+    color: "#FAFAFA"
+    image_dark: assets/images/Medify.png
+    color_dark: "#111827"
+
+  # Web configuration (optional)
+  web: false
+
+  # iOS configuration
+  ios: true
+  android: true
+
+  # Branding mode (keeps splash visible until app is ready)
+  android_gravity: center
+  ios_content_mode: center
+
+  # Full screen (recommended for splash screens)
+  fullscreen: true
