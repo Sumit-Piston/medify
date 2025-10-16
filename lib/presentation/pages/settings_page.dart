@@ -661,10 +661,7 @@ class _SettingsView extends StatelessWidget {
           'About ${AppLocalizations.of(context)!.appName}',
           style: theme.textTheme.titleMedium,
         ),
-        subtitle: Text(
-          AppLocalizations.of(context)!.appTagline,
-          style: theme.textTheme.bodySmall,
-        ),
+        subtitle: Text(AppLocalizations.of(context)!.appTagline, style: theme.textTheme.bodySmall),
         onTap: () => _showAboutDialog(context),
       ),
     );
@@ -694,12 +691,11 @@ class _SettingsView extends StatelessWidget {
       ),
       children: [
         const SizedBox(height: 16),
-        Text(
-          AppLocalizations.of(context)!.appTagline,
-          style: const TextStyle(fontSize: 16),
-        ),
+        Text(AppLocalizations.of(context)!.appTagline, style: const TextStyle(fontSize: 16)),
         const SizedBox(height: 16),
-        Text(AppLocalizations.of(context)!.aboutDialogDesc),
+        Text(
+          AppLocalizations.of(context)!.aboutDialogDesc,
+        ),
         const SizedBox(height: 16),
         Text(AppLocalizations.of(context)!.copyrightNotice),
       ],
