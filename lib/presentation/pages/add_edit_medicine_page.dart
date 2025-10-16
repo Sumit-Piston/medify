@@ -67,7 +67,9 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _isEditMode ? AppLocalizations.of(context)!.editMedicine : AppLocalizations.of(context)!.addMedicine,
+          _isEditMode
+              ? AppLocalizations.of(context)!.editMedicine
+              : AppLocalizations.of(context)!.addMedicine,
         ),
         centerTitle: true,
       ),
@@ -522,9 +524,9 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
 
     // Save using cubit
     if (_isEditMode) {
-      context.read<MedicineCubit>().updateMedicine(medicine);
+      getIt<MedicineCubit>().updateMedicine(medicine);
     } else {
-      context.read<MedicineCubit>().addMedicine(medicine);
+      getIt<MedicineCubit>().addMedicine(medicine);
     }
 
     // Schedule notifications after saving

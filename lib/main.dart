@@ -98,8 +98,8 @@ class _MyAppState extends State<MyApp> {
         ],
         supportedLocales: const [
           Locale('en'), // English
-          Locale('hi'), // Hindi
-          Locale('bn'), // Bengali
+          // Locale('hi'), // Hindi - Commented out for now
+          // Locale('bn'), // Bengali - Commented out for now
         ],
         home: _prefsService.isFirstLaunch
             ? const OnboardingPage()

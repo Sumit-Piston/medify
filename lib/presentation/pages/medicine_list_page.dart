@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../../core/constants/app_colors.dart';
-import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_sizes.dart';
+import '../../core/di/injection_container.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/medicine_log.dart';
+import '../../l10n/app_localizations.dart';
 import '../blocs/medicine/medicine_cubit.dart';
 import '../blocs/medicine/medicine_state.dart';
 import '../blocs/medicine_log/medicine_log_cubit.dart';
@@ -40,12 +41,12 @@ class _MedicineListPageState extends State<MedicineListPage>
   }
 
   void _loadMedicines() {
-    context.read<MedicineCubit>().loadMedicines();
+    getIt<MedicineCubit>().loadMedicines();
   }
 
   void _loadTodaysLogs() {
     final today = DateTime.now();
-    context.read<MedicineLogCubit>().loadLogsByDate(today);
+    getIt<MedicineLogCubit>().loadLogsByDate(today);
   }
 
   @override
@@ -208,7 +209,7 @@ class _MedicineListPageState extends State<MedicineListPage>
                                     );
                                   },
                                   onDismissed: (direction) {
-                                    context.read<MedicineCubit>().deleteMedicine(
+                                    getIt<MedicineCubit>().deleteMedicine(
                                       medicine.id!,
                                     );
                                   },
@@ -224,7 +225,8 @@ class _MedicineListPageState extends State<MedicineListPage>
                                       ),
                                     ),
                                     child: const Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.delete,
@@ -339,7 +341,7 @@ class _MedicineListPageState extends State<MedicineListPage>
   /// Navigate to edit medicine page
   Future<void> _navigateToEditMedicine(int medicineId) async {
     // Find the medicine
-    final state = context.read<MedicineCubit>().state;
+    final state = getIt<MedicineCubit>().state;
     if (state is! MedicineLoaded) return;
 
     final medicine = state.medicines.firstWhere((m) => m.id == medicineId);

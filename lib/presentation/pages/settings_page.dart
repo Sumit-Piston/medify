@@ -33,6 +33,7 @@ class _SettingsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings'), centerTitle: true),
       body: BlocBuilder<SettingsCubit, SettingsState>(
+        bloc: getIt<SettingsCubit>(),
         builder: (context, state) {
           if (state is SettingsLoaded) {
             return ListView(
@@ -41,9 +42,9 @@ class _SettingsView extends StatelessWidget {
                 // App Section
                 _buildSectionHeader('App', theme),
                 _buildThemeSetting(context, state, theme),
-                const SizedBox(height: AppSizes.spacing8),
-                _buildLanguageSetting(context, theme),
 
+                // const SizedBox(height: AppSizes.spacing8),
+                // _buildLanguageSetting(context, theme), // Commented out for now
                 const SizedBox(height: AppSizes.spacing24),
 
                 // Notifications Section
@@ -130,10 +131,7 @@ class _SettingsView extends StatelessWidget {
 
     return Card(
       child: ListTile(
-        leading: Icon(
-          getThemeIcon(state.themeMode),
-          color: AppColors.primary,
-        ),
+        leading: Icon(getThemeIcon(state.themeMode), color: AppColors.primary),
         title: Text('Theme', style: theme.textTheme.titleMedium),
         subtitle: Text(
           getThemeLabel(state.themeMode),
@@ -155,63 +153,71 @@ class _SettingsView extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(AppSizes.spacing16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
+      builder: (modalContext) => BlocBuilder<SettingsCubit, SettingsState>(
+        bloc: getIt<SettingsCubit>(),
+        builder: (context, modalState) {
+          final currentState = modalState is SettingsLoaded
+              ? modalState
+              : state;
+          return Padding(
+            padding: const EdgeInsets.all(AppSizes.spacing16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.spacing8,
-                vertical: AppSizes.spacing8,
-              ),
-              child: Text(
-                'Select Theme',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.spacing8,
+                    vertical: AppSizes.spacing8,
+                  ),
+                  child: Text(
+                    'Select Theme',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: AppSizes.spacing8),
+                _buildThemeOption(
+                  modalContext,
+                  currentState,
+                  ThemeMode.light,
+                  'Light',
+                  'Bright and clean',
+                  Icons.light_mode,
+                ),
+                _buildThemeOption(
+                  modalContext,
+                  currentState,
+                  ThemeMode.dark,
+                  'Dark',
+                  'Easy on the eyes',
+                  Icons.dark_mode,
+                ),
+                _buildThemeOption(
+                  modalContext,
+                  currentState,
+                  ThemeMode.system,
+                  'System',
+                  'Follow device settings',
+                  Icons.settings_brightness,
+                ),
+                const SizedBox(height: AppSizes.spacing16),
+              ],
             ),
-            const SizedBox(height: AppSizes.spacing8),
-            _buildThemeOption(
-              context,
-              state,
-              ThemeMode.light,
-              'Light',
-              'Bright and clean',
-              Icons.light_mode,
-            ),
-            _buildThemeOption(
-              context,
-              state,
-              ThemeMode.dark,
-              'Dark',
-              'Easy on the eyes',
-              Icons.dark_mode,
-            ),
-            _buildThemeOption(
-              context,
-              state,
-              ThemeMode.system,
-              'System',
-              'Follow device settings',
-              Icons.settings_brightness,
-            ),
-            const SizedBox(height: AppSizes.spacing16),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -229,7 +235,7 @@ class _SettingsView extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.read<SettingsCubit>().updateThemeMode(mode);
+        getIt<SettingsCubit>().updateThemeMode(mode);
         Navigator.pop(context);
       },
       borderRadius: BorderRadius.circular(12),
@@ -261,14 +267,13 @@ class _SettingsView extends StatelessWidget {
                   Text(
                     title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                       color: isSelected ? AppColors.primary : null,
                     ),
                   ),
-                  Text(
-                    subtitle,
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text(subtitle, style: theme.textTheme.bodySmall),
                 ],
               ),
             ),
@@ -284,7 +289,8 @@ class _SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageSetting(BuildContext context, ThemeData theme) {
+  // Commented out for now - Language switcher removed
+  /* Widget _buildLanguageSetting(BuildContext context, ThemeData theme) {
     final l10n = AppLocalizations.of(context)!;
     final currentLocale = Localizations.localeOf(context);
 
@@ -303,10 +309,7 @@ class _SettingsView extends StatelessWidget {
 
     return Card(
       child: ListTile(
-        leading: const Icon(
-          Icons.language,
-          color: AppColors.primary,
-        ),
+        leading: const Icon(Icons.language, color: AppColors.primary),
         title: Text(l10n.language, style: theme.textTheme.titleMedium),
         subtitle: Text(
           getCurrentLanguageLabel(),
@@ -420,10 +423,7 @@ class _SettingsView extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(
-              flag,
-              style: const TextStyle(fontSize: 32),
-            ),
+            Text(flag, style: const TextStyle(fontSize: 32)),
             const SizedBox(width: AppSizes.spacing16),
             Expanded(
               child: Text(
@@ -444,7 +444,7 @@ class _SettingsView extends StatelessWidget {
         ),
       ),
     );
-  }
+  } */
 
   Widget _buildNotificationsSetting(
     BuildContext context,
@@ -455,7 +455,7 @@ class _SettingsView extends StatelessWidget {
       child: SwitchListTile(
         value: state.notificationsEnabled,
         onChanged: (value) {
-          context.read<SettingsCubit>().updateNotificationsEnabled(value);
+          getIt<SettingsCubit>().updateNotificationsEnabled(value);
         },
         title: Text('Enable Notifications', style: theme.textTheme.titleMedium),
         subtitle: Text(
@@ -484,10 +484,7 @@ class _SettingsView extends StatelessWidget {
 
     return Card(
       child: ListTile(
-        leading: const Icon(
-          Icons.snooze,
-          color: AppColors.primary,
-        ),
+        leading: const Icon(Icons.snooze, color: AppColors.primary),
         title: Text('Snooze Duration', style: theme.textTheme.titleMedium),
         subtitle: Text(
           getSnoozeDurationLabel(state.snoozeDuration),
@@ -509,60 +506,68 @@ class _SettingsView extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(AppSizes.spacing16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
+      builder: (modalContext) => BlocBuilder<SettingsCubit, SettingsState>(
+        bloc: getIt<SettingsCubit>(),
+        builder: (context, modalState) {
+          final currentState = modalState is SettingsLoaded
+              ? modalState
+              : state;
+          return Padding(
+            padding: const EdgeInsets.all(AppSizes.spacing16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: AppSizes.spacing16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.spacing8,
-                vertical: AppSizes.spacing8,
-              ),
-              child: Text(
-                'Select Snooze Duration',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.spacing8,
+                    vertical: AppSizes.spacing8,
+                  ),
+                  child: Text(
+                    'Select Snooze Duration',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: AppSizes.spacing8),
+                _buildSnoozeDurationOption(
+                  modalContext,
+                  currentState,
+                  15,
+                  '15 minutes',
+                  'Quick reminder',
+                ),
+                _buildSnoozeDurationOption(
+                  modalContext,
+                  currentState,
+                  30,
+                  '30 minutes',
+                  'Standard delay',
+                ),
+                _buildSnoozeDurationOption(
+                  modalContext,
+                  currentState,
+                  60,
+                  '1 hour',
+                  'Longer break',
+                ),
+                const SizedBox(height: AppSizes.spacing16),
+              ],
             ),
-            const SizedBox(height: AppSizes.spacing8),
-            _buildSnoozeDurationOption(
-              context,
-              state,
-              15,
-              '15 minutes',
-              'Quick reminder',
-            ),
-            _buildSnoozeDurationOption(
-              context,
-              state,
-              30,
-              '30 minutes',
-              'Standard delay',
-            ),
-            _buildSnoozeDurationOption(
-              context,
-              state,
-              60,
-              '1 hour',
-              'Longer break',
-            ),
-            const SizedBox(height: AppSizes.spacing16),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -579,7 +584,7 @@ class _SettingsView extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.read<SettingsCubit>().updateSnoozeDuration(duration);
+        getIt<SettingsCubit>().updateSnoozeDuration(duration);
         Navigator.pop(context);
       },
       borderRadius: BorderRadius.circular(12),
@@ -611,14 +616,13 @@ class _SettingsView extends StatelessWidget {
                   Text(
                     title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                       color: isSelected ? AppColors.primary : null,
                     ),
                   ),
-                  Text(
-                    subtitle,
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text(subtitle, style: theme.textTheme.bodySmall),
                 ],
               ),
             ),
@@ -661,7 +665,10 @@ class _SettingsView extends StatelessWidget {
           'About ${AppLocalizations.of(context)!.appName}',
           style: theme.textTheme.titleMedium,
         ),
-        subtitle: Text(AppLocalizations.of(context)!.appTagline, style: theme.textTheme.bodySmall),
+        subtitle: Text(
+          AppLocalizations.of(context)!.appTagline,
+          style: theme.textTheme.bodySmall,
+        ),
         onTap: () => _showAboutDialog(context),
       ),
     );
@@ -691,11 +698,12 @@ class _SettingsView extends StatelessWidget {
       ),
       children: [
         const SizedBox(height: 16),
-        Text(AppLocalizations.of(context)!.appTagline, style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 16),
         Text(
-          AppLocalizations.of(context)!.aboutDialogDesc,
+          AppLocalizations.of(context)!.appTagline,
+          style: const TextStyle(fontSize: 16),
         ),
+        const SizedBox(height: 16),
+        Text(AppLocalizations.of(context)!.aboutDialogDesc),
         const SizedBox(height: 16),
         Text(AppLocalizations.of(context)!.copyrightNotice),
       ],
@@ -717,7 +725,7 @@ class _SettingsView extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<SettingsCubit>().resetSettings();
+              getIt<SettingsCubit>().resetSettings();
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Settings reset to default')),
