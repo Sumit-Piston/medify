@@ -28,12 +28,14 @@ Never miss your medicine with Medify, a simple and accessible medicine reminder 
 All detailed documentation is available in [`docs/`](docs/):
 
 ### Essential Guides
+
 - **[Play Store Checklist](docs/PLAY_STORE_CHECKLIST.md)** - 🚀 Complete guide to launch on Google Play
 - **[Privacy Policy](PRIVACY_POLICY.md)** - App privacy policy (hosted for Play Store)
 - **[GitHub Pages Setup](docs/GITHUB_PAGES_SETUP.md)** - Host privacy policy online
 - **[Completion Summary](docs/COMPLETION_SUMMARY.md)** - Latest development status
 
 ### Development History
+
 - **[Phase 1 Complete](docs/PHASE1_COMPLETE.md)** - MVP milestone
 - **[Phase 2 Complete](docs/PHASE2_COMPLETE.md)** - Enhanced features milestone
 - **[Phase 2 Summary](docs/PHASE2_SUMMARY.md)** - Phase 2 overview
@@ -41,6 +43,7 @@ All detailed documentation is available in [`docs/`](docs/):
 - **[UI & Logic Polish Plan](docs/UI_LOGIC_POLISH_PLAN.md)** - UI refinement strategy
 
 ### Technical Documentation
+
 - **[Refactor Complete](docs/REFACTOR_COMPLETE.md)** - DI and navigation refactor
 - **[Localization & Fixes](docs/LOCALIZATION_AND_FIXES_COMPLETE.md)** - i18n implementation
 - **[Release Build Guide](docs/RELEASE_BUILD_GUIDE.md)** - Build and deployment guide
