@@ -25,20 +25,26 @@ Never miss your medicine with Medify, a simple and accessible medicine reminder 
 
 ## 📚 Documentation
 
-All detailed documentation is available in [`lib/docs/`](lib/docs/):
+All detailed documentation is available in [`docs/`](docs/):
 
-- **[Play Store Publishing Checklist](lib/docs/PLAYSTORE_PUBLISHING_CHECKLIST.md)** - 🚀 Complete guide to launch
-- **[Quick Start Guide](lib/docs/QUICK_START_REFINED_UI.md)** - Get started quickly
-- **[Onboarding & Settings](lib/docs/ONBOARDING_AND_SETTINGS_COMPLETE.md)** - User onboarding & preferences
-- **[Notification Service Refactor](lib/docs/NOTIFICATION_SERVICE_REFACTORED.md)** - Advanced notification implementation
-- **[Splash Screen Implementation](lib/docs/SPLASH_SCREEN_IMPLEMENTATION.md)** - Native splash screen guide
-- **[Setup Complete](lib/docs/SETUP_COMPLETE.md)** - Initial setup documentation
-- **[Project Structure](lib/docs/PROJECT_STRUCTURE.md)** - Architecture overview
-- **[Notification System](lib/docs/NOTIFICATION_SYSTEM.md)** - Technical notification docs
-- **[Notification Setup](lib/docs/NOTIFICATION_SETUP_COMPLETE.md)** - Setup guide
-- **[Phase 1 MVP Complete](lib/docs/PHASE1_MVP_COMPLETE.md)** - MVP milestone
-- **[UI Design Refinements](lib/docs/UI_DESIGN_REFINEMENTS.md)** - Design spec
-- **[UI Refinements Complete](lib/docs/UI_REFINEMENTS_COMPLETE.md)** - UI completion report
+### Essential Guides
+- **[Play Store Checklist](docs/PLAY_STORE_CHECKLIST.md)** - 🚀 Complete guide to launch on Google Play
+- **[Privacy Policy](PRIVACY_POLICY.md)** - App privacy policy (hosted for Play Store)
+- **[GitHub Pages Setup](docs/GITHUB_PAGES_SETUP.md)** - Host privacy policy online
+- **[Completion Summary](docs/COMPLETION_SUMMARY.md)** - Latest development status
+
+### Development History
+- **[Phase 1 Complete](docs/PHASE1_COMPLETE.md)** - MVP milestone
+- **[Phase 2 Complete](docs/PHASE2_COMPLETE.md)** - Enhanced features milestone
+- **[Phase 2 Summary](docs/PHASE2_SUMMARY.md)** - Phase 2 overview
+- **[Roadmap](docs/ROADMAP.md)** - Feature roadmap and future plans
+- **[UI & Logic Polish Plan](docs/UI_LOGIC_POLISH_PLAN.md)** - UI refinement strategy
+
+### Technical Documentation
+- **[Refactor Complete](docs/REFACTOR_COMPLETE.md)** - DI and navigation refactor
+- **[Localization & Fixes](docs/LOCALIZATION_AND_FIXES_COMPLETE.md)** - i18n implementation
+- **[Release Build Guide](docs/RELEASE_BUILD_GUIDE.md)** - Build and deployment guide
+- **[Deep Code Analysis](docs/DEEP_CODE_ANALYSIS.md)** - Code quality analysis
 
 ## 🎯 Features
 

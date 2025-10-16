@@ -532,6 +532,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     // Schedule notifications after saving
     // The medicine will get an ID after being saved
     // We'll schedule notifications after the state updates to MedicineOperationSuccess
+    Navigator.of(context).pop(true);
   }
 
   /// Get icon based on time of day

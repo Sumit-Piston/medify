@@ -79,6 +79,7 @@ class _MedicineListPageState extends State<MedicineListPage>
         ],
       ),
       body: BlocConsumer<MedicineCubit, MedicineState>(
+        bloc: getIt<MedicineCubit>(),
         listenWhen: (previous, current) {
           // Prevent duplicate listeners from IndexedStack
           return (current is MedicineOperationSuccess ||
@@ -335,6 +336,7 @@ class _MedicineListPageState extends State<MedicineListPage>
     // Reload medicines if a medicine was added
     if (result == true && mounted) {
       _loadMedicines();
+      _loadTodaysLogs();
     }
   }
 

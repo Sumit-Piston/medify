@@ -41,7 +41,7 @@ class MedicineCubit extends Cubit<MedicineState> {
     try {
       emit(MedicineLoading());
       final savedMedicine = await _medicineRepository.addMedicine(medicine);
-      
+
       // Generate today's logs for the medicine
       try {
         final logRepository = getIt<MedicineLogRepository>();
@@ -52,7 +52,7 @@ class MedicineCubit extends Cubit<MedicineState> {
       } catch (e) {
         // Silently handle log generation errors
       }
-      
+
       // Schedule notifications for the medicine
       try {
         final notificationService = getIt<NotificationService>();
@@ -61,7 +61,7 @@ class MedicineCubit extends Cubit<MedicineState> {
         // Silently handle notification errors - don't fail the whole operation
         // In production, log to error tracking service
       }
-      
+
       // Emit success and wait briefly before reloading
       emit(const MedicineOperationSuccess('Medicine added successfully'));
       // Don't immediately reload - let the UI handle navigation first
@@ -75,30 +75,35 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> updateMedicine(Medicine medicine) async {
     try {
       emit(MedicineLoading());
-      
+
       // CRITICAL FIX: Get old medicine to check if reminder times changed
-      final oldMedicine = await _medicineRepository.getMedicineById(medicine.id!);
-      
+      final oldMedicine = await _medicineRepository.getMedicineById(
+        medicine.id!,
+      );
+
       // Update the medicine
-      final updatedMedicine = await _medicineRepository.updateMedicine(medicine);
-      
+      final updatedMedicine = await _medicineRepository.updateMedicine(
+        medicine,
+      );
+
       // Check if reminder times changed
-      final timesChanged = oldMedicine != null && 
+      final timesChanged =
+          oldMedicine != null &&
           !listEquals(oldMedicine.reminderTimes, updatedMedicine.reminderTimes);
-      
+
       if (timesChanged) {
         // Delete today's logs for this medicine to prevent duplicates
         try {
           final logRepository = getIt<MedicineLogRepository>();
           final todayLogs = await logRepository.getTodayLogs();
-          final medicineLogsToday = todayLogs.where(
-            (log) => log.medicineId == medicine.id!
-          ).toList();
-          
+          final medicineLogsToday = todayLogs
+              .where((log) => log.medicineId == medicine.id!)
+              .toList();
+
           for (final log in medicineLogsToday) {
             await logRepository.deleteLog(log.id!);
           }
-          
+
           // Generate new logs for today with updated times
           final newLogs = LogGenerator.generateTodayLogs(updatedMedicine);
           for (final log in newLogs) {
@@ -108,7 +113,7 @@ class MedicineCubit extends Cubit<MedicineState> {
           // Silently handle log regeneration errors
         }
       }
-      
+
       // Reschedule notifications for the updated medicine
       try {
         final notificationService = getIt<NotificationService>();
@@ -116,7 +121,7 @@ class MedicineCubit extends Cubit<MedicineState> {
       } catch (e) {
         // Silently handle notification errors
       }
-      
+
       // Emit success and wait briefly before reloading
       emit(const MedicineOperationSuccess('Medicine updated successfully'));
       // Don't immediately reload - let the UI handle navigation first
@@ -130,7 +135,7 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> deleteMedicine(int id) async {
     try {
       emit(MedicineLoading());
-      
+
       // Cancel notifications for this medicine before deleting
       try {
         final notificationService = getIt<NotificationService>();
@@ -138,7 +143,7 @@ class MedicineCubit extends Cubit<MedicineState> {
       } catch (e) {
         // Silently handle notification errors
       }
-      
+
       await _medicineRepository.deleteMedicine(id);
       emit(const MedicineOperationSuccess('Medicine deleted successfully'));
       // For delete, we can reload immediately since we're not navigating
@@ -152,7 +157,7 @@ class MedicineCubit extends Cubit<MedicineState> {
   Future<void> toggleMedicineStatus(int id) async {
     try {
       final medicine = await _medicineRepository.toggleMedicineStatus(id);
-      
+
       // Update notifications based on active status
       try {
         final notificationService = getIt<NotificationService>();
@@ -166,7 +171,7 @@ class MedicineCubit extends Cubit<MedicineState> {
       } catch (e) {
         // Silently handle notification errors
       }
-      
+
       await loadMedicines();
     } catch (e) {
       emit(MedicineError('Failed to toggle medicine status: ${e.toString()}'));
@@ -185,4 +190,3 @@ class MedicineCubit extends Cubit<MedicineState> {
     );
   }
 }
-
