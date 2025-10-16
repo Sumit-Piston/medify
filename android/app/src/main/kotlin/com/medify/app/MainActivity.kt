@@ -1,4 +1,4 @@
-package com.medify.medify
+package com.medify.app
 
 import io.flutter.embedding.android.FlutterActivity
 
