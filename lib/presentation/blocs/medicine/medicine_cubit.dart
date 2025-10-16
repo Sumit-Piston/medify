@@ -62,8 +62,10 @@ class MedicineCubit extends Cubit<MedicineState> {
         // In production, log to error tracking service
       }
       
+      // Emit success and wait briefly before reloading
       emit(const MedicineOperationSuccess('Medicine added successfully'));
-      await loadMedicines();
+      // Don't immediately reload - let the UI handle navigation first
+      // UI will trigger reload when it returns to the list page
     } catch (e) {
       emit(MedicineError('Failed to add medicine: ${e.toString()}'));
     }
@@ -115,8 +117,10 @@ class MedicineCubit extends Cubit<MedicineState> {
         // Silently handle notification errors
       }
       
+      // Emit success and wait briefly before reloading
       emit(const MedicineOperationSuccess('Medicine updated successfully'));
-      await loadMedicines();
+      // Don't immediately reload - let the UI handle navigation first
+      // UI will trigger reload when it returns to the list page
     } catch (e) {
       emit(MedicineError('Failed to update medicine: ${e.toString()}'));
     }
@@ -137,6 +141,7 @@ class MedicineCubit extends Cubit<MedicineState> {
       
       await _medicineRepository.deleteMedicine(id);
       emit(const MedicineOperationSuccess('Medicine deleted successfully'));
+      // For delete, we can reload immediately since we're not navigating
       await loadMedicines();
     } catch (e) {
       emit(MedicineError('Failed to delete medicine: ${e.toString()}'));
