@@ -30,6 +30,7 @@ Medify is designed with your privacy as the top priority. We want to be clear ab
 When you use Medify, the following information is stored **only on your device**:
 
 1. **Medicine Information**
+
    - Medicine names
    - Dosage details
    - Reminder times
@@ -38,6 +39,7 @@ When you use Medify, the following information is stored **only on your device**
    - Active/inactive status
 
 2. **Medicine Logs**
+
    - Records of when you marked medicines as taken
    - History of missed, snoozed, or skipped doses
    - Timestamps of medicine intake
@@ -57,21 +59,25 @@ All this data is stored in a local database on your device using ObjectBox, a se
 Medify requires certain permissions to function properly. Here's what we ask for and why:
 
 ### 1. Notification Permissions
+
 - **Why:** To send you reminders when it's time to take your medicine
 - **How it's used:** Creates local notifications on your device at scheduled times
 - **Data sharing:** No data is sent anywhere; notifications are generated locally
 
 ### 2. Exact Alarm Permissions
+
 - **Why:** To ensure reminders are delivered at the precise times you set
 - **How it's used:** Schedules exact alarm times for medication reminders
 - **Data sharing:** No data is sent anywhere; alarms are managed locally
 
 ### 3. Boot Completed Permission
+
 - **Why:** To reschedule your reminders after your device restarts
 - **How it's used:** Automatically sets up your medicine reminders again after reboot
 - **Data sharing:** No data is sent anywhere; this is a local operation
 
 **We do not request access to:**
+
 - Camera
 - Microphone
 - Location
@@ -88,11 +94,13 @@ Medify requires certain permissions to function properly. Here's what we ask for
 ### How Your Data is Protected
 
 1. **Local Storage Only**
+
    - All data is stored exclusively on your device
    - No cloud synchronization or external backups
    - Data is protected by your device's security features (encryption, lock screen, etc.)
 
 2. **No Internet Connection Required**
+
    - Medify works completely offline
    - No data transmission over the internet
    - No vulnerability to network-based attacks on your medical data
@@ -155,6 +163,7 @@ We encourage you to review this Privacy Policy periodically.
 - Do not change your medication routine without professional guidance
 
 Medify is not responsible for:
+
 - Missed doses due to device issues, notification settings, or user error
 - Medical outcomes related to medication adherence
 - Drug interactions or adverse effects
@@ -167,15 +176,18 @@ Medify is not responsible for:
 Depending on your location, you may have certain rights regarding your data:
 
 ### General Rights
+
 - **Right to Access:** You can access all your data within the app
 - **Right to Rectification:** You can edit any information in the app
 - **Right to Erasure:** You can delete medicines, logs, or uninstall the app
 - **Right to Data Portability:** Currently not available, but may be added in future versions
 
 ### GDPR Rights (European Users)
+
 If you are in the European Economic Area (EEA), you have additional rights under GDPR. However, since we don't collect or process any personal data externally, most GDPR provisions don't apply. All your data remains on your device under your control.
 
 ### CCPA Rights (California Users)
+
 If you are a California resident, you have rights under the California Consumer Privacy Act (CCPA). However, since we don't collect, sell, or share personal information, CCPA's main provisions don't apply.
 
 ---
@@ -215,8 +227,8 @@ We believe in transparency. While Medify is currently not open source, we are co
 If you have any questions, concerns, or requests regarding this Privacy Policy or your data, please contact us:
 
 **Developer:** Sumit Pal  
-**Email:** [Your Email Address - To be updated]  
-**GitHub:** https://github.com/[YourUsername]/medify  
+**Email:** sumit.piston@gmail.com (or your preferred contact email)  
+**GitHub:** https://github.com/Sumit-Piston/medify
 
 We will respond to all inquiries within 7 business days.
 
@@ -227,6 +239,7 @@ We will respond to all inquiries within 7 business days.
 By downloading, installing, and using Medify, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.
 
 **Key Takeaways:**
+
 - ✅ All data stored locally on your device
 - ✅ No personal information collected
 - ✅ No third-party tracking or analytics
@@ -241,4 +254,3 @@ Thank you for trusting Medify with your medication management needs!
 **Document Version:** 1.0  
 **Effective Date:** October 16, 2025  
 **Policy Applies to:** Medify Mobile Application v1.0.0 and later
-
