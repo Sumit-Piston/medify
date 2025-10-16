@@ -40,20 +40,21 @@ Future<void> initializeDependencies() async {
     () => MedicineLogRepositoryImpl(getIt<ObjectBoxService>()),
   );
 
-  // Cubits
-  getIt.registerFactory<MedicineCubit>(
+  // Cubits - Using LazySingleton to ensure single instance across app
+  // This ensures all pages use the SAME cubit instance for state synchronization
+  getIt.registerLazySingleton<MedicineCubit>(
     () => MedicineCubit(getIt<MedicineRepository>()),
   );
 
-  getIt.registerFactory<MedicineLogCubit>(
+  getIt.registerLazySingleton<MedicineLogCubit>(
     () => MedicineLogCubit(getIt<MedicineLogRepository>()),
   );
 
-  getIt.registerFactory<StatisticsCubit>(
+  getIt.registerLazySingleton<StatisticsCubit>(
     () => StatisticsCubit(getIt<MedicineLogRepository>()),
   );
 
-  getIt.registerFactory<HistoryCubit>(
+  getIt.registerLazySingleton<HistoryCubit>(
     () => HistoryCubit(
       getIt<MedicineLogRepository>(),
       getIt<MedicineRepository>(),

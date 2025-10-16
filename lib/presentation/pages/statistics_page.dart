@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
+import '../../core/di/injection_container.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/statistics.dart';
@@ -27,7 +28,7 @@ class _StatisticsPageState extends State<StatisticsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StatisticsCubit>().loadStatistics();
+      getIt<StatisticsCubit>().loadStatistics();
     });
   }
 
@@ -44,13 +45,14 @@ class _StatisticsPageState extends State<StatisticsPage>
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<StatisticsCubit>().refresh();
+              getIt<StatisticsCubit>().refresh();
             },
             tooltip: 'Refresh',
           ),
         ],
       ),
       body: BlocBuilder<StatisticsCubit, StatisticsState>(
+        bloc: getIt<StatisticsCubit>(), // Explicitly use singleton instance
         builder: (context, state) {
           if (state is StatisticsLoading) {
             // Use shimmer loading for statistics
@@ -86,7 +88,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                   const SizedBox(height: AppSizes.spacing24),
                   ElevatedButton.icon(
                     onPressed: () {
-                      context.read<StatisticsCubit>().refresh();
+                      getIt<StatisticsCubit>().refresh();
                     },
                     icon: const Icon(Icons.refresh),
                     label: const Text('Retry'),
@@ -108,7 +110,7 @@ class _StatisticsPageState extends State<StatisticsPage>
 
             return RefreshIndicator(
               onRefresh: () async {
-                await context.read<StatisticsCubit>().refresh();
+                await getIt<StatisticsCubit>().refresh();
               },
               child: ListView(
                 padding: const EdgeInsets.all(AppSizes.spacing16),
@@ -158,7 +160,7 @@ class _StatisticsPageState extends State<StatisticsPage>
             label: Text(period.label),
             selected: isSelected,
             onSelected: (_) {
-              context.read<StatisticsCubit>().changePeriod(period);
+              getIt<StatisticsCubit>().changePeriod(period);
             },
             selectedColor: AppColors.primary,
             labelStyle: TextStyle(

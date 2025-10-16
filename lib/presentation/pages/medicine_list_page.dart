@@ -158,6 +158,10 @@ class _MedicineListPageState extends State<MedicineListPage>
                   // Today's Summary Card at top
                   SliverToBoxAdapter(
                     child: BlocBuilder<MedicineLogCubit, MedicineLogState>(
+                      bloc:
+                          getIt<
+                            MedicineLogCubit
+                          >(), // Explicitly use singleton instance
                       builder: (context, logState) {
                         final logs = logState is MedicineLogLoaded
                             ? logState.logs
@@ -294,6 +298,7 @@ class _MedicineListPageState extends State<MedicineListPage>
         },
       ),
       floatingActionButton: BlocBuilder<MedicineCubit, MedicineState>(
+        bloc: getIt<MedicineCubit>(), // Explicitly use singleton instance
         builder: (context, state) {
           // Hide FAB when list is empty (empty state has its own button)
           if (state is MedicineLoaded && state.medicines.isEmpty) {

@@ -181,12 +181,17 @@ class _SchedulePageState extends State<SchedulePage>
             _loadData();
           },
           child: BlocBuilder<MedicineCubit, MedicineState>(
+            bloc: getIt<MedicineCubit>(), // Explicitly use singleton instance
             builder: (context, medicineState) {
               if (medicineState is MedicineLoaded) {
                 _medicines = medicineState.medicines;
               }
 
               return BlocBuilder<MedicineLogCubit, MedicineLogState>(
+                bloc:
+                    getIt<
+                      MedicineLogCubit
+                    >(), // Explicitly use singleton instance
                 builder: (context, logState) {
                   if (logState is MedicineLogLoading ||
                       medicineState is MedicineLoading) {
