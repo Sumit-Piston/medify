@@ -58,3 +58,9 @@ objectbox/
 # Environment
 .env
 
+# Keystore files - NEVER commit these!
+*.jks
+*.keystore
+android/key.properties
+key.properties
+

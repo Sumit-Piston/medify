@@ -73,7 +73,7 @@ keytool -genkey -v -keystore ~/medify-upload-keystore.jks \
 
 **Save these securely:**
 
-- Keystore password: ******\_\_\_******
+- Keystore password: **\*\***\_\_\_**\*\***
 - Key alias: `medify-upload`
 - Keystore location: `~/medify-upload-keystore.jks`
 

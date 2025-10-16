@@ -227,7 +227,7 @@ We believe in transparency. While Medify is currently not open source, we are co
 If you have any questions, concerns, or requests regarding this Privacy Policy or your data, please contact us:
 
 **Developer:** Sumit Pal  
-**Email:** sumit.piston@gmail.com (or your preferred contact email)  
+**Email:** sumit.spofficial223@gmail.com
 **GitHub:** https://github.com/Sumit-Piston/medify
 
 We will respond to all inquiries within 7 business days.

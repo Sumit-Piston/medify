@@ -19,6 +19,7 @@ keytool -genkey -v -keystore ~/medify-upload-keystore.jks \
 ```
 
 2. **Answer the prompts:**
+
    - **Enter keystore password:** (Choose a STRONG password - remember it!)
    - **Re-enter password:** (Same password)
    - **What is your first and last name?** Sumit Pal (or your name)
@@ -31,6 +32,7 @@ keytool -genkey -v -keystore ~/medify-upload-keystore.jks \
    - **Enter key password:** (Press Enter to use same password as keystore)
 
 3. **SAVE THIS INFORMATION SECURELY:**
+
    ```
    Keystore Password: _______________
    Key Alias: medify-upload
@@ -38,7 +40,7 @@ keytool -genkey -v -keystore ~/medify-upload-keystore.jks \
    ```
 
    **⚠️ CRITICAL:** If you lose this keystore or password, you can NEVER update your app!
-   
+
    **Backup:** Copy `~/medify-upload-keystore.jks` to a secure location (Google Drive, USB drive, etc.)
 
 ### Status: ⏳ **COMPLETE THIS FIRST**
@@ -88,11 +90,13 @@ You'll need to create graphics for the Play Store.
 ### Required Assets:
 
 1. **App Icon (512x512)**
+
    - Take your current app icon
    - Resize to 512x512 pixels
    - Save as PNG
 
 2. **Feature Graphic (1024x500)**
+
    - Create an attractive banner
    - Show app concept or screenshot
    - Use Medify branding (Teal colors)
@@ -125,6 +129,7 @@ Check if your privacy policy is live:
 https://sumit-piston.github.io/medify/PRIVACY_POLICY
 
 If not working:
+
 1. Go to: https://github.com/Sumit-Piston/medify/settings/pages
 2. Enable GitHub Pages (main, root)
 3. Wait 2-3 minutes
@@ -136,11 +141,13 @@ If not working:
 ## Step 7 - Upload to Play Console (30 minutes)
 
 Once you have:
+
 - ✅ Signed app bundle (Step 3)
 - ✅ Store assets (Step 4)
 - ✅ Play Console account (Step 5)
 
 Then:
+
 1. Create new app in Play Console
 2. Fill out all required sections
 3. Upload app bundle
@@ -152,6 +159,7 @@ Then:
 ## 🚦 Current Action Items
 
 **RIGHT NOW:**
+
 1. Run Step 1 command to generate keystore
 2. Save the password securely
 3. Let me know when done, I'll update the config files
@@ -163,19 +171,21 @@ Then:
 ## 📝 Quick Reference
 
 **Keystore Info:**
+
 - Alias: `medify-upload`
 - Location: `~/medify-upload-keystore.jks`
 - Validity: 27 years (10,000 days)
 
 **App Info:**
+
 - Package: `com.medify.medify` (current)
 - Version: 1.0.0
 - Version Code: 1
 
 **Privacy Policy:**
+
 - URL: https://sumit-piston.github.io/medify/PRIVACY_POLICY
 
 ---
 
 **Let's start with Step 1! 🚀**
-
