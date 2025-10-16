@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
+import '../../core/di/injection_container.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/utils/date_time_utils.dart';
 import '../../core/widgets/empty_state.dart';
@@ -41,11 +42,11 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   void _loadData() {
-    context.read<MedicineCubit>().loadActiveMedicines();
+    getIt<MedicineCubit>().loadActiveMedicines();
     if (_isToday()) {
-      context.read<MedicineLogCubit>().loadTodayLogs();
+      getIt<MedicineLogCubit>().loadTodayLogs();
     } else {
-      context.read<MedicineLogCubit>().loadLogsByDate(_selectedDate);
+      getIt<MedicineLogCubit>().loadLogsByDate(_selectedDate);
     }
   }
 
@@ -444,16 +445,16 @@ class _SchedulePageState extends State<SchedulePage>
 
   /// Mark log as taken
   void _markAsTaken(int logId) {
-    context.read<MedicineLogCubit>().markAsTaken(logId);
+    getIt<MedicineLogCubit>().markAsTaken(logId);
   }
 
   /// Mark log as skipped
   void _markAsSkipped(int logId) {
-    context.read<MedicineLogCubit>().markAsSkipped(logId);
+    getIt<MedicineLogCubit>().markAsSkipped(logId);
   }
 
   /// Snooze log
   void _snoozeLog(int logId, int minutes) {
-    context.read<MedicineLogCubit>().snoozeLog(logId, minutes);
+    getIt<MedicineLogCubit>().snoozeLog(logId, minutes);
   }
 }
