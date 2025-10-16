@@ -9,17 +9,20 @@ All Android configuration files have been updated and optimized for Play Store r
 ## 🎯 What's Been Done
 
 ### Application Configuration
+
 - ✅ **Application ID:** `com.medify.app`
 - ✅ **Target SDK:** 36 (Android 15)
 - ✅ **Compile SDK:** 36 (Android 15)
 - ✅ **Version:** 1.0.0 (Code: 1)
 
 ### Optimization Enabled
+
 - ✅ **ProGuard/R8:** Code shrinking & obfuscation
 - ✅ **Resource Shrinking:** Removes unused resources
 - ✅ **Expected Size Reduction:** 30-50%
 
 ### Security
+
 - ✅ **Release Signing:** Configured
 - ✅ **Keystore Files:** Added to .gitignore
 - ✅ **Credentials:** Secure storage setup
@@ -31,15 +34,17 @@ All Android configuration files have been updated and optimized for Play Store r
 ### Option A: Install Java & Use Script (Recommended)
 
 1. **Install Java JDK:**
+
    ```bash
    # macOS
    brew install openjdk@17
-   
+
    # Or download from Oracle
    # https://www.oracle.com/java/technologies/downloads/
    ```
 
 2. **Run the keystore generation script:**
+
    ```bash
    ./generate-keystore.sh
    ```
@@ -79,6 +84,7 @@ If you can't install Java or prefer manual setup, follow this workaround:
 #### Step 2: Verify Keystore File
 
 Check that the file exists:
+
 ```bash
 ls -lh ~/medify-upload-keystore.jks
 ```
@@ -96,12 +102,14 @@ fvm flutter build appbundle --release
 ## 📦 Build Commands
 
 ### Clean Build
+
 ```bash
 fvm flutter clean
 fvm flutter pub get
 ```
 
 ### Build App Bundle (Play Store)
+
 ```bash
 fvm flutter build appbundle --release
 ```
@@ -109,6 +117,7 @@ fvm flutter build appbundle --release
 **Output:** `build/app/outputs/bundle/release/app-release.aab`
 
 ### Build APK (Testing)
+
 ```bash
 fvm flutter build apk --release
 ```
@@ -120,6 +129,7 @@ fvm flutter build apk --release
 ## 🔍 Verify Build
 
 ### Check App Bundle Size
+
 ```bash
 ls -lh build/app/outputs/bundle/release/app-release.aab
 ```
@@ -127,6 +137,7 @@ ls -lh build/app/outputs/bundle/release/app-release.aab
 **Expected:** 20-30 MB (optimized)
 
 ### Test Release Build
+
 ```bash
 # Install APK on connected device
 fvm flutter build apk --release
@@ -137,6 +148,7 @@ adb install build/app/outputs/flutter-apk/app-release.apk
 ```
 
 **Test checklist:**
+
 - [ ] App launches successfully
 - [ ] All features work
 - [ ] Notifications trigger
@@ -177,11 +189,13 @@ While building, you can create store assets in parallel:
 ### Required Assets
 
 1. **App Icon (512x512)**
+
    - Export your current app icon
    - Resize to 512x512 pixels
    - Save as PNG
 
 2. **Feature Graphic (1024x500)**
+
    - Create promotional banner
    - Show app concept
    - Use Medify branding (Teal: #14B8A6)
@@ -189,11 +203,11 @@ While building, you can create store assets in parallel:
 3. **Screenshots (2-8 images)**
    - 1080x1920 (portrait) recommended
    - Show key features:
-     * Medicine list
-     * Add medicine
-     * Today's schedule
-     * Statistics
-     * Dark mode
+     - Medicine list
+     - Add medicine
+     - Today's schedule
+     - Statistics
+     - Dark mode
 
 **Tools:** Figma, Canva, or Photoshop
 
@@ -212,6 +226,7 @@ Application ID: com.medify.app
 ```
 
 **⚠️ CRITICAL:**
+
 - Backup keystore file to secure location
 - Save passwords in password manager
 - Never commit keystore to Git
@@ -222,22 +237,29 @@ Application ID: com.medify.app
 ## 🐛 Troubleshooting
 
 ### Build Error: "Signing config not found"
+
 **Solution:** Ensure keystore file exists at `~/medify-upload-keystore.jks`
 
 ### Build Error: "compileSdkVersion 36 not found"
+
 **Solution:** Update Android SDK in Android Studio:
+
 - Open Android Studio
 - Tools → SDK Manager
 - Install Android SDK Platform 36 (Android 15)
 
 ### Build Error: "Execution failed for task ':app:minifyReleaseWithR8'"
+
 **Solution:** This is rare, but if happens:
+
 1. Check `android/app/proguard-rules.pro` exists
 2. Run `fvm flutter clean`
 3. Rebuild
 
 ### App Crashes After Release Build
+
 **Solution:** Check ProGuard rules:
+
 - ObjectBox models might need -keep rules
 - Check logcat for specific errors
 - Test with `fvm flutter run --release` first
@@ -283,4 +305,3 @@ Before uploading to Play Console:
 ---
 
 **You're almost there! Just generate the keystore and build! 🚀**
-
