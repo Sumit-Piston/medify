@@ -62,8 +62,9 @@ class MedicineCubit extends Cubit<MedicineState> {
         // In production, log to error tracking service
       }
 
-      // Emit success
+      // Emit success state
       emit(const MedicineOperationSuccess('Medicine added successfully'));
+
       // Auto-reload medicines to update all listening pages
       await loadMedicines();
     } catch (e) {
@@ -122,8 +123,9 @@ class MedicineCubit extends Cubit<MedicineState> {
         // Silently handle notification errors
       }
 
-      // Emit success
+      // Emit success state
       emit(const MedicineOperationSuccess('Medicine updated successfully'));
+
       // Auto-reload medicines to update all listening pages
       await loadMedicines();
     } catch (e) {

@@ -41,6 +41,15 @@ class _SchedulePageState extends State<SchedulePage>
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload data when page becomes visible (e.g., after adding medicine)
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      _loadData();
+    }
+  }
+
   void _loadData() {
     getIt<MedicineCubit>().loadActiveMedicines();
     if (_isToday()) {

@@ -40,6 +40,16 @@ class _MedicineListPageState extends State<MedicineListPage>
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload data when page becomes visible (e.g., after adding medicine)
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      _loadMedicines();
+      _loadTodaysLogs();
+    }
+  }
+
   void _loadMedicines() {
     getIt<MedicineCubit>().loadMedicines();
   }
