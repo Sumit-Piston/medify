@@ -11,11 +11,13 @@ Your repository is now ready for GitHub Pages hosting.
 ### Step 1: Go to Repository Settings
 
 Open this URL in your browser:
+
 ```
 https://github.com/Sumit-Piston/medify/settings/pages
 ```
 
 Or navigate manually:
+
 1. Go to: https://github.com/Sumit-Piston/medify
 2. Click **Settings** tab (top right)
 3. Click **Pages** in the left sidebar
@@ -32,6 +34,7 @@ In the "Build and deployment" section:
 4. Click **Save**
 
 **Screenshot reference:**
+
 ```
 ┌─────────────────────────────────────────┐
 │ Build and deployment                    │
@@ -57,6 +60,7 @@ In the "Build and deployment" section:
 After 2-3 minutes, open this URL:
 
 **Privacy Policy URL:**
+
 ```
 https://sumit-piston.github.io/medify/PRIVACY_POLICY
 ```
@@ -74,6 +78,7 @@ https://sumit-piston.github.io/medify/PRIVACY_POLICY
 ```
 
 Add it to:
+
 1. **Play Console** → Store presence → Privacy policy
 2. **App Settings Page** (already implemented in code)
 
@@ -130,4 +135,3 @@ Once GitHub Pages is enabled, these will also be available:
 ---
 
 **You're almost there! Just enable GitHub Pages and you're ready to submit to the Play Store! 🚀**
-
