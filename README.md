@@ -25,29 +25,25 @@ Never miss your medicine with Medify, a simple and accessible medicine reminder 
 
 ## 📚 Documentation
 
-All detailed documentation is available in [`docs/`](docs/):
+### Quick Links
 
-### Essential Guides
+- **[Privacy Policy](PRIVACY_POLICY.md)** - App privacy policy (hosted at [GitHub Pages](https://sumit-piston.github.io/medify/PRIVACY_POLICY))
 
-- **[Play Store Checklist](docs/PLAY_STORE_CHECKLIST.md)** - 🚀 Complete guide to launch on Google Play
-- **[Privacy Policy](PRIVACY_POLICY.md)** - App privacy policy (hosted for Play Store)
-- **[GitHub Pages Setup](docs/GITHUB_PAGES_SETUP.md)** - Host privacy policy online
-- **[Completion Summary](docs/COMPLETION_SUMMARY.md)** - Latest development status
+### Play Store Deployment Guides
 
-### Development History
+All deployment documentation is in [`docs/`](docs/):
 
-- **[Phase 1 Complete](docs/PHASE1_COMPLETE.md)** - MVP milestone
-- **[Phase 2 Complete](docs/PHASE2_COMPLETE.md)** - Enhanced features milestone
-- **[Phase 2 Summary](docs/PHASE2_SUMMARY.md)** - Phase 2 overview
-- **[Roadmap](docs/ROADMAP.md)** - Feature roadmap and future plans
-- **[UI & Logic Polish Plan](docs/UI_LOGIC_POLISH_PLAN.md)** - UI refinement strategy
+- **[Build Success Summary](docs/BUILD_SUCCESS_SUMMARY.md)** - 🎉 Complete guide for Play Store upload
+- **[Play Store Submission Guide](docs/PLAY_STORE_SUBMISSION_GUIDE.md)** - Detailed step-by-step submission process
+- **[Play Store Checklist](docs/PLAY_STORE_CHECKLIST.md)** - Complete pre-launch checklist
+- **[Quick Start Release](docs/QUICK_START_RELEASE.md)** - Fast-track release build guide
+- **[Step-by-Step Guide](docs/STEP_BY_STEP_GUIDE.md)** - Interactive deployment walkthrough
+- **[Keystore Setup](docs/KEYSTORE_SETUP_INSTRUCTIONS.md)** - App signing and keystore management
 
 ### Technical Documentation
 
-- **[Refactor Complete](docs/REFACTOR_COMPLETE.md)** - DI and navigation refactor
-- **[Localization & Fixes](docs/LOCALIZATION_AND_FIXES_COMPLETE.md)** - i18n implementation
-- **[Release Build Guide](docs/RELEASE_BUILD_GUIDE.md)** - Build and deployment guide
-- **[Deep Code Analysis](docs/DEEP_CODE_ANALYSIS.md)** - Code quality analysis
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)** - Architecture and folder organization
+- **[GitHub Pages Setup](docs/GITHUB_PAGES_SETUP.md)** - Privacy policy hosting instructions
 
 ## 🎯 Features
 

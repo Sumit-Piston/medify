@@ -9,6 +9,7 @@
 ## 📦 Build Output
 
 **File Location:**
+
 ```
 build/app/outputs/bundle/release/app-release.aab
 ```
@@ -16,6 +17,7 @@ build/app/outputs/bundle/release/app-release.aab
 **File Size:** 52.0 MB
 
 **Optimization Applied:**
+
 - ✅ R8 Code Shrinking: Enabled
 - ✅ Resource Shrinking: Enabled
 - ✅ ProGuard Rules: Applied
@@ -26,17 +28,20 @@ build/app/outputs/bundle/release/app-release.aab
 ## ✅ Configuration Summary
 
 ### Application Details
+
 - **Application ID:** `com.medify.app`
 - **Package Name:** `com.medify.app`
 - **Version Code:** 1
 - **Version Name:** 1.0.0
 
 ### SDK Versions
+
 - **Target SDK:** 36 (Android 15)
 - **Compile SDK:** 36 (Android 15)
 - **Min SDK:** 21 (Android 5.0)
 
 ### Signing Information
+
 - **Keystore:** `/Users/sumitpal/medify-upload-keystore.jks`
 - **Key Alias:** `medify-upload`
 - **Validity:** Until March 03, 2053 (27 years)
@@ -57,6 +62,7 @@ fvm flutter install --release
 ```
 
 **Test checklist:**
+
 - [ ] App launches successfully
 - [ ] All features work
 - [ ] Notifications trigger correctly
@@ -83,25 +89,29 @@ You need these graphics before uploading:
 #### Required Assets:
 
 **1. App Icon (512x512 PNG)**
+
 - High-resolution version of your app icon
 - No transparency, full bleed
 - Export from `assets/icons/app_icon.png`
 
 **2. Feature Graphic (1024x500 PNG/JPG)**
+
 - Promotional banner for your app
 - Show app concept or screenshots
 - Use Medify branding (Teal: #14B8A6)
 
 **3. Screenshots (2-8 images)**
+
 - Recommended size: 1080x1920 (portrait)
 - Show key features:
-  * Medicine list with today's summary
-  * Add/Edit medicine screen
-  * Today's schedule
-  * Statistics and progress
-  * Dark mode screenshot
+  - Medicine list with today's summary
+  - Add/Edit medicine screen
+  - Today's schedule
+  - Statistics and progress
+  - Dark mode screenshot
 
 **Tools to create assets:**
+
 - Figma: https://figma.com
 - Canva: https://canva.com
 - Photoshop
@@ -112,6 +122,7 @@ You need these graphics before uploading:
 ### Step 4: Upload to Play Console
 
 1. **Create New App**
+
    - Click "Create app"
    - App name: **Medify**
    - Default language: **English (United States)**
@@ -121,21 +132,26 @@ You need these graphics before uploading:
 2. **Complete Dashboard Tasks**
 
 #### App Access
+
 - All functionality available without special access: **Yes**
 
 #### Ads
+
 - Does your app contain ads? **No**
 
 #### Content Rating
+
 - Category: **Health & Fitness** or **Medical**
 - Fill questionnaire (all No except medication management)
 - Expected rating: **Everyone**
 
 #### Target Audience
+
 - Age range: **18+**
 - Appeals to children: **No**
 
 #### Data Safety
+
 - Do you collect or share user data? **No**
 - All data stored locally
 - Privacy policy: `https://sumit-piston.github.io/medify/PRIVACY_POLICY`
@@ -145,11 +161,13 @@ You need these graphics before uploading:
 **App name:** Medify
 
 **Short description (80 chars):**
+
 ```
 Never miss your medicine. Smart reminders & progress tracking.
 ```
 
 **Full description:**
+
 ```
 Medify - Your Personal Medicine Reminder & Tracker
 
@@ -202,12 +220,14 @@ Note: Medify is a reminder tool and should not replace professional medical advi
 **App category:** Medical (or Health & Fitness)
 
 **Contact details:**
+
 - Email: sumit.piston@gmail.com
 - Website: https://github.com/Sumit-Piston/medify (optional)
 
 **Privacy policy:** https://sumit-piston.github.io/medify/PRIVACY_POLICY
 
 4. **Upload Graphics**
+
    - App icon (512x512)
    - Feature graphic (1024x500)
    - Screenshots (2-8 images)
@@ -218,6 +238,7 @@ Note: Medify is a reminder tool and should not replace professional medical advi
    - Release name: **1.0.0 (Initial Release)**
 
 **Release notes:**
+
 ```
 🎉 Initial Release - v1.0.0
 
@@ -236,6 +257,7 @@ We're excited to help you never miss a dose again!
 ```
 
 6. **Select Countries**
+
    - Recommended: Start with your country
    - Or select: All countries
 
@@ -278,6 +300,7 @@ Application ID: com.medify.app
 ```
 
 **⚠️ IMPORTANT:**
+
 - Backup keystore to Google Drive, USB, or cloud storage
 - Save passwords in password manager
 - Without this keystore, you CANNOT update your app
@@ -288,17 +311,20 @@ Application ID: com.medify.app
 ## 📊 What to Expect
 
 ### Review Process
+
 - **Timeline:** 3-7 days (sometimes faster)
 - **Status:** Check Play Console daily
 - **Communication:** Google will email if issues found
 
 ### If Approved ✅
+
 - App goes live automatically
 - Visible on Play Store within hours
 - Start monitoring crash reports
 - Respond to user reviews
 
 ### If Rejected ❌
+
 - Read rejection reason carefully
 - Fix all policy violations
 - Update app if needed
@@ -309,6 +335,7 @@ Application ID: com.medify.app
 ## 🎯 Post-Launch Monitoring
 
 ### First Week
+
 - [ ] Monitor crash reports daily
 - [ ] Respond to reviews within 24-48 hours
 - [ ] Track install numbers
@@ -316,6 +343,7 @@ Application ID: com.medify.app
 - [ ] Celebrate your launch! 🎉
 
 ### Ongoing
+
 - Regular updates (every 2-4 weeks)
 - Keep improving based on feedback
 - Maintain 4+ star rating
@@ -326,12 +354,14 @@ Application ID: com.medify.app
 ## 📚 Additional Resources
 
 **Guides in this project:**
+
 - `PLAY_STORE_SUBMISSION_GUIDE.md` - Complete submission guide
 - `STEP_BY_STEP_GUIDE.md` - Quick walkthrough
 - `KEYSTORE_SETUP_INSTRUCTIONS.md` - Keystore details
 - `QUICK_START_RELEASE.md` - Release build guide
 
 **External Resources:**
+
 - Play Console: https://play.google.com/console
 - Developer Policies: https://play.google.com/about/developer-content-policy/
 - Flutter Release Guide: https://docs.flutter.dev/deployment/android
@@ -341,6 +371,7 @@ Application ID: com.medify.app
 ## 🎉 Congratulations!
 
 You've successfully:
+
 - ✅ Configured the app for Play Store
 - ✅ Generated signing keystore
 - ✅ Built optimized release bundle
@@ -351,4 +382,3 @@ You've successfully:
 The hard technical work is done. Now it's time to create your store assets and upload to Play Console!
 
 Good luck with your launch! 🎊
-

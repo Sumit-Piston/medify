@@ -5,7 +5,6 @@ import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../main.dart';
 import '../blocs/settings/settings_cubit.dart';
 import '../blocs/settings/settings_state.dart';
 import 'history_page.dart';
