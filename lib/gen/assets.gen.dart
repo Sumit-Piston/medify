@@ -32,11 +32,23 @@ class $AssetsImagesGen {
   List<AssetGenImage> get values => [medify];
 }
 
+class $AssetsSongsGen {
+  const $AssetsSongsGen();
+
+  /// File path: assets/songs/new-notification-026-380249.mp3
+  String get newNotification026380249 =>
+      'assets/songs/new-notification-026-380249.mp3';
+
+  /// List of all assets
+  List<String> get values => [newNotification026380249];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsSongsGen songs = $AssetsSongsGen();
 }
 
 class AssetGenImage {
