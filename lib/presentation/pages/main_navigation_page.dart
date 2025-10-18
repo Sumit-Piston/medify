@@ -3,6 +3,7 @@ import '../../l10n/app_localizations.dart';
 import 'medicine_list_page.dart';
 import 'schedule_page.dart';
 import 'statistics_page.dart';
+import 'history_page.dart';
 
 /// Main navigation page with bottom navigation bar
 class MainNavigationPage extends StatefulWidget {
@@ -18,13 +19,14 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   final List<Widget> _pages = const [
     SchedulePage(),
     MedicineListPage(),
+    HistoryPage(),
     StatisticsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: NavigationBar(
@@ -44,6 +46,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             icon: const Icon(Icons.medication_outlined),
             selectedIcon: const Icon(Icons.medication),
             label: l10n.medicines,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.history_outlined),
+            selectedIcon: const Icon(Icons.history),
+            label: 'History',
           ),
           NavigationDestination(
             icon: const Icon(Icons.bar_chart_outlined),

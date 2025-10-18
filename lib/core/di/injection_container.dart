@@ -11,6 +11,7 @@ import '../../presentation/blocs/statistics/statistics_cubit.dart';
 import '../../presentation/blocs/history/history_cubit.dart';
 import '../services/notification_service.dart';
 import '../services/preferences_service.dart';
+import '../services/daily_log_service.dart';
 
 /// Service locator instance
 final getIt = GetIt.instance;
@@ -64,6 +65,19 @@ Future<void> initializeDependencies() async {
   getIt.registerFactory<SettingsCubit>(
     () => SettingsCubit(getIt<PreferencesService>()),
   );
+
+  // Daily log service for generating repeating reminder logs
+  getIt.registerLazySingleton<DailyLogService>(
+    () => DailyLogService(
+      getIt<PreferencesService>(),
+      getIt<MedicineRepository>(),
+      getIt<MedicineLogRepository>(),
+    ),
+  );
+
+  // Generate daily logs at startup
+  final dailyLogService = getIt<DailyLogService>();
+  await dailyLogService.generateDailyLogsIfNeeded();
 }
 
 /// Clean up dependencies

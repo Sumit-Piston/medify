@@ -7,6 +7,7 @@ class PreferencesService {
   static const String _keyThemeMode = 'theme_mode';
   static const String _keyNotificationsEnabled = 'notifications_enabled';
   static const String _keySnoozeDuration = 'snooze_duration';
+  static const String _keyLastLogGeneration = 'last_log_generation_date';
 
   final SharedPreferences _prefs;
 
@@ -54,7 +55,8 @@ class PreferencesService {
   }
 
   // Notifications
-  bool get notificationsEnabled => _prefs.getBool(_keyNotificationsEnabled) ?? true;
+  bool get notificationsEnabled =>
+      _prefs.getBool(_keyNotificationsEnabled) ?? true;
 
   Future<bool> setNotificationsEnabled(bool enabled) async {
     return await _prefs.setBool(_keyNotificationsEnabled, enabled);
@@ -67,9 +69,15 @@ class PreferencesService {
     return await _prefs.setInt(_keySnoozeDuration, minutes);
   }
 
+  // Last Log Generation Date
+  String? get lastLogGenerationDate => _prefs.getString(_keyLastLogGeneration);
+
+  Future<bool> setLastLogGenerationDate(String date) async {
+    return await _prefs.setString(_keyLastLogGeneration, date);
+  }
+
   /// Clear all preferences (for testing/reset)
   Future<bool> clearAll() async {
     return await _prefs.clear();
   }
 }
-

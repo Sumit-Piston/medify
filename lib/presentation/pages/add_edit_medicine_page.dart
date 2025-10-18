@@ -108,7 +108,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
             }
 
             // Show success message
-            if (mounted) {
+            if (context.mounted) {
               // Clear any existing snackbars first
               ScaffoldMessenger.of(context).clearSnackBars();
 
@@ -125,18 +125,20 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
               await Future.delayed(const Duration(milliseconds: 500));
 
               // Navigate back with success result
-              Navigator.of(context).pop(true);
+              if (context.mounted) {
+                Navigator.of(context).pop(true);
+              }
             }
           }
 
           if (state is MedicineError) {
             // Clear any existing snackbars
-            if (mounted) {
+            if (context.mounted) {
               ScaffoldMessenger.of(context).clearSnackBars();
             }
 
             // Show error message
-            if (mounted) {
+            if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
