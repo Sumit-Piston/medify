@@ -13,6 +13,7 @@ import '../services/notification_service.dart';
 import '../services/preferences_service.dart';
 import '../services/daily_log_service.dart';
 import '../services/refill_reminder_service.dart';
+import '../services/achievement_service.dart';
 
 /// Service locator instance
 final getIt = GetIt.instance;
@@ -51,6 +52,16 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Achievement service for gamification
+  getIt.registerLazySingleton<AchievementService>(
+    () => AchievementService(
+      getIt<ObjectBoxService>(),
+      getIt<MedicineLogRepository>(),
+      getIt<NotificationService>(),
+      getIt<PreferencesService>(),
+    ),
+  );
+
   // Cubits - Using LazySingleton to ensure single instance across app
   // This ensures all pages use the SAME cubit instance for state synchronization
   getIt.registerLazySingleton<MedicineCubit>(
@@ -61,6 +72,7 @@ Future<void> initializeDependencies() async {
     () => MedicineLogCubit(
       getIt<MedicineLogRepository>(),
       getIt<RefillReminderService>(),
+      getIt<AchievementService>(),
     ),
   );
 
@@ -95,6 +107,10 @@ Future<void> initializeDependencies() async {
   // Check refill reminders at startup
   final refillReminderService = getIt<RefillReminderService>();
   await refillReminderService.checkAndScheduleRefillReminders();
+
+  // Check for new achievements at startup
+  final achievementService = getIt<AchievementService>();
+  await achievementService.checkAndAwardAchievements();
 }
 
 /// Clean up dependencies

@@ -2,15 +2,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/medicine_log.dart';
 import '../../../domain/repositories/medicine_log_repository.dart';
 import '../../../core/services/refill_reminder_service.dart';
+import '../../../core/services/achievement_service.dart';
 import 'medicine_log_state.dart';
 
 /// Cubit for managing medicine log state
 class MedicineLogCubit extends Cubit<MedicineLogState> {
   final MedicineLogRepository _medicineLogRepository;
   final RefillReminderService? _refillReminderService;
+  final AchievementService? _achievementService;
 
-  MedicineLogCubit(this._medicineLogRepository, [this._refillReminderService])
-    : super(MedicineLogInitial());
+  MedicineLogCubit(
+    this._medicineLogRepository, [
+    this._refillReminderService,
+    this._achievementService,
+  ]) : super(MedicineLogInitial());
 
   /// Load today's logs
   Future<void> loadTodayLogs() async {
@@ -68,6 +73,11 @@ class MedicineLogCubit extends Cubit<MedicineLogState> {
       // Decrement medicine quantity if refill service is available
       if (_refillReminderService != null && log != null) {
         await _refillReminderService.decrementMedicineQuantity(log.medicineId);
+      }
+
+      // Check for new achievements
+      if (_achievementService != null) {
+        await _achievementService.checkAndAwardAchievements();
       }
 
       emit(const MedicineLogOperationSuccess('Marked as taken'));

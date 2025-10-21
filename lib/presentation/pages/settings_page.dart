@@ -7,7 +7,7 @@ import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../blocs/settings/settings_cubit.dart';
 import '../blocs/settings/settings_state.dart';
-import 'history_page.dart';
+import 'achievements_page.dart';
 
 /// Settings page for app preferences
 class SettingsPage extends StatelessWidget {
@@ -56,8 +56,10 @@ class _SettingsView extends StatelessWidget {
 
                 // About Section
                 _buildSectionHeader('About', theme),
-                _buildHistoryCard(context, theme),
+                _buildAchievementsCard(context, theme),
                 const SizedBox(height: AppSizes.spacing8),
+                // _buildHistoryCard(context, theme),
+                // const SizedBox(height: AppSizes.spacing8),
                 _buildAboutCard(context, theme),
                 const SizedBox(height: AppSizes.spacing8),
                 _buildVersionCard(theme),
@@ -637,24 +639,43 @@ class _SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryCard(BuildContext context, ThemeData theme) {
+  Widget _buildAchievementsCard(BuildContext context, ThemeData theme) {
     return Card(
       child: ListTile(
-        leading: const Icon(Icons.history, color: AppColors.primary),
-        title: Text('Medicine History', style: theme.textTheme.titleMedium),
+        leading: const Icon(Icons.emoji_events, color: AppColors.warning),
+        title: Text('Achievements', style: theme.textTheme.titleMedium),
         subtitle: Text(
-          'View past logs and export data',
+          'View your unlocked badges and progress',
           style: theme.textTheme.bodySmall,
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => const HistoryPage()));
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AchievementsPage()),
+          );
         },
       ),
     );
   }
+
+  // Widget _buildHistoryCard(BuildContext context, ThemeData theme) {
+  //   return Card(
+  //     child: ListTile(
+  //       leading: const Icon(Icons.history, color: AppColors.primary),
+  //       title: Text('Medicine History', style: theme.textTheme.titleMedium),
+  //       subtitle: Text(
+  //         'View past logs and export data',
+  //         style: theme.textTheme.bodySmall,
+  //       ),
+  //       trailing: const Icon(Icons.chevron_right),
+  //       onTap: () {
+  //         Navigator.of(
+  //           context,
+  //         ).push(MaterialPageRoute(builder: (context) => const HistoryPage()));
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _buildAboutCard(BuildContext context, ThemeData theme) {
     return Card(

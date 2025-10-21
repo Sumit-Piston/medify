@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Service for managing app preferences and settings
 class PreferencesService {
   static const String _keyFirstLaunch = 'first_launch';
+  static const String _keyFirstLaunchDate = 'first_launch_date';
   static const String _keyThemeMode = 'theme_mode';
   static const String _keyNotificationsEnabled = 'notifications_enabled';
   static const String _keySnoozeDuration = 'snooze_duration';
@@ -23,7 +24,22 @@ class PreferencesService {
   bool get isFirstLaunch => _prefs.getBool(_keyFirstLaunch) ?? true;
 
   Future<bool> setFirstLaunchComplete() async {
+    // Set first launch date if not already set
+    if (firstLaunchDate == null) {
+      await _prefs.setString(_keyFirstLaunchDate, DateTime.now().toIso8601String());
+    }
     return await _prefs.setBool(_keyFirstLaunch, false);
+  }
+
+  // First Launch Date
+  DateTime? get firstLaunchDate {
+    final dateString = _prefs.getString(_keyFirstLaunchDate);
+    if (dateString == null) return null;
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      return null;
+    }
   }
 
   // Theme Mode
