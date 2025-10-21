@@ -9,20 +9,44 @@ import '../blocs/profile/profile_state.dart';
 import 'add_edit_profile_page.dart';
 
 /// Page to display and manage all user profiles
-class ProfilesPage extends StatelessWidget {
+class ProfilesPage extends StatefulWidget {
   const ProfilesPage({super.key});
 
   @override
+  State<ProfilesPage> createState() => _ProfilesPageState();
+}
+
+class _ProfilesPageState extends State<ProfilesPage> {
+  late final ProfileCubit _profileCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileCubit = getIt<ProfileCubit>();
+    _profileCubit.loadProfiles();
+  }
+
+  @override
+  void dispose() {
+    // Don't dispose the cubit as it's managed by GetIt
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()..loadProfiles(),
-      child: const _ProfilesPageContent(),
+    return BlocProvider.value(
+      value: _profileCubit,
+      child: _ProfilesPageContent(
+        onRefresh: () => _profileCubit.loadProfiles(),
+      ),
     );
   }
 }
 
 class _ProfilesPageContent extends StatelessWidget {
-  const _ProfilesPageContent();
+  final VoidCallback onRefresh;
+
+  const _ProfilesPageContent({required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -272,6 +296,7 @@ class _ProfilesPageContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Text(
@@ -283,21 +308,20 @@ class _ProfilesPageContent extends StatelessWidget {
                         if (isActive)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.paddingS,
-                              vertical: 2,
+                              horizontal: 8,
+                              vertical: 4,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.success,
-                              borderRadius: BorderRadius.circular(
-                                AppSizes.radiusS,
-                              ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
                               'Active',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
                               ),
                             ),
                           ),
@@ -416,23 +440,21 @@ class _ProfilesPageContent extends StatelessWidget {
     );
   }
 
-  void _navigateToAddProfile(BuildContext context) {
-    Navigator.push(
+  void _navigateToAddProfile(BuildContext context) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AddEditProfilePage()),
-    ).then((_) {
-      // Reload profiles after returning
-      getIt<ProfileCubit>().loadProfiles();
-    });
+    );
+    // Reload profiles after returning
+    onRefresh();
   }
 
-  void _navigateToEditProfile(BuildContext context, UserProfile profile) {
-    Navigator.push(
+  void _navigateToEditProfile(BuildContext context, UserProfile profile) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => AddEditProfilePage(profile: profile)),
-    ).then((_) {
-      // Reload profiles after returning
-      getIt<ProfileCubit>().loadProfiles();
-    });
+    );
+    // Reload profiles after returning
+    onRefresh();
   }
 }
