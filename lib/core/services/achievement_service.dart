@@ -5,6 +5,7 @@ import '../../domain/entities/statistics.dart';
 import '../../domain/repositories/medicine_log_repository.dart';
 import '../../data/datasources/objectbox_service.dart';
 import '../../data/models/achievement_model.dart';
+import '../../objectbox.g.dart'; // ObjectBox generated code
 import 'notification_service.dart';
 import 'preferences_service.dart';
 
