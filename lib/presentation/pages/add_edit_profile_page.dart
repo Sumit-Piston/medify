@@ -41,7 +41,8 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
       _nameController.text = widget.profile!.name;
       _notesController.text = widget.profile!.notes ?? '';
       _selectedRelationship = widget.profile!.relationship;
-      _selectedAvatar = widget.profile!.avatarEmoji ?? ProfileAvatars.defaultAvatar;
+      _selectedAvatar =
+          widget.profile!.avatarEmoji ?? ProfileAvatars.defaultAvatar;
       _selectedColor = widget.profile!.colorValue;
       _selectedDateOfBirth = widget.profile!.dateOfBirth;
     }
@@ -156,14 +157,18 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
                   FilledButton(
                     onPressed: isLoading ? null : _saveProfile,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: AppSizes.paddingM),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSizes.paddingM,
+                      ),
                       child: isLoading
                           ? const SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(_isEditing ? 'Update Profile' : 'Create Profile'),
+                          : Text(
+                              _isEditing ? 'Update Profile' : 'Create Profile',
+                            ),
                     ),
                   ),
                 ],
@@ -179,10 +184,7 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Avatar',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text('Avatar', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: AppSizes.paddingM),
         Container(
           height: 80,
@@ -216,10 +218,7 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
                     ),
                   ),
                   child: Center(
-                    child: Text(
-                      avatar,
-                      style: const TextStyle(fontSize: 36),
-                    ),
+                    child: Text(avatar, style: const TextStyle(fontSize: 36)),
                   ),
                 ),
               );
@@ -234,10 +233,7 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Color Theme',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text('Color Theme', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: AppSizes.paddingM),
         Wrap(
           spacing: AppSizes.paddingM,
@@ -272,11 +268,7 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
                       : null,
                 ),
                 child: isSelected
-                    ? const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 28,
-                      )
+                    ? const Icon(Icons.check, color: Colors.white, size: 28)
                     : null,
               ),
             );
@@ -305,7 +297,9 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
               style: TextStyle(
                 color: _selectedDateOfBirth != null
                     ? Theme.of(context).colorScheme.onSurface
-                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    : Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
             if (_selectedDateOfBirth != null)
@@ -326,7 +320,9 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
   Future<void> _selectDateOfBirth() async {
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDateOfBirth ?? DateTime.now().subtract(const Duration(days: 365 * 30)),
+      initialDate:
+          _selectedDateOfBirth ??
+          DateTime.now().subtract(const Duration(days: 365 * 30)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
@@ -351,7 +347,9 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
       colorValue: _selectedColor,
       relationship: _selectedRelationship,
       dateOfBirth: _selectedDateOfBirth,
-      notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
       isActive: widget.profile?.isActive ?? true,
       isDefaultProfile: widget.profile?.isDefaultProfile ?? false,
       createdAt: widget.profile?.createdAt ?? now,
@@ -359,10 +357,9 @@ class _AddEditProfilePageState extends State<AddEditProfilePage> {
     );
 
     if (_isEditing) {
-      context.read<ProfileCubit>().updateProfile(profile);
+      getIt<ProfileCubit>().updateProfile(profile);
     } else {
-      context.read<ProfileCubit>().createProfile(profile);
+      getIt<ProfileCubit>().createProfile(profile);
     }
   }
 }
-

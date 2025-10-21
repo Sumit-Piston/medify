@@ -30,7 +30,11 @@ class _ProfileSwitcherContent extends StatelessWidget {
       builder: (context, state) {
         if (state is ProfilesLoaded) {
           return InkWell(
-            onTap: () => _showProfileSwitcher(context, state.profiles, state.activeProfile),
+            onTap: () => _showProfileSwitcher(
+              context,
+              state.profiles,
+              state.activeProfile,
+            ),
             borderRadius: BorderRadius.circular(AppSizes.radiusM),
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -63,9 +67,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
           color: Colors.grey.withValues(alpha: 0.3),
           shape: BoxShape.circle,
         ),
-        child: const Center(
-          child: Text('?', style: TextStyle(fontSize: 16)),
-        ),
+        child: const Center(child: Text('?', style: TextStyle(fontSize: 16))),
       );
     }
 
@@ -75,10 +77,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
       decoration: BoxDecoration(
         color: profile.color.withValues(alpha: 0.2),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: profile.color,
-          width: 2,
-        ),
+        border: Border.all(color: profile.color, width: 2),
       ),
       child: Center(
         child: Text(
@@ -107,9 +106,8 @@ class _ProfileSwitcherContent extends StatelessWidget {
                 children: [
                   Text(
                     'Switch Profile',
-                    style: Theme.of(sheetContext).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(sheetContext).textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const Spacer(),
                   IconButton(
@@ -118,9 +116,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
                       Navigator.pop(sheetContext);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const ProfilesPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const ProfilesPage()),
                       );
                     },
                     tooltip: 'Manage Profiles',
@@ -161,26 +157,27 @@ class _ProfileSwitcherContent extends StatelessWidget {
                   title: Text(
                     profile.name,
                     style: TextStyle(
-                      fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isActive
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                   subtitle: profile.relationship != null
                       ? Text(profile.relationship!)
                       : null,
                   trailing: isActive
-                      ? Icon(
-                          Icons.check_circle,
-                          color: AppColors.success,
-                        )
+                      ? Icon(Icons.check_circle, color: AppColors.success)
                       : null,
                   onTap: () {
                     Navigator.pop(sheetContext);
                     if (!isActive && profile.id != null) {
-                      context.read<ProfileCubit>().switchProfile(profile.id!);
+                      getIt<ProfileCubit>().switchProfile(profile.id!);
                       // Show success message
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Switched to ${profile.name}\'s profile'),
+                          content: Text(
+                            'Switched to ${profile.name}\'s profile',
+                          ),
                           backgroundColor: AppColors.success,
                           duration: const Duration(seconds: 2),
                         ),
@@ -199,7 +196,9 @@ class _ProfileSwitcherContent extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(sheetContext).colorScheme.primary.withValues(alpha: 0.1),
+                  color: Theme.of(
+                    sheetContext,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Theme.of(sheetContext).colorScheme.primary,
@@ -219,9 +218,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
                 Navigator.pop(sheetContext);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const ProfilesPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const ProfilesPage()),
                 );
               },
             ),
@@ -251,9 +248,7 @@ class ProfileIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: profile!.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSizes.radiusM),
-        border: Border.all(
-          color: profile!.color.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: profile!.color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -276,4 +271,3 @@ class ProfileIndicator extends StatelessWidget {
     );
   }
 }
-

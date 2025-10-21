@@ -65,7 +65,11 @@ class _ProfilesPageContent extends StatelessWidget {
               return _buildEmptyState(context);
             }
 
-            return _buildProfilesList(context, state.profiles, state.activeProfile);
+            return _buildProfilesList(
+              context,
+              state.profiles,
+              state.activeProfile,
+            );
           }
 
           return const SizedBox.shrink();
@@ -84,7 +88,9 @@ class _ProfilesPageContent extends StatelessWidget {
             Icon(
               Icons.people_outline,
               size: 100,
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
             ),
             const SizedBox(height: AppSizes.paddingL),
             Text(
@@ -118,7 +124,7 @@ class _ProfilesPageContent extends StatelessWidget {
       children: [
         // Summary card
         _buildSummaryCard(context, profiles, activeProfile),
-        
+
         // Profiles list
         Expanded(
           child: ListView.builder(
@@ -172,8 +178,8 @@ class _ProfilesPageContent extends StatelessWidget {
                     Text(
                       'Family Profiles',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       '$activeCount active ${activeCount == 1 ? "profile" : "profiles"}',
@@ -208,8 +214,8 @@ class _ProfilesPageContent extends StatelessWidget {
                     Text(
                       activeProfile.displayName,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -232,10 +238,7 @@ class _ProfilesPageContent extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.radiusL),
         side: isActive
-            ? BorderSide(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              )
+            ? BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
             : BorderSide.none,
       ),
       child: InkWell(
@@ -252,10 +255,7 @@ class _ProfilesPageContent extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: profile.color.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: profile.color,
-                    width: 2,
-                  ),
+                  border: Border.all(color: profile.color, width: 2),
                 ),
                 child: Center(
                   child: Text(
@@ -276,9 +276,8 @@ class _ProfilesPageContent extends StatelessWidget {
                         Expanded(
                           child: Text(
                             profile.name,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
                         if (isActive)
@@ -289,7 +288,9 @@ class _ProfilesPageContent extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.success,
-                              borderRadius: BorderRadius.circular(AppSizes.radiusS),
+                              borderRadius: BorderRadius.circular(
+                                AppSizes.radiusS,
+                              ),
                             ),
                             child: const Text(
                               'Active',
@@ -307,9 +308,9 @@ class _ProfilesPageContent extends StatelessWidget {
                       Text(
                         profile.relationship!,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: profile.color,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          color: profile.color,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                     if (profile.age != null) ...[
@@ -326,7 +327,9 @@ class _ProfilesPageContent extends StatelessWidget {
               // Arrow
               Icon(
                 Icons.chevron_right,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ],
           ),
@@ -335,7 +338,11 @@ class _ProfilesPageContent extends StatelessWidget {
     );
   }
 
-  void _showProfileOptions(BuildContext context, UserProfile profile, bool isActive) {
+  void _showProfileOptions(
+    BuildContext context,
+    UserProfile profile,
+    bool isActive,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -349,7 +356,7 @@ class _ProfilesPageContent extends StatelessWidget {
               onTap: () {
                 Navigator.pop(sheetContext);
                 if (!isActive && profile.id != null) {
-                  context.read<ProfileCubit>().switchProfile(profile.id!);
+                  getIt<ProfileCubit>().switchProfile(profile.id!);
                 }
               },
             ),
@@ -363,7 +370,10 @@ class _ProfilesPageContent extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: AppColors.error),
-              title: const Text('Delete profile', style: TextStyle(color: AppColors.error)),
+              title: const Text(
+                'Delete profile',
+                style: TextStyle(color: AppColors.error),
+              ),
               enabled: !profile.isDefaultProfile,
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -383,7 +393,9 @@ class _ProfilesPageContent extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete Profile'),
-        content: Text('Are you sure you want to delete ${profile.name}\'s profile? This will also delete all associated medicines and logs.'),
+        content: Text(
+          'Are you sure you want to delete ${profile.name}\'s profile? This will also delete all associated medicines and logs.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -393,12 +405,10 @@ class _ProfilesPageContent extends StatelessWidget {
             onPressed: () {
               Navigator.pop(dialogContext);
               if (profile.id != null) {
-                context.read<ProfileCubit>().deleteProfile(profile.id!);
+                getIt<ProfileCubit>().deleteProfile(profile.id!);
               }
             },
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Delete'),
           ),
         ],
@@ -409,25 +419,20 @@ class _ProfilesPageContent extends StatelessWidget {
   void _navigateToAddProfile(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const AddEditProfilePage(),
-      ),
+      MaterialPageRoute(builder: (_) => const AddEditProfilePage()),
     ).then((_) {
       // Reload profiles after returning
-      context.read<ProfileCubit>().loadProfiles();
+      getIt<ProfileCubit>().loadProfiles();
     });
   }
 
   void _navigateToEditProfile(BuildContext context, UserProfile profile) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AddEditProfilePage(profile: profile),
-      ),
+      MaterialPageRoute(builder: (_) => AddEditProfilePage(profile: profile)),
     ).then((_) {
       // Reload profiles after returning
-      context.read<ProfileCubit>().loadProfiles();
+      getIt<ProfileCubit>().loadProfiles();
     });
   }
 }
-

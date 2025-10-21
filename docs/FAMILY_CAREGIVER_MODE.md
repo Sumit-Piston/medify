@@ -7,6 +7,7 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
 ## Key Features
 
 ### 1. **User Profiles**
+
 - Create unlimited profiles for family members
 - Each profile has:
   - **Name**: Person's name (e.g., "Mom", "Dad", "Grandma")
@@ -17,6 +18,7 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
   - **Notes**: Additional information
 
 ### 2. **Profile Management**
+
 - **Create Profile**: Add new family member with custom avatar and color
 - **Edit Profile**: Update profile information anytime
 - **Delete Profile**: Remove profiles (protected for last/default profile)
@@ -24,6 +26,7 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
 - **Search Profiles**: Find profiles by name or relationship
 
 ### 3. **Data Isolation**
+
 - Each profile has:
   - **Own Medicines**: Medicines are profile-specific
   - **Own Logs**: Tracking history is separate per profile
@@ -32,6 +35,7 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
   - **Own Achievements**: Progress tracking per person
 
 ### 4. **Visual Design**
+
 - **Profile Cards**: Beautiful cards with avatar, name, relationship, and age
 - **Color Coding**: Each profile has a unique color theme
 - **Active Indicator**: Clear indication of currently active profile
@@ -43,9 +47,11 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
 ### Pages
 
 #### 1. **Profiles Page** (`ProfilesPage`)
+
 **Location**: Settings → Family Profiles
 
 **Features**:
+
 - Summary card showing total profiles and current active
 - List of all profiles with:
   - Avatar and color theme
@@ -59,9 +65,11 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
 - Add new profile button in app bar
 
 #### 2. **Add/Edit Profile Page** (`AddEditProfilePage`)
+
 **Accessible From**: Profiles Page
 
 **Features**:
+
 - Avatar selection (horizontal scrolling grid)
 - Color theme selection (visual color picker)
 - Name input (required, min 2 characters)
@@ -71,9 +79,11 @@ The Family/Caregiver Mode enables users to manage medications for multiple famil
 - Form validation with helpful error messages
 
 #### 3. **Profile Switcher Widget** (`ProfileSwitcher`)
+
 **Location**: App Bar (future integration)
 
 **Features**:
+
 - Shows current active profile avatar
 - Tap to open quick switcher modal
 - List all profiles with visual indicators
@@ -117,6 +127,7 @@ lib/
 ### Database Schema
 
 #### UserProfile Table
+
 ```dart
 @Entity()
 class UserProfileModel {
@@ -136,6 +147,7 @@ class UserProfileModel {
 ```
 
 #### Medicine & MedicineLog Updates
+
 ```dart
 // Added to both entities
 int profileId;  // Links to UserProfile
@@ -144,9 +156,11 @@ int profileId;  // Links to UserProfile
 ### Services
 
 #### ProfileService
+
 **Location**: `lib/core/services/profile_service.dart`
 
 **Key Methods**:
+
 - `initialize()` - Creates default profile if none exists
 - `getActiveProfile()` - Get currently active profile
 - `setActiveProfile(id)` - Switch active profile
@@ -157,16 +171,20 @@ int profileId;  // Links to UserProfile
 - `searchProfiles(query)` - Search by name/relationship
 
 #### Integration Points
+
 1. **Dependency Injection** (`injection_container.dart`)
+
    - ProfileService registered as LazySingleton
    - Initialized at app startup
    - Creates default profile on first launch
 
 2. **Medicine Creation** (`add_edit_medicine_page.dart`)
+
    - Auto-assigns active profileId to new medicines
    - Validates active profile exists
 
 3. **Log Generation** (`log_generator.dart`)
+
    - All logs created with medicine's profileId
 
 4. **Notifications** (`notification_service.dart`)
@@ -176,7 +194,9 @@ int profileId;  // Links to UserProfile
 ### State Management
 
 #### ProfileCubit
+
 **States**:
+
 - `ProfileInitial` - Initial state
 - `ProfileLoading` - Loading operation
 - `ProfilesLoaded` - List of profiles loaded
@@ -186,6 +206,7 @@ int profileId;  // Links to UserProfile
 - `ProfileError` - Error occurred
 
 **Actions**:
+
 - `loadProfiles()` - Load all profiles
 - `loadActiveProfiles()` - Load only active profiles
 - `loadProfile(id)` - Load specific profile
@@ -198,6 +219,7 @@ int profileId;  // Links to UserProfile
 ## User Flows
 
 ### 1. First Launch
+
 ```
 1. App starts → ProfileService.initialize()
 2. No profiles found
@@ -207,6 +229,7 @@ int profileId;  // Links to UserProfile
 ```
 
 ### 2. Add Family Member
+
 ```
 1. Settings → Family Profiles
 2. Tap (+) button
@@ -221,6 +244,7 @@ int profileId;  // Links to UserProfile
 ```
 
 ### 3. Switch Profile
+
 ```
 1. Settings → Family Profiles (or tap switcher in app bar)
 2. Tap on profile card
@@ -231,6 +255,7 @@ int profileId;  // Links to UserProfile
 ```
 
 ### 4. Add Medicine to Profile
+
 ```
 1. Ensure correct profile is active
 2. Add new medicine
@@ -239,6 +264,7 @@ int profileId;  // Links to UserProfile
 ```
 
 ### 5. View Profile Statistics
+
 ```
 1. Settings → Family Profiles
 2. Each profile card shows:
@@ -251,22 +277,27 @@ int profileId;  // Links to UserProfile
 ## Design Patterns
 
 ### 1. **Data Isolation**
+
 - All queries filter by `profileId`
 - Repositories are profile-aware
 - Switching profiles triggers data reload
 
 ### 2. **Profile Persistence**
+
 - Active profile ID stored in SharedPreferences
 - Loaded on app startup
 - Survives app restarts
 
 ### 3. **Default Profile Protection**
+
 - Cannot delete last profile
 - Cannot delete default profile if only one exists
 - Validation prevents orphaned data
 
 ### 4. **Cascading Operations**
+
 When deleting a profile:
+
 - All associated medicines deleted (future)
 - All associated logs deleted (future)
 - Active profile switched to another if needed
@@ -274,6 +305,7 @@ When deleting a profile:
 ## Visual Identity
 
 ### Avatars
+
 ```
 👨 Man        👩 Woman      👴 Old Man    👵 Old Woman
 👦 Boy        👧 Girl       🧑 Person     👶 Baby
@@ -282,6 +314,7 @@ When deleting a profile:
 ```
 
 ### Colors
+
 ```
 Teal    #14B8A6    Red      #EF4444
 Blue    #3B82F6    Green    #10B981
@@ -292,6 +325,7 @@ Violet  #8338EC    Orange   #FF8500
 ```
 
 ### Relationships
+
 ```
 Self, Mom, Dad, Grandma, Grandpa,
 Spouse, Partner, Son, Daughter,
@@ -302,19 +336,23 @@ Friend, Other
 ## Testing Guide
 
 ### Unit Tests (Future)
+
 - ProfileService methods
 - ProfileCubit state transitions
 - Data isolation logic
 - Profile validation
 
 ### Integration Tests (Future)
+
 - Profile creation flow
 - Profile switching
 - Medicine association
 - Data filtering
 
 ### Manual Testing Checklist
+
 1. **Profile Creation**
+
    - [ ] Create profile with all fields
    - [ ] Create profile with minimal fields
    - [ ] Duplicate name validation
@@ -322,6 +360,7 @@ Friend, Other
    - [ ] Color selection works
 
 2. **Profile Management**
+
    - [ ] Edit profile updates correctly
    - [ ] Delete profile works (non-default)
    - [ ] Cannot delete last profile
@@ -329,6 +368,7 @@ Friend, Other
    - [ ] Search finds profiles
 
 3. **Profile Switching**
+
    - [ ] Switch changes active profile
    - [ ] Medicines filter correctly
    - [ ] Logs filter correctly
@@ -336,6 +376,7 @@ Friend, Other
    - [ ] Active indicator shows correct profile
 
 4. **Medicine Association**
+
    - [ ] New medicine assigned to active profile
    - [ ] Medicine only visible in correct profile
    - [ ] Edit preserves profile association
@@ -349,18 +390,21 @@ Friend, Other
 ## Future Enhancements
 
 ### Phase 1 (Completed)
+
 - ✅ Basic profile CRUD
 - ✅ Profile switching
 - ✅ Data isolation (medicines & logs)
 - ✅ Settings integration
 
 ### Phase 2 (Recommended Next)
+
 - [ ] Profile Switcher in app bar (currently in settings only)
 - [ ] Profile name in notifications ("Time for Mom's medicine")
 - [ ] Caregiver Dashboard (overview of all profiles)
 - [ ] Profile-specific reminders (different schedules per person)
 
 ### Phase 3 (Advanced)
+
 - [ ] Profile sharing (QR code)
 - [ ] Multi-device sync
 - [ ] Caregiver permissions
@@ -371,6 +415,7 @@ Friend, Other
 - [ ] Profile reports (PDF export)
 
 ### Phase 4 (Professional)
+
 - [ ] Healthcare provider integration
 - [ ] Emergency contacts per profile
 - [ ] Medication history sharing
@@ -382,6 +427,7 @@ Friend, Other
 ## Best Practices
 
 ### For Users
+
 1. **Use Descriptive Names**: "Mom" instead of "Mary" for quick identification
 2. **Choose Distinct Colors**: Makes profile switching easier
 3. **Set Relationships**: Helps with organization
@@ -389,6 +435,7 @@ Friend, Other
 5. **Switch Before Adding**: Ensure correct profile is active before adding medicines
 
 ### For Developers
+
 1. **Always Filter by ProfileId**: Never show data from other profiles
 2. **Validate Active Profile**: Check active profile exists before operations
 3. **Handle Profile Deletion**: Clean up associated data
@@ -401,18 +448,22 @@ Friend, Other
 ### Common Issues
 
 **Issue**: Medicine added to wrong profile
+
 - **Cause**: Wrong profile was active
 - **Solution**: Switch to correct profile, delete medicine, re-add
 
 **Issue**: Cannot delete profile
+
 - **Cause**: It's the last or default profile
 - **Solution**: Create another profile first
 
 **Issue**: Profile switch doesn't update views
+
 - **Cause**: Views not listening to profile changes
 - **Solution**: Ensure all pages reload data on profile switch
 
 **Issue**: Medicines disappeared after switching
+
 - **Cause**: Expected behavior - showing other profile's medicines
 - **Solution**: Switch back to correct profile
 
@@ -421,6 +472,7 @@ Friend, Other
 The Family/Caregiver Mode transforms Medify from a personal medication tracker into a comprehensive family health management tool. With intuitive profile management, beautiful UI, and robust data isolation, users can confidently manage medications for multiple family members in one app.
 
 **Key Achievements**:
+
 - ✅ Complete profile system
 - ✅ Data isolation per profile
 - ✅ Beautiful, intuitive UI
@@ -429,10 +481,10 @@ The Family/Caregiver Mode transforms Medify from a personal medication tracker i
 - ✅ Production-ready code
 
 **Next Steps**:
+
 1. Add ProfileSwitcher to app bar for quick access
 2. Enhance notifications with profile names
 3. Build Caregiver Dashboard for overview
 4. Add comprehensive testing
 5. Gather user feedback
 6. Plan Phase 2 enhancements
-
