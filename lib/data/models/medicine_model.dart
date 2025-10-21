@@ -14,6 +14,14 @@ class MedicineModel {
   bool isActive;
   String? notes;
 
+  // Refill tracking fields
+  int? totalQuantity; // Total pills/doses in the bottle
+  int? currentQuantity; // Current remaining pills/doses
+  int? refillRemindDays; // Notify when X days of medicine left
+
+  @Property(type: PropertyType.date)
+  DateTime? lastRefillDate; // Last time medicine was refilled
+
   @Property(type: PropertyType.date)
   DateTime createdAt;
 
@@ -28,6 +36,10 @@ class MedicineModel {
     this.intakeTiming = 4, // Default to anytime (index 4)
     this.isActive = true,
     this.notes,
+    this.totalQuantity,
+    this.currentQuantity,
+    this.refillRemindDays,
+    this.lastRefillDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -42,6 +54,10 @@ class MedicineModel {
       intakeTiming: medicine.intakeTiming.index,
       isActive: medicine.isActive,
       notes: medicine.notes,
+      totalQuantity: medicine.totalQuantity,
+      currentQuantity: medicine.currentQuantity,
+      refillRemindDays: medicine.refillRemindDays,
+      lastRefillDate: medicine.lastRefillDate,
       createdAt: medicine.createdAt,
       updatedAt: medicine.updatedAt,
     );
@@ -57,6 +73,10 @@ class MedicineModel {
       intakeTiming: MedicineIntakeTiming.values[intakeTiming],
       isActive: isActive,
       notes: notes,
+      totalQuantity: totalQuantity,
+      currentQuantity: currentQuantity,
+      refillRemindDays: refillRemindDays,
+      lastRefillDate: lastRefillDate,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );

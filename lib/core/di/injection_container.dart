@@ -12,6 +12,7 @@ import '../../presentation/blocs/history/history_cubit.dart';
 import '../services/notification_service.dart';
 import '../services/preferences_service.dart';
 import '../services/daily_log_service.dart';
+import '../services/refill_reminder_service.dart';
 
 /// Service locator instance
 final getIt = GetIt.instance;
@@ -41,6 +42,15 @@ Future<void> initializeDependencies() async {
     () => MedicineLogRepositoryImpl(getIt<ObjectBoxService>()),
   );
 
+  // Refill reminder service for medicine stock tracking
+  // Register before cubits that depend on it
+  getIt.registerLazySingleton<RefillReminderService>(
+    () => RefillReminderService(
+      getIt<NotificationService>(),
+      getIt<MedicineRepository>(),
+    ),
+  );
+
   // Cubits - Using LazySingleton to ensure single instance across app
   // This ensures all pages use the SAME cubit instance for state synchronization
   getIt.registerLazySingleton<MedicineCubit>(
@@ -48,7 +58,10 @@ Future<void> initializeDependencies() async {
   );
 
   getIt.registerLazySingleton<MedicineLogCubit>(
-    () => MedicineLogCubit(getIt<MedicineLogRepository>()),
+    () => MedicineLogCubit(
+      getIt<MedicineLogRepository>(),
+      getIt<RefillReminderService>(),
+    ),
   );
 
   getIt.registerLazySingleton<StatisticsCubit>(
@@ -78,6 +91,10 @@ Future<void> initializeDependencies() async {
   // Generate daily logs at startup
   final dailyLogService = getIt<DailyLogService>();
   await dailyLogService.generateDailyLogsIfNeeded();
+
+  // Check refill reminders at startup
+  final refillReminderService = getIt<RefillReminderService>();
+  await refillReminderService.checkAndScheduleRefillReminders();
 }
 
 /// Clean up dependencies

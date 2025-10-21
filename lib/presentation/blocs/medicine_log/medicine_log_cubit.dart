@@ -1,13 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/medicine_log.dart';
 import '../../../domain/repositories/medicine_log_repository.dart';
+import '../../../core/services/refill_reminder_service.dart';
 import 'medicine_log_state.dart';
 
 /// Cubit for managing medicine log state
 class MedicineLogCubit extends Cubit<MedicineLogState> {
   final MedicineLogRepository _medicineLogRepository;
+  final RefillReminderService? _refillReminderService;
 
-  MedicineLogCubit(this._medicineLogRepository) : super(MedicineLogInitial());
+  MedicineLogCubit(this._medicineLogRepository, [this._refillReminderService])
+    : super(MedicineLogInitial());
 
   /// Load today's logs
   Future<void> loadTodayLogs() async {
@@ -56,7 +59,17 @@ class MedicineLogCubit extends Cubit<MedicineLogState> {
   /// Mark log as taken
   Future<void> markAsTaken(int id) async {
     try {
+      // Get the log to find medicine ID
+      final log = await _medicineLogRepository.getLogById(id);
+
+      // Mark as taken
       await _medicineLogRepository.markAsTaken(id);
+
+      // Decrement medicine quantity if refill service is available
+      if (_refillReminderService != null && log != null) {
+        await _refillReminderService.decrementMedicineQuantity(log.medicineId);
+      }
+
       emit(const MedicineLogOperationSuccess('Marked as taken'));
       await loadTodayLogs();
     } catch (e) {
@@ -120,4 +133,3 @@ class MedicineLogCubit extends Cubit<MedicineLogState> {
     );
   }
 }
-

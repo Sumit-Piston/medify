@@ -28,12 +28,17 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   final _nameController = TextEditingController();
   final _dosageController = TextEditingController();
   final _notesController = TextEditingController();
+  final _totalQuantityController = TextEditingController();
+  final _refillRemindDaysController = TextEditingController();
 
   // List to store selected reminder times (as seconds since midnight)
   final List<int> _reminderTimes = [];
 
   // Selected intake timing
   MedicineIntakeTiming _selectedIntakeTiming = MedicineIntakeTiming.anytime;
+
+  // Refill tracking toggle
+  bool _enableRefillTracking = false;
 
   bool get _isEditMode => widget.medicine != null;
 
@@ -52,6 +57,14 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     _notesController.text = medicine.notes ?? '';
     _reminderTimes.addAll(medicine.reminderTimes);
     _selectedIntakeTiming = medicine.intakeTiming;
+
+    // Load refill tracking data
+    if (medicine.totalQuantity != null) {
+      _enableRefillTracking = true;
+      _totalQuantityController.text = medicine.totalQuantity.toString();
+      _refillRemindDaysController.text = (medicine.refillRemindDays ?? 7)
+          .toString();
+    }
   }
 
   @override
@@ -59,6 +72,8 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     _nameController.dispose();
     _dosageController.dispose();
     _notesController.dispose();
+    _totalQuantityController.dispose();
+    _refillRemindDaysController.dispose();
     super.dispose();
   }
 
@@ -261,6 +276,129 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                     false, // Optional field, no validation indicator
                 semanticLabel: 'Additional notes input field, optional',
               ),
+              const SizedBox(height: AppSizes.paddingL),
+
+              // Refill Tracking Section
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Refill Tracking',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  Switch(
+                    value: _enableRefillTracking,
+                    onChanged: (value) {
+                      setState(() {
+                        _enableRefillTracking = value;
+                        if (!value) {
+                          _totalQuantityController.clear();
+                          _refillRemindDaysController.clear();
+                        } else {
+                          // Set default values
+                          _refillRemindDaysController.text = '7';
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSizes.paddingS),
+              Text(
+                'Track medicine stock and get refill reminders',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
+              if (_enableRefillTracking) ...[
+                const SizedBox(height: AppSizes.paddingM),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSizes.paddingM),
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          label: 'Total Quantity',
+                          hint: 'e.g., 30 (pills/doses)',
+                          controller: _totalQuantityController,
+                          prefixIcon: const Icon(Icons.inventory_2),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (_enableRefillTracking) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter total quantity';
+                              }
+                              final quantity = int.tryParse(value);
+                              if (quantity == null || quantity <= 0) {
+                                return 'Please enter a valid quantity';
+                              }
+                            }
+                            return null;
+                          },
+                          semanticLabel: 'Total medicine quantity',
+                        ),
+                        const SizedBox(height: AppSizes.paddingM),
+                        CustomTextField(
+                          label: 'Refill Reminder (days before)',
+                          hint: 'e.g., 7 days',
+                          controller: _refillRemindDaysController,
+                          prefixIcon: const Icon(Icons.notifications_active),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (_enableRefillTracking) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter refill reminder days';
+                              }
+                              final days = int.tryParse(value);
+                              if (days == null || days < 1 || days > 90) {
+                                return 'Enter between 1-90 days';
+                              }
+                            }
+                            return null;
+                          },
+                          semanticLabel: 'Refill reminder days',
+                        ),
+                        const SizedBox(height: AppSizes.paddingS),
+                        Container(
+                          padding: const EdgeInsets.all(AppSizes.paddingM),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(
+                              AppSizes.radiusM,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 20,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: AppSizes.paddingS),
+                              Expanded(
+                                child: Text(
+                                  'You\'ll be notified when you have this many days of medicine left',
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: AppSizes.paddingL),
 
               // Reminder Times Section
@@ -509,6 +647,25 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       return;
     }
 
+    // Parse refill tracking values
+    int? totalQuantity;
+    int? currentQuantity;
+    int? refillRemindDays;
+    DateTime? lastRefillDate;
+
+    if (_enableRefillTracking) {
+      totalQuantity = int.tryParse(_totalQuantityController.text.trim());
+      currentQuantity = totalQuantity; // Initialize with total on creation
+      refillRemindDays = int.tryParse(_refillRemindDaysController.text.trim());
+      lastRefillDate = DateTime.now(); // Mark now as refill date
+
+      // If editing, preserve current quantity from existing medicine
+      if (_isEditMode && widget.medicine!.currentQuantity != null) {
+        currentQuantity = widget.medicine!.currentQuantity;
+        lastRefillDate = widget.medicine!.lastRefillDate;
+      }
+    }
+
     // Create medicine object
     final medicine = Medicine(
       id: _isEditMode ? widget.medicine!.id : null,
@@ -519,6 +676,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
+      totalQuantity: totalQuantity,
+      currentQuantity: currentQuantity,
+      refillRemindDays: refillRemindDays,
+      lastRefillDate: lastRefillDate,
       isActive: _isEditMode ? widget.medicine!.isActive : true,
       createdAt: _isEditMode ? widget.medicine!.createdAt : DateTime.now(),
       updatedAt: DateTime.now(),

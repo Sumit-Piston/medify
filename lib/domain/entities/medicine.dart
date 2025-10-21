@@ -22,6 +22,13 @@ class Medicine extends Equatable {
   final MedicineIntakeTiming intakeTiming; // When to take the medicine
   final bool isActive;
   final String? notes;
+
+  // Refill tracking fields
+  final int? totalQuantity; // Total pills/doses in the bottle
+  final int? currentQuantity; // Current remaining pills/doses
+  final int? refillRemindDays; // Notify when X days of medicine left
+  final DateTime? lastRefillDate; // Last time medicine was refilled
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -33,6 +40,10 @@ class Medicine extends Equatable {
     this.intakeTiming = MedicineIntakeTiming.anytime,
     this.isActive = true,
     this.notes,
+    this.totalQuantity,
+    this.currentQuantity,
+    this.refillRemindDays,
+    this.lastRefillDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -46,6 +57,10 @@ class Medicine extends Equatable {
     MedicineIntakeTiming? intakeTiming,
     bool? isActive,
     String? notes,
+    int? totalQuantity,
+    int? currentQuantity,
+    int? refillRemindDays,
+    DateTime? lastRefillDate,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -57,9 +72,36 @@ class Medicine extends Equatable {
       intakeTiming: intakeTiming ?? this.intakeTiming,
       isActive: isActive ?? this.isActive,
       notes: notes ?? this.notes,
+      totalQuantity: totalQuantity ?? this.totalQuantity,
+      currentQuantity: currentQuantity ?? this.currentQuantity,
+      refillRemindDays: refillRemindDays ?? this.refillRemindDays,
+      lastRefillDate: lastRefillDate ?? this.lastRefillDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  /// Calculate days of medicine remaining based on daily usage
+  int? get daysRemaining {
+    if (currentQuantity == null || currentQuantity! <= 0) return null;
+    if (reminderTimes.isEmpty) return null;
+
+    // Calculate daily usage (number of doses per day)
+    final dailyDoses = reminderTimes.length;
+    return (currentQuantity! / dailyDoses).floor();
+  }
+
+  /// Check if medicine stock is low
+  bool get isLowStock {
+    if (currentQuantity == null || refillRemindDays == null) return false;
+    final remaining = daysRemaining;
+    if (remaining == null) return false;
+    return remaining <= refillRemindDays!;
+  }
+
+  /// Check if medicine is out of stock
+  bool get isOutOfStock {
+    return currentQuantity != null && currentQuantity! <= 0;
   }
 
   @override
@@ -71,6 +113,10 @@ class Medicine extends Equatable {
     intakeTiming,
     isActive,
     notes,
+    totalQuantity,
+    currentQuantity,
+    refillRemindDays,
+    lastRefillDate,
     createdAt,
     updatedAt,
   ];

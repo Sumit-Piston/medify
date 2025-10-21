@@ -106,6 +106,11 @@ class MedicineCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                        // Stock level indicator
+                        if (medicine.currentQuantity != null) ...[
+                          const SizedBox(height: 4),
+                          _buildStockIndicator(context),
+                        ],
                       ],
                     ),
                   ),
@@ -287,5 +292,53 @@ class MedicineCard extends StatelessWidget {
       case MedicineIntakeTiming.anytime:
         return Icons.schedule;
     }
+  }
+
+  /// Build stock level indicator
+  Widget _buildStockIndicator(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Determine stock status
+    Color stockColor;
+    IconData stockIcon;
+    String stockText;
+
+    if (medicine.isOutOfStock) {
+      stockColor = AppColors.error;
+      stockIcon = Icons.error_outline;
+      stockText = 'Out of stock';
+    } else if (medicine.isLowStock) {
+      stockColor = AppColors.warning;
+      stockIcon = Icons.warning_amber;
+      final days = medicine.daysRemaining;
+      stockText = days == 1 ? 'Low stock (1 day)' : 'Low stock ($days days)';
+    } else {
+      stockColor = AppColors.success;
+      stockIcon = Icons.check_circle_outline;
+      final days = medicine.daysRemaining;
+      stockText = days == null
+          ? '${medicine.currentQuantity} doses'
+          : days == 1
+          ? '${medicine.currentQuantity} doses (1 day)'
+          : '${medicine.currentQuantity} doses ($days days)';
+    }
+
+    return Row(
+      children: [
+        Icon(
+          stockIcon,
+          size: 14,
+          color: medicine.isActive ? stockColor : AppColors.textDisabledLight,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          stockText,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: medicine.isActive ? stockColor : AppColors.textDisabledLight,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 }
