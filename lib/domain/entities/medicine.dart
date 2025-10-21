@@ -16,6 +16,7 @@ enum MedicineIntakeTiming {
 /// Medicine entity representing a medication to be tracked
 class Medicine extends Equatable {
   final int? id;
+  final int profileId; // User profile this medicine belongs to
   final String name;
   final String dosage;
   final List<int> reminderTimes; // Stored as seconds since midnight
@@ -34,6 +35,7 @@ class Medicine extends Equatable {
 
   const Medicine({
     this.id,
+    required this.profileId,
     required this.name,
     required this.dosage,
     required this.reminderTimes,
@@ -51,6 +53,7 @@ class Medicine extends Equatable {
   /// Create a copy of Medicine with updated fields
   Medicine copyWith({
     int? id,
+    int? profileId,
     String? name,
     String? dosage,
     List<int>? reminderTimes,
@@ -66,6 +69,7 @@ class Medicine extends Equatable {
   }) {
     return Medicine(
       id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
       name: name ?? this.name,
       dosage: dosage ?? this.dosage,
       reminderTimes: reminderTimes ?? this.reminderTimes,
@@ -107,6 +111,7 @@ class Medicine extends Equatable {
   @override
   List<Object?> get props => [
     id,
+    profileId,
     name,
     dosage,
     reminderTimes,

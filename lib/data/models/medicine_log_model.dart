@@ -7,6 +7,7 @@ class MedicineLogModel {
   @Id()
   int id;
 
+  int profileId; // User profile this log belongs to
   int medicineId;
 
   @Property(type: PropertyType.date)
@@ -27,6 +28,7 @@ class MedicineLogModel {
 
   MedicineLogModel({
     this.id = 0,
+    required this.profileId,
     required this.medicineId,
     required this.scheduledTime,
     this.takenTime,
@@ -40,6 +42,7 @@ class MedicineLogModel {
   factory MedicineLogModel.fromEntity(MedicineLog log) {
     return MedicineLogModel(
       id: log.id ?? 0,
+      profileId: log.profileId,
       medicineId: log.medicineId,
       scheduledTime: log.scheduledTime,
       takenTime: log.takenTime,
@@ -54,6 +57,7 @@ class MedicineLogModel {
   MedicineLog toEntity() {
     return MedicineLog(
       id: id == 0 ? null : id,
+      profileId: profileId,
       medicineId: medicineId,
       scheduledTime: scheduledTime,
       takenTime: takenTime,

@@ -8,6 +8,7 @@ import '../../l10n/app_localizations.dart';
 import '../blocs/settings/settings_cubit.dart';
 import '../blocs/settings/settings_state.dart';
 import 'achievements_page.dart';
+import 'profiles_page.dart';
 
 /// Settings page for app preferences
 class SettingsPage extends StatelessWidget {
@@ -56,6 +57,8 @@ class _SettingsView extends StatelessWidget {
 
                 // About Section
                 _buildSectionHeader('About', theme),
+                _buildProfilesCard(context, theme),
+                const SizedBox(height: AppSizes.spacing8),
                 _buildAchievementsCard(context, theme),
                 const SizedBox(height: AppSizes.spacing8),
                 // _buildHistoryCard(context, theme),
@@ -635,6 +638,25 @@ class _SettingsView extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfilesCard(BuildContext context, ThemeData theme) {
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.people, color: AppColors.primary),
+        title: Text('Family Profiles', style: theme.textTheme.titleMedium),
+        subtitle: Text(
+          'Manage profiles for family members',
+          style: theme.textTheme.bodySmall,
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ProfilesPage()),
+          );
+        },
       ),
     );
   }

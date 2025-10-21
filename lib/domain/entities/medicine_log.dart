@@ -12,6 +12,7 @@ enum MedicineLogStatus {
 /// Medicine log entity representing the history of medicine intake
 class MedicineLog extends Equatable {
   final int? id;
+  final int profileId; // User profile this log belongs to
   final int medicineId;
   final DateTime scheduledTime;
   final DateTime? takenTime;
@@ -22,6 +23,7 @@ class MedicineLog extends Equatable {
 
   const MedicineLog({
     this.id,
+    required this.profileId,
     required this.medicineId,
     required this.scheduledTime,
     this.takenTime,
@@ -34,6 +36,7 @@ class MedicineLog extends Equatable {
   /// Create a copy of MedicineLog with updated fields
   MedicineLog copyWith({
     int? id,
+    int? profileId,
     int? medicineId,
     DateTime? scheduledTime,
     DateTime? takenTime,
@@ -44,6 +47,7 @@ class MedicineLog extends Equatable {
   }) {
     return MedicineLog(
       id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
       medicineId: medicineId ?? this.medicineId,
       scheduledTime: scheduledTime ?? this.scheduledTime,
       takenTime: takenTime ?? this.takenTime,
@@ -74,6 +78,7 @@ class MedicineLog extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        profileId,
         medicineId,
         scheduledTime,
         takenTime,

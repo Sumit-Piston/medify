@@ -92,6 +92,23 @@ class PreferencesService {
     return await _prefs.setString(_keyLastLogGeneration, date);
   }
 
+  // Generic getters and setters
+  Future<int?> getInt(String key) async {
+    return _prefs.getInt(key);
+  }
+
+  Future<bool> setInt(String key, int value) async {
+    return await _prefs.setInt(key, value);
+  }
+
+  Future<String?> getString(String key) async {
+    return _prefs.getString(key);
+  }
+
+  Future<bool> setString(String key, String value) async {
+    return await _prefs.setString(key, value);
+  }
+
   /// Clear all preferences (for testing/reset)
   Future<bool> clearAll() async {
     return await _prefs.clear();

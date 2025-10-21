@@ -7,6 +7,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../../domain/entities/medicine.dart';
 import '../../domain/entities/medicine_log.dart';
+import '../../domain/repositories/medicine_repository.dart';
 import '../../domain/repositories/medicine_log_repository.dart';
 import '../di/injection_container.dart';
 import '../utils/date_time_utils.dart';
@@ -293,10 +294,20 @@ class NotificationService {
         _log('Marked log ${log.id} as taken');
       } else {
         // Create new log and mark as taken
+        // Get medicine to determine profileId
+        final medicineRepository = getIt<MedicineRepository>();
+        final medicine = await medicineRepository.getMedicineById(medicineId);
+
+        if (medicine == null) {
+          _log('Medicine not found: $medicineId', isError: true);
+          return;
+        }
+
         final scheduledDateTime = DateTimeUtils.secondsToDateTime(
           scheduledSeconds,
         );
         final newLog = MedicineLog(
+          profileId: medicine.profileId,
           medicineId: medicineId,
           scheduledTime: scheduledDateTime,
           takenTime: DateTime.now(),
@@ -409,10 +420,20 @@ class NotificationService {
         _log('Marked log ${log.id} as skipped');
       } else {
         // Create new log and mark as skipped
+        // Get medicine to determine profileId
+        final medicineRepository = getIt<MedicineRepository>();
+        final medicine = await medicineRepository.getMedicineById(medicineId);
+
+        if (medicine == null) {
+          _log('Medicine not found: $medicineId', isError: true);
+          return;
+        }
+
         final scheduledDateTime = DateTimeUtils.secondsToDateTime(
           scheduledSeconds,
         );
         final newLog = MedicineLog(
+          profileId: medicine.profileId,
           medicineId: medicineId,
           scheduledTime: scheduledDateTime,
           takenTime: null,

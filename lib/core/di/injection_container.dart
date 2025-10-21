@@ -2,18 +2,22 @@ import 'package:get_it/get_it.dart';
 import '../../data/datasources/objectbox_service.dart';
 import '../../data/repositories/medicine_repository_impl.dart';
 import '../../data/repositories/medicine_log_repository_impl.dart';
+import '../../data/repositories/user_profile_repository_impl.dart';
 import '../../domain/repositories/medicine_repository.dart';
 import '../../domain/repositories/medicine_log_repository.dart';
+import '../../domain/repositories/user_profile_repository.dart';
 import '../../presentation/blocs/medicine/medicine_cubit.dart';
 import '../../presentation/blocs/medicine_log/medicine_log_cubit.dart';
 import '../../presentation/blocs/settings/settings_cubit.dart';
 import '../../presentation/blocs/statistics/statistics_cubit.dart';
 import '../../presentation/blocs/history/history_cubit.dart';
+import '../../presentation/blocs/profile/profile_cubit.dart';
 import '../services/notification_service.dart';
 import '../services/preferences_service.dart';
 import '../services/daily_log_service.dart';
 import '../services/refill_reminder_service.dart';
 import '../services/achievement_service.dart';
+import '../services/profile_service.dart';
 
 /// Service locator instance
 final getIt = GetIt.instance;
@@ -34,6 +38,18 @@ Future<void> initializeDependencies() async {
   await objectBoxService.init();
   getIt.registerSingleton<ObjectBoxService>(objectBoxService);
 
+  // Profile service (needs to be before repositories)
+  getIt.registerLazySingleton<ProfileService>(
+    () => ProfileService(
+      getIt<ObjectBoxService>(),
+      getIt<PreferencesService>(),
+    ),
+  );
+
+  // Initialize profile service (creates default profile if needed)
+  final profileService = getIt<ProfileService>();
+  await profileService.initialize();
+
   // Repositories
   getIt.registerLazySingleton<MedicineRepository>(
     () => MedicineRepositoryImpl(getIt<ObjectBoxService>()),
@@ -41,6 +57,10 @@ Future<void> initializeDependencies() async {
 
   getIt.registerLazySingleton<MedicineLogRepository>(
     () => MedicineLogRepositoryImpl(getIt<ObjectBoxService>()),
+  );
+
+  getIt.registerLazySingleton<UserProfileRepository>(
+    () => UserProfileRepositoryImpl(getIt<ProfileService>()),
   );
 
   // Refill reminder service for medicine stock tracking
@@ -89,6 +109,10 @@ Future<void> initializeDependencies() async {
 
   getIt.registerFactory<SettingsCubit>(
     () => SettingsCubit(getIt<PreferencesService>()),
+  );
+
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(getIt<UserProfileRepository>()),
   );
 
   // Daily log service for generating repeating reminder logs

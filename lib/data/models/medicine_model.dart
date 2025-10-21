@@ -7,6 +7,7 @@ class MedicineModel {
   @Id()
   int id;
 
+  int profileId; // User profile this medicine belongs to
   String name;
   String dosage;
   List<int> reminderTimes; // Stored as seconds since midnight
@@ -30,6 +31,7 @@ class MedicineModel {
 
   MedicineModel({
     this.id = 0,
+    required this.profileId,
     required this.name,
     required this.dosage,
     required this.reminderTimes,
@@ -48,6 +50,7 @@ class MedicineModel {
   factory MedicineModel.fromEntity(Medicine medicine) {
     return MedicineModel(
       id: medicine.id ?? 0,
+      profileId: medicine.profileId,
       name: medicine.name,
       dosage: medicine.dosage,
       reminderTimes: medicine.reminderTimes,
@@ -67,6 +70,7 @@ class MedicineModel {
   Medicine toEntity() {
     return Medicine(
       id: id == 0 ? null : id,
+      profileId: profileId,
       name: name,
       dosage: dosage,
       reminderTimes: reminderTimes,

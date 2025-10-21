@@ -16,6 +16,7 @@ class LogGenerator {
 
       logs.add(
         MedicineLog(
+          profileId: medicine.profileId,
           medicineId: medicine.id!,
           scheduledTime: scheduledTime,
           status: MedicineLogStatus.pending,
@@ -42,6 +43,7 @@ class LogGenerator {
 
       logs.add(
         MedicineLog(
+          profileId: medicine.profileId,
           medicineId: medicine.id!,
           scheduledTime: scheduledTime,
           status: MedicineLogStatus.pending,

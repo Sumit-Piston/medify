@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
 import '../../core/services/notification_service.dart';
+import '../../core/services/profile_service.dart';
 import '../../core/utils/date_time_utils.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/custom_button.dart';
@@ -647,6 +648,19 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       return;
     }
 
+    // Get active profile ID
+    final profileService = getIt<ProfileService>();
+    final activeProfileId = await profileService.getActiveProfileId();
+    if (activeProfileId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No active profile found. Please create a profile first.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     // Parse refill tracking values
     int? totalQuantity;
     int? currentQuantity;
@@ -669,6 +683,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     // Create medicine object
     final medicine = Medicine(
       id: _isEditMode ? widget.medicine!.id : null,
+      profileId: _isEditMode ? widget.medicine!.profileId : activeProfileId,
       name: _nameController.text.trim(),
       dosage: _dosageController.text.trim(),
       reminderTimes: _reminderTimes,
