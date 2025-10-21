@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/di/injection_container.dart';
 import '../../../domain/entities/user_profile.dart';
 import '../../../domain/repositories/user_profile_repository.dart';
+import '../medicine/medicine_cubit.dart';
+import '../medicine_log/medicine_log_cubit.dart';
 import 'profile_state.dart';
 
 /// Cubit for managing user profile state
@@ -66,19 +69,31 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> createProfile(UserProfile profile) async {
     try {
       emit(ProfileLoading());
-      
+
       // Check if name already exists
-      final nameExists = await _userProfileRepository.isProfileNameExists(profile.name);
+      final nameExists = await _userProfileRepository.isProfileNameExists(
+        profile.name,
+      );
       if (nameExists) {
         emit(const ProfileError('A profile with this name already exists'));
         return;
       }
 
-      final createdProfile = await _userProfileRepository.createProfile(profile);
-      emit(ProfileOperationSuccess('Profile created successfully', profile: createdProfile));
-      
+      final createdProfile = await _userProfileRepository.createProfile(
+        profile,
+      );
+      emit(
+        ProfileOperationSuccess(
+          'Profile created successfully',
+          profile: createdProfile,
+        ),
+      );
+
       // Reload all profiles
       await loadProfiles();
+
+      // Reload app data in case active profile changed
+      _reloadAppData();
     } catch (e) {
       emit(ProfileError('Failed to create profile: ${e.toString()}'));
     }
@@ -88,7 +103,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> updateProfile(UserProfile profile) async {
     try {
       emit(ProfileLoading());
-      
+
       // Check if name already exists (excluding current profile)
       final nameExists = await _userProfileRepository.isProfileNameExists(
         profile.name,
@@ -99,11 +114,21 @@ class ProfileCubit extends Cubit<ProfileState> {
         return;
       }
 
-      final updatedProfile = await _userProfileRepository.updateProfile(profile);
-      emit(ProfileOperationSuccess('Profile updated successfully', profile: updatedProfile));
-      
+      final updatedProfile = await _userProfileRepository.updateProfile(
+        profile,
+      );
+      emit(
+        ProfileOperationSuccess(
+          'Profile updated successfully',
+          profile: updatedProfile,
+        ),
+      );
+
       // Reload all profiles
       await loadProfiles();
+
+      // Reload app data to reflect any profile changes
+      _reloadAppData();
     } catch (e) {
       emit(ProfileError('Failed to update profile: ${e.toString()}'));
     }
@@ -115,9 +140,12 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileLoading());
       await _userProfileRepository.deleteProfile(id);
       emit(const ProfileOperationSuccess('Profile deleted successfully'));
-      
+
       // Reload all profiles
       await loadProfiles();
+
+      // Reload app data as active profile might have changed
+      _reloadAppData();
     } catch (e) {
       emit(ProfileError('Failed to delete profile: ${e.toString()}'));
     }
@@ -128,11 +156,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       await _userProfileRepository.setActiveProfile(profileId);
       final profile = await _userProfileRepository.getProfileById(profileId);
-      
+
       if (profile != null) {
         emit(ActiveProfileChanged(profile));
         emit(const ProfileOperationSuccess('Profile switched successfully'));
-        
+
+        // Reload medicines and logs for the new profile
+        _reloadAppData();
+
         // Reload all profiles to update active status
         await loadProfiles();
       } else {
@@ -140,6 +171,19 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     } catch (e) {
       emit(ProfileError('Failed to switch profile: ${e.toString()}'));
+    }
+  }
+
+  /// Reload medicines and logs after profile operations
+  void _reloadAppData() {
+    try {
+      // Reload medicines for new profile
+      getIt<MedicineCubit>().loadMedicines();
+
+      // Reload today's logs for new profile
+      getIt<MedicineLogCubit>().loadTodayLogs();
+    } catch (e) {
+      // Silently fail - not critical
     }
   }
 
@@ -164,4 +208,3 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 }
-

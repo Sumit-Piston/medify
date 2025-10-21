@@ -284,7 +284,7 @@ class _ProfilesPageContent extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSizes.paddingS,
-                              vertical: 4,
+                              vertical: 2,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.success,
@@ -296,7 +296,7 @@ class _ProfilesPageContent extends StatelessWidget {
                               'Active',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
