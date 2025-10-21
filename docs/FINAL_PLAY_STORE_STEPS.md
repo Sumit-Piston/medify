@@ -242,7 +242,7 @@ Go through each section and ensure green checkmarks ✅:
 
    - Version Code: **1**
    - Version Name: **1.0.0**
-   - Package Name: **com.medify.app**
+   - Package Name: **com.sumit.medify**
 
 2. **Verify Bundle Info:**
 
@@ -363,7 +363,7 @@ You'll receive email: **"Your app has been approved"**
 **Your Play Store URL:**
 
 ```
-https://play.google.com/store/apps/details?id=com.medify.app
+https://play.google.com/store/apps/details?id=com.sumit.medify
 ```
 
 **Next Actions:**
@@ -637,13 +637,13 @@ https://play.google.com/console
 **Expected Play Store URL:**
 
 ```
-https://play.google.com/store/apps/details?id=com.medify.app
+https://play.google.com/store/apps/details?id=com.sumit.medify
 ```
 
 **Package Name:**
 
 ```
-com.medify.app
+com.sumit.medify
 ```
 
 **Version:**

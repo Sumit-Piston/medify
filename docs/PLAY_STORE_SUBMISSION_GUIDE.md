@@ -15,11 +15,11 @@ Open `android/app/build.gradle` and update:
 
 ```gradle
 android {
-    namespace "com.medify.app"  // Update this
+    namespace "com.sumit.medify"  // Update this
     compileSdk 34                // Update from 33 to 34
 
     defaultConfig {
-        applicationId "com.medify.app"  // Update this
+        applicationId "com.sumit.medify"  // Update this
         minSdkVersion 21
         targetSdkVersion 34  // Update from 33 to 34
         versionCode 1

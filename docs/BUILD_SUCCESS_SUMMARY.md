@@ -29,8 +29,8 @@ build/app/outputs/bundle/release/app-release.aab
 
 ### Application Details
 
-- **Application ID:** `com.medify.app`
-- **Package Name:** `com.medify.app`
+- **Application ID:** `com.sumit.medify`
+- **Package Name:** `com.sumit.medify`
 - **Version Code:** 1
 - **Version Name:** 1.0.0
 
@@ -296,7 +296,7 @@ Keystore File: /Users/sumitpal/medify-upload-keystore.jks
 Keystore Password: medify2024secure
 Key Alias: medify-upload
 Key Password: medify2024secure
-Application ID: com.medify.app
+Application ID: com.sumit.medify
 ```
 
 **⚠️ IMPORTANT:**

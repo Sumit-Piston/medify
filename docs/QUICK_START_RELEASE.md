@@ -10,7 +10,7 @@ All Android configuration files have been updated and optimized for Play Store r
 
 ### Application Configuration
 
-- ✅ **Application ID:** `com.medify.app`
+- ✅ **Application ID:** `com.sumit.medify`
 - ✅ **Target SDK:** 36 (Android 15)
 - ✅ **Compile SDK:** 36 (Android 15)
 - ✅ **Version:** 1.0.0 (Code: 1)
@@ -161,8 +161,8 @@ adb install build/app/outputs/flutter-apk/app-release.apk
 ## 📊 Current Configuration Summary
 
 ```
-Application ID: com.medify.app
-Package Name:   com.medify.app
+Application ID: com.sumit.medify
+Package Name:   com.sumit.medify
 Version Name:   1.0.0
 Version Code:   1
 
@@ -222,7 +222,7 @@ Keystore File: /Users/sumitpal/medify-upload-keystore.jks
 Keystore Password: medify2024secure
 Key Alias: medify-upload
 Key Password: medify2024secure
-Application ID: com.medify.app
+Application ID: com.sumit.medify
 ```
 
 **⚠️ CRITICAL:**

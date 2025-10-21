@@ -3,7 +3,7 @@
 ## 📱 App Information
 
 - **App Name:** Medify
-- **Package Name:** com.medify.app (update in `android/app/build.gradle`)
+- **Package Name:** com.sumit.medify (update in `android/app/build.gradle`)
 - **Version:** 1.0.0 (Version Code: 1)
 - **Category:** Medical / Health & Fitness
 - **Target Audience:** 18+
@@ -22,7 +22,7 @@
 - [x] Splash screen implemented
 - [ ] Update package name in `android/app/build.gradle`
   ```gradle
-  applicationId "com.medify.app"  // Change from default
+  applicationId "com.sumit.medify"  // Change from default
   ```
 - [ ] Set proper version code and version name
   ```gradle

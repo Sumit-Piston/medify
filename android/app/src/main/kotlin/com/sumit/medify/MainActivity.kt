@@ -1,4 +1,4 @@
-package com.medify.app
+package com.sumit.medify
 
 import io.flutter.embedding.android.FlutterActivity
 

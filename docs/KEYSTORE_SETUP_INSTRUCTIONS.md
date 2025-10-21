@@ -73,7 +73,7 @@ storeFile=/Users/sumitpal/medify-upload-keystore.jks
 
 Configured with:
 
-- Application ID: `com.medify.app`
+- Application ID: `com.sumit.medify`
 - Target SDK: 36
 - Compile SDK: 36
 - ProGuard optimization enabled
@@ -154,7 +154,7 @@ Keystore File: /Users/sumitpal/medify-upload-keystore.jks
 Keystore Password: medify2024secure
 Key Alias: medify-upload
 Key Password: medify2024secure
-Application ID: com.medify.app
+Application ID: com.sumit.medify
 ```
 
 ---
@@ -192,8 +192,8 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 ### ✅ Application Updates:
 
-- **Application ID:** Changed from `com.medify.medify` to `com.medify.app`
-- **Namespace:** Updated to `com.medify.app`
+- **Application ID:** Changed from `com.medify.medify` to `com.sumit.medify`
+- **Namespace:** Updated to `com.sumit.medify`
 - **Target SDK:** Updated to 36 (Android 15)
 - **Compile SDK:** Updated to 36
 - **Version Code:** 1

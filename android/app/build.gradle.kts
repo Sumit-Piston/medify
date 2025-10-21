@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.medify.app"
+    namespace = "com.sumit.medify"
     compileSdk = 36
     ndkVersion = "28.0.12433566"
 
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.medify.app"
+        applicationId = "com.sumit.medify"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode
