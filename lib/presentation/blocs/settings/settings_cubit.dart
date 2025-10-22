@@ -28,7 +28,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateThemeMode(ThemeMode themeMode) async {
     if (state is SettingsLoaded) {
       final currentState = state as SettingsLoaded;
-      emit(const SettingsUpdating());
+      // emit(const SettingsUpdating());
 
       await _preferencesService.setThemeMode(themeMode);
 
@@ -43,7 +43,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateNotificationsEnabled(bool enabled) async {
     if (state is SettingsLoaded) {
       final currentState = state as SettingsLoaded;
-      emit(const SettingsUpdating());
+      // emit(const SettingsUpdating());
 
       await _preferencesService.setNotificationsEnabled(enabled);
 
@@ -55,7 +55,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateSnoozeDuration(int minutes) async {
     if (state is SettingsLoaded) {
       final currentState = state as SettingsLoaded;
-      emit(const SettingsUpdating());
+      // emit(const SettingsUpdating());
 
       await _preferencesService.setSnoozeDuration(minutes);
 

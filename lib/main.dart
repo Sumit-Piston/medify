@@ -64,9 +64,9 @@ class _MyAppState extends State<MyApp> {
 
   /// Update locale
   void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
+    // setState(() {
+    _locale = locale;
+    // });
   }
 
   @override

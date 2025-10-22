@@ -65,10 +65,7 @@ Future<void> initializeDependencies() async {
   // Refill reminder service for medicine stock tracking
   // Register before cubits that depend on it
   getIt.registerLazySingleton<RefillReminderService>(
-    () => RefillReminderService(
-      getIt<NotificationService>(),
-      getIt<MedicineRepository>(),
-    ),
+    () => RefillReminderService(getIt<NotificationService>(), getIt<MedicineRepository>()),
   );
 
   // Achievement service for gamification
@@ -83,9 +80,7 @@ Future<void> initializeDependencies() async {
 
   // Cubits - Using LazySingleton to ensure single instance across app
   // This ensures all pages use the SAME cubit instance for state synchronization
-  getIt.registerLazySingleton<MedicineCubit>(
-    () => MedicineCubit(getIt<MedicineRepository>()),
-  );
+  getIt.registerLazySingleton<MedicineCubit>(() => MedicineCubit(getIt<MedicineRepository>()));
 
   getIt.registerLazySingleton<MedicineLogCubit>(
     () => MedicineLogCubit(
@@ -100,15 +95,10 @@ Future<void> initializeDependencies() async {
   );
 
   getIt.registerLazySingleton<HistoryCubit>(
-    () => HistoryCubit(
-      getIt<MedicineLogRepository>(),
-      getIt<MedicineRepository>(),
-    ),
+    () => HistoryCubit(getIt<MedicineLogRepository>(), getIt<MedicineRepository>()),
   );
 
-  getIt.registerFactory<SettingsCubit>(
-    () => SettingsCubit(getIt<PreferencesService>()),
-  );
+  getIt.registerLazySingleton<SettingsCubit>(() => SettingsCubit(getIt<PreferencesService>()));
 
   // COMMENTED OUT FOR UPCOMING RELEASE - ProfileCubit
   // CRITICAL: ProfileCubit MUST be LazySingleton, not Factory
