@@ -21,8 +21,7 @@ class StatisticsPage extends StatefulWidget {
   State<StatisticsPage> createState() => _StatisticsPageState();
 }
 
-class _StatisticsPageState extends State<StatisticsPage>
-    with AutomaticKeepAliveClientMixin {
+class _StatisticsPageState extends State<StatisticsPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -82,10 +81,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                 children: [
                   Icon(Icons.error_outline, size: 64, color: AppColors.error),
                   const SizedBox(height: AppSizes.spacing16),
-                  Text(
-                    'Error loading statistics',
-                    style: theme.textTheme.titleLarge,
-                  ),
+                  Text('Error loading statistics', style: theme.textTheme.titleLarge),
                   const SizedBox(height: AppSizes.spacing8),
                   Text(
                     state.message,
@@ -143,8 +139,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                   const SizedBox(height: AppSizes.spacing24),
 
                   // Medicine Breakdown
-                  if (state.medicineDetails.isNotEmpty)
-                    _buildMedicineBreakdownCard(context, state),
+                  if (state.medicineDetails.isNotEmpty) _buildMedicineBreakdownCard(context, state),
                 ],
               ),
             );
@@ -265,17 +260,11 @@ class _StatisticsPageState extends State<StatisticsPage>
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.local_fire_department,
-                  color: AppColors.warning,
-                  size: AppSizes.iconL,
-                ),
+                Icon(Icons.local_fire_department, color: AppColors.warning, size: AppSizes.iconL),
                 const SizedBox(width: AppSizes.spacing8),
                 Text(
                   'Streak',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -314,11 +303,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.celebration,
-                      color: AppColors.success,
-                      size: AppSizes.iconM,
-                    ),
+                    Icon(Icons.celebration, color: AppColors.success, size: AppSizes.iconM),
                     const SizedBox(width: AppSizes.spacing8),
                     Expanded(
                       child: Text(
@@ -356,10 +341,7 @@ class _StatisticsPageState extends State<StatisticsPage>
         const SizedBox(height: AppSizes.spacing8),
         Text(
           '$value',
-          style: theme.textTheme.displayMedium?.copyWith(
-            color: color,
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.displayMedium?.copyWith(color: color, fontWeight: FontWeight.bold),
         ),
         Text(
           label,
@@ -378,10 +360,7 @@ class _StatisticsPageState extends State<StatisticsPage>
   }
 
   /// Build adherence trend line chart
-  Widget _buildAdherenceTrendCard(
-    BuildContext context,
-    StatisticsLoaded state,
-  ) {
+  Widget _buildAdherenceTrendCard(BuildContext context, StatisticsLoaded state) {
     final theme = Theme.of(context);
     final data = state.period == StatisticsPeriod.week
         ? state.statistics.weeklyData
@@ -397,9 +376,7 @@ class _StatisticsPageState extends State<StatisticsPage>
           children: [
             Text(
               'Adherence Trend',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSizes.spacing20),
             SizedBox(
@@ -412,29 +389,22 @@ class _StatisticsPageState extends State<StatisticsPage>
                     horizontalInterval: 25,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.1,
-                        ),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
                         strokeWidth: 1,
                       );
                     },
                   ),
                   titlesData: FlTitlesData(
                     show: true,
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 30,
-                        interval: data.length > 7 ? data.length / 7 : 1,
+                        interval: 10, //data.length > 7 ? data.length / 7 : 1,
                         getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 &&
-                              value.toInt() < data.length) {
+                          if (value.toInt() >= 0 && value.toInt() < data.length) {
                             final date = data[value.toInt()].date;
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
@@ -454,10 +424,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                         interval: 25,
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
-                          return Text(
-                            '${value.toInt()}%',
-                            style: theme.textTheme.bodySmall,
-                          );
+                          return Text('${value.toInt()}%', style: theme.textTheme.bodySmall);
                         },
                       ),
                     ),
@@ -470,10 +437,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                   lineBarsData: [
                     LineChartBarData(
                       spots: data.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value.adherenceRate,
-                        );
+                        return FlSpot(entry.key.toDouble(), entry.value.adherenceRate);
                       }).toList(),
                       isCurved: true,
                       color: AppColors.primary,
@@ -482,6 +446,14 @@ class _StatisticsPageState extends State<StatisticsPage>
                       dotData: FlDotData(
                         show: true,
                         getDotPainter: (spot, percent, barData, index) {
+                          if (index % 5 != 0) {
+                            return FlDotCirclePainter(
+                              radius: 4,
+                              color: Colors.transparent,
+                              strokeWidth: 2,
+                              strokeColor: Colors.transparent,
+                            );
+                          }
                           return FlDotCirclePainter(
                             radius: 4,
                             color: Colors.white,
@@ -503,10 +475,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                           final date = data[spot.x.toInt()].date;
                           return LineTooltipItem(
                             '${DateFormat('MMM dd').format(date)}\n${spot.y.toStringAsFixed(0)}%',
-                            const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           );
                         }).toList();
                       },
@@ -522,17 +491,12 @@ class _StatisticsPageState extends State<StatisticsPage>
   }
 
   /// Build daily completion bar chart
-  Widget _buildDailyCompletionCard(
-    BuildContext context,
-    StatisticsLoaded state,
-  ) {
+  Widget _buildDailyCompletionCard(BuildContext context, StatisticsLoaded state) {
     final theme = Theme.of(context);
     final data = state.period == StatisticsPeriod.week
         ? state.statistics.weeklyData
         : state.statistics.monthlyData.length > 14
-        ? state.statistics.monthlyData.sublist(
-            state.statistics.monthlyData.length - 14,
-          )
+        ? state.statistics.monthlyData.sublist(state.statistics.monthlyData.length - 14)
         : state.statistics.monthlyData;
 
     if (data.isEmpty) return const SizedBox.shrink();
@@ -545,9 +509,7 @@ class _StatisticsPageState extends State<StatisticsPage>
           children: [
             Text(
               'Daily Completion',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSizes.spacing20),
             SizedBox(
@@ -555,9 +517,7 @@ class _StatisticsPageState extends State<StatisticsPage>
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
-                  maxY: data
-                      .map((d) => d.scheduled.toDouble())
-                      .reduce((a, b) => a > b ? a : b),
+                  maxY: data.map((d) => d.scheduled.toDouble()).reduce((a, b) => a > b ? a : b),
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -566,36 +526,31 @@ class _StatisticsPageState extends State<StatisticsPage>
                         final scheduled = data[group.x.toInt()].scheduled;
                         return BarTooltipItem(
                           '${DateFormat('MMM dd').format(date)}\n$taken/$scheduled doses',
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         );
                       },
                     ),
                   ),
                   titlesData: FlTitlesData(
                     show: true,
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
                         getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 &&
-                              value.toInt() < data.length) {
+                          if (value.toInt() >= 0 && value.toInt() < data.length) {
                             final date = data[value.toInt()].date;
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                DateFormat('MM/dd').format(date),
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            );
+                            if (date.day % 5 == 0) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  DateFormat('MM/dd').format(date),
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              );
+                            }
+                            return const Text('');
                           }
                           return const Text('');
                         },
@@ -607,10 +562,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                         showTitles: true,
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
-                          return Text(
-                            value.toInt().toString(),
-                            style: theme.textTheme.bodySmall,
-                          );
+                          return Text(value.toInt().toString(), style: theme.textTheme.bodySmall);
                         },
                       ),
                     ),
@@ -626,9 +578,7 @@ class _StatisticsPageState extends State<StatisticsPage>
                           toY: entry.value.taken.toDouble(),
                           color: _getBarColor(adherence),
                           width: 16,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(4),
-                          ),
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                         ),
                       ],
                     );
@@ -645,10 +595,7 @@ class _StatisticsPageState extends State<StatisticsPage>
   }
 
   /// Build medicine breakdown pie chart
-  Widget _buildMedicineBreakdownCard(
-    BuildContext context,
-    StatisticsLoaded state,
-  ) {
+  Widget _buildMedicineBreakdownCard(BuildContext context, StatisticsLoaded state) {
     final theme = Theme.of(context);
     final details = state.medicineDetails;
 
@@ -660,9 +607,7 @@ class _StatisticsPageState extends State<StatisticsPage>
           children: [
             Text(
               'Medicine Breakdown',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSizes.spacing20),
             ...details.map((detail) => _buildMedicineListItem(context, detail)),
@@ -673,10 +618,7 @@ class _StatisticsPageState extends State<StatisticsPage>
   }
 
   /// Build medicine list item with progress bar
-  Widget _buildMedicineListItem(
-    BuildContext context,
-    MedicineStatisticsDetail detail,
-  ) {
+  Widget _buildMedicineListItem(BuildContext context, MedicineStatisticsDetail detail) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSizes.spacing16),
@@ -709,12 +651,8 @@ class _StatisticsPageState extends State<StatisticsPage>
             child: LinearProgressIndicator(
               value: detail.adherenceRate / 100,
               minHeight: 8,
-              backgroundColor: theme.colorScheme.onSurface.withValues(
-                alpha: 0.1,
-              ),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Color(detail.colorValue),
-              ),
+              backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(detail.colorValue)),
             ),
           ),
           const SizedBox(height: AppSizes.spacing4),
@@ -751,10 +689,7 @@ class _StatisticsPageState extends State<StatisticsPage>
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
         ),
         const SizedBox(width: AppSizes.spacing4),
         Text(label, style: theme.textTheme.bodySmall),

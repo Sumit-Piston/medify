@@ -26,7 +26,7 @@ class _HistoryPageState extends State<HistoryPage> with AutomaticKeepAliveClient
   @override
   bool get wantKeepAlive => true;
 
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
 
   @override
@@ -60,12 +60,7 @@ class _HistoryPageState extends State<HistoryPage> with AutomaticKeepAliveClient
           //   },
           //   tooltip: 'Export to CSV',
           // ),
-          // Filter button
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _showFilterDialog(context),
-            tooltip: 'Filter',
-          ),
+
           // Refresh button
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -73,6 +68,12 @@ class _HistoryPageState extends State<HistoryPage> with AutomaticKeepAliveClient
               getIt<HistoryCubit>().refresh();
             },
             tooltip: 'Refresh',
+          ),
+          // Filter button
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () => _showFilterDialog(context),
+            tooltip: 'Filter',
           ),
         ],
       ),

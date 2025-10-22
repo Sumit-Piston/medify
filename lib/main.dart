@@ -73,21 +73,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<MedicineCubit>(
-          create: (context) => getIt<MedicineCubit>(),
-        ),
-        BlocProvider<MedicineLogCubit>(
-          create: (context) => getIt<MedicineLogCubit>(),
-        ),
-        BlocProvider<StatisticsCubit>(
-          create: (context) => getIt<StatisticsCubit>(),
-        ),
+        BlocProvider<MedicineCubit>(create: (context) => getIt<MedicineCubit>()),
+        BlocProvider<MedicineLogCubit>(create: (context) => getIt<MedicineLogCubit>()),
+        BlocProvider<StatisticsCubit>(create: (context) => getIt<StatisticsCubit>()),
         BlocProvider<HistoryCubit>(create: (context) => getIt<HistoryCubit>()),
         // COMMENTED OUT FOR UPCOMING RELEASE
         // BlocProvider<ProfileCubit>(create: (context) => getIt<ProfileCubit>()),
-        BlocProvider<SettingsCubit>(
-          create: (context) => getIt<SettingsCubit>(),
-        ),
+        BlocProvider<SettingsCubit>(create: (context) => getIt<SettingsCubit>()),
       ],
       child: MaterialApp(
         title: 'Medify',
@@ -109,9 +101,7 @@ class _MyAppState extends State<MyApp> {
           // Locale('hi'), // Hindi - Commented out for now
           // Locale('bn'), // Bengali - Commented out for now
         ],
-        home: _prefsService.isFirstLaunch
-            ? const OnboardingPage()
-            : const MainNavigationPage(),
+        home: _prefsService.isFirstLaunch ? const OnboardingPage() : const MainNavigationPage(),
       ),
     );
   }
