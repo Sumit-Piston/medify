@@ -14,7 +14,8 @@ import '../blocs/medicine/medicine_state.dart';
 import '../blocs/medicine_log/medicine_log_cubit.dart';
 import '../blocs/medicine_log/medicine_log_state.dart';
 import '../widgets/medicine_log_card.dart';
-import '../widgets/profile_switcher.dart';
+// COMMENTED OUT FOR UPCOMING RELEASE
+// import '../widgets/profile_switcher.dart';
 import 'settings_page.dart';
 
 /// Page to display today's medicine schedule
@@ -128,10 +129,11 @@ class _SchedulePageState extends State<SchedulePage>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: ProfileSwitcher(),
-        ),
+        // COMMENTED OUT FOR UPCOMING RELEASE
+        // leading: const Padding(
+        //   padding: EdgeInsets.only(left: 8.0),
+        //   child: ProfileSwitcher(),
+        // ),
         title: Text(_getTitle()),
         centerTitle: true,
         actions: [

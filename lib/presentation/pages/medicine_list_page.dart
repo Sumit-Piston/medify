@@ -13,7 +13,8 @@ import '../blocs/medicine/medicine_state.dart';
 import '../blocs/medicine_log/medicine_log_cubit.dart';
 import '../blocs/medicine_log/medicine_log_state.dart';
 import '../widgets/medicine_card.dart';
-import '../widgets/profile_switcher.dart';
+// COMMENTED OUT FOR UPCOMING RELEASE
+// import '../widgets/profile_switcher.dart';
 import '../widgets/todays_summary_card.dart';
 import 'add_edit_medicine_page.dart';
 import 'settings_page.dart';
@@ -65,10 +66,11 @@ class _MedicineListPageState extends State<MedicineListPage>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: ProfileSwitcher(),
-        ),
+        // COMMENTED OUT FOR UPCOMING RELEASE
+        // leading: const Padding(
+        //   padding: EdgeInsets.only(left: 8.0),
+        //   child: ProfileSwitcher(),
+        // ),
         title: const Text('Medify'), // Per spec: "Medify" (H2)
         centerTitle: true,
         actions: [

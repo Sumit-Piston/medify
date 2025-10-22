@@ -10,7 +10,8 @@ import '../../core/utils/date_time_utils.dart';
 import '../../domain/entities/medicine_log.dart';
 import '../blocs/history/history_cubit.dart';
 import '../blocs/history/history_state.dart';
-import '../widgets/profile_switcher.dart';
+// COMMENTED OUT FOR UPCOMING RELEASE
+// import '../widgets/profile_switcher.dart';
 
 /// Medicine history page with calendar view
 class HistoryPage extends StatefulWidget {
@@ -43,10 +44,11 @@ class _HistoryPageState extends State<HistoryPage>
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: ProfileSwitcher(),
-        ),
+        // COMMENTED OUT FOR UPCOMING RELEASE
+        // leading: const Padding(
+        //   padding: EdgeInsets.only(left: 8.0),
+        //   child: ProfileSwitcher(),
+        // ),
         title: const Text('History'),
         centerTitle: true,
         actions: [

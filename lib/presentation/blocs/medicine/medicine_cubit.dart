@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/injection_container.dart';
 import '../../../core/services/notification_service.dart';
-import '../../../core/services/profile_service.dart';
+// COMMENTED OUT FOR UPCOMING RELEASE
+// import '../../../core/services/profile_service.dart';
 import '../../../core/utils/log_generator.dart';
 import '../../../domain/entities/medicine.dart';
 import '../../../domain/repositories/medicine_log_repository.dart';
@@ -54,14 +55,15 @@ class MedicineCubit extends Cubit<MedicineState> {
         // Silently handle log generation errors
       }
 
-      // Schedule notifications for the medicine with profile name
+      // Schedule notifications for the medicine
+      // COMMENTED OUT FOR UPCOMING RELEASE - profile name support
       try {
         final notificationService = getIt<NotificationService>();
-        final profileService = getIt<ProfileService>();
-        final activeProfile = await profileService.getActiveProfile();
+        // final profileService = getIt<ProfileService>();
+        // final activeProfile = await profileService.getActiveProfile();
         await notificationService.scheduleMedicineReminders(
           savedMedicine,
-          profileName: activeProfile?.name,
+          // profileName: activeProfile?.name,
         );
       } catch (e) {
         // Silently handle notification errors - don't fail the whole operation
@@ -121,14 +123,15 @@ class MedicineCubit extends Cubit<MedicineState> {
         }
       }
 
-      // Reschedule notifications for the updated medicine with profile name
+      // Reschedule notifications for the updated medicine
+      // COMMENTED OUT FOR UPCOMING RELEASE - profile name support
       try {
         final notificationService = getIt<NotificationService>();
-        final profileService = getIt<ProfileService>();
-        final activeProfile = await profileService.getActiveProfile();
+        // final profileService = getIt<ProfileService>();
+        // final activeProfile = await profileService.getActiveProfile();
         await notificationService.scheduleMedicineReminders(
           updatedMedicine,
-          profileName: activeProfile?.name,
+          // profileName: activeProfile?.name,
         );
       } catch (e) {
         // Silently handle notification errors
@@ -172,15 +175,16 @@ class MedicineCubit extends Cubit<MedicineState> {
       final medicine = await _medicineRepository.toggleMedicineStatus(id);
 
       // Update notifications based on active status
+      // COMMENTED OUT FOR UPCOMING RELEASE - profile name support
       try {
         final notificationService = getIt<NotificationService>();
         if (medicine.isActive) {
-          // Schedule notifications when activated with profile name
-          final profileService = getIt<ProfileService>();
-          final activeProfile = await profileService.getActiveProfile();
+          // Schedule notifications when activated
+          // final profileService = getIt<ProfileService>();
+          // final activeProfile = await profileService.getActiveProfile();
           await notificationService.scheduleMedicineReminders(
             medicine,
-            profileName: activeProfile?.name,
+            // profileName: activeProfile?.name,
           );
         } else {
           // Cancel notifications when deactivated
