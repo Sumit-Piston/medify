@@ -38,6 +38,15 @@ class _HistoryPageState extends State<HistoryPage> with AutomaticKeepAliveClient
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload data when page becomes visible (e.g., after adding medicine)
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      getIt<HistoryCubit>().loadHistory();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);

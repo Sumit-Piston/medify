@@ -34,6 +34,14 @@ class _StatisticsPageState extends State<StatisticsPage> with AutomaticKeepAlive
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      getIt<StatisticsCubit>().loadStatistics();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     final theme = Theme.of(context);
