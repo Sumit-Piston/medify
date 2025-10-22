@@ -541,13 +541,16 @@ class NotificationService {
   }
 
   /// Schedule daily notifications for a medicine
-  Future<void> scheduleMedicineReminders(Medicine medicine) async {
+  Future<void> scheduleMedicineReminders(
+    Medicine medicine, {
+    String? profileName,
+  }) async {
     if (!medicine.isActive) {
       _log('Medicine ${medicine.name} is inactive, skipping notifications');
       return;
     }
 
-    _log('Scheduling reminders for medicine: ${medicine.name}');
+    _log('Scheduling reminders for medicine: ${medicine.name}${profileName != null ? " (Profile: $profileName)" : ""}');
 
     // Cancel existing notifications for this medicine
     await cancelMedicineReminders(medicine.id!);
@@ -562,9 +565,10 @@ class NotificationService {
           seconds: seconds,
           medicineName: medicine.name,
           dosage: medicine.dosage,
+          profileName: profileName,
         );
         _log(
-          'Scheduled notification ${i + 1}/${medicine.reminderTimes.length} for ${medicine.name}',
+          'Scheduled notification ${i + 1}/${medicine.reminderTimes.length} for ${medicine.name}${profileName != null ? " ($profileName)" : ""}',
         );
       } catch (e) {
         _log(
@@ -582,6 +586,7 @@ class NotificationService {
     required int seconds,
     required String medicineName,
     required String dosage,
+    String? profileName,
   }) async {
     try {
       // Generate unique notification ID
@@ -600,8 +605,21 @@ class NotificationService {
       final tzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
 
       _log(
-        'Scheduling notification ID $notificationId for $medicineName at ${DateTimeUtils.formatTime(scheduledDateTime)}',
+        'Scheduling notification ID $notificationId for $medicineName${profileName != null ? " ($profileName)" : ""} at ${DateTimeUtils.formatTime(scheduledDateTime)}',
       );
+
+      // Build notification title and body with profile context
+      final String notificationTitle = profileName != null
+          ? '💊 Time for $profileName\'s medicine'
+          : '💊 Time to take your medicine';
+
+      final String notificationBody = profileName != null
+          ? '$medicineName - $dosage • $profileName'
+          : '$medicineName - $dosage';
+
+      final String bigText = profileName != null
+          ? 'It\'s time for $profileName to take $medicineName ($dosage). Don\'t forget your medicine!'
+          : 'It\'s time to take $medicineName ($dosage). Don\'t forget your medicine!';
 
       // Android notification details with foreground presentation
       final androidDetails = AndroidNotificationDetails(
@@ -616,9 +634,7 @@ class NotificationService {
         playSound: true,
         enableVibration: true,
         // Big text style for better readability
-        styleInformation: BigTextStyleInformation(
-          'It\'s time to take $medicineName ($dosage). Don\'t forget your medicine!',
-        ),
+        styleInformation: BigTextStyleInformation(bigText),
         // Action buttons: Snooze (5 mins) and Skip
         actions: <AndroidNotificationAction>[
           const AndroidNotificationAction(
@@ -636,18 +652,20 @@ class NotificationService {
         fullScreenIntent: true,
         // Show notification even when app is in foreground
         visibility: NotificationVisibility.public,
-        ticker: 'Time to take $medicineName',
+        ticker: profileName != null
+            ? 'Time for $profileName: $medicineName'
+            : 'Time to take $medicineName',
       );
 
       // iOS notification details with foreground presentation
-      const iosDetails = DarwinNotificationDetails(
+      final iosDetails = DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
         // Custom notification sound (iOS uses the default sound in assets)
         sound: 'notification_sound.mp3',
         badgeNumber: 1,
-        subtitle: 'Medicine Reminder',
+        subtitle: profileName != null ? '$profileName\'s Medicine' : 'Medicine Reminder',
         // iOS 10+ allows notifications to show in foreground
         interruptionLevel: InterruptionLevel.timeSensitive,
       );
@@ -666,8 +684,8 @@ class NotificationService {
       // Schedule the notification
       await _notifications.zonedSchedule(
         notificationId,
-        '💊 Time to take your medicine',
-        '$medicineName - $dosage',
+        notificationTitle,
+        notificationBody,
         tzDateTime,
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
