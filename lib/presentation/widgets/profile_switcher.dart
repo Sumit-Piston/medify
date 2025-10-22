@@ -14,19 +14,33 @@ class ProfileSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use BlocProvider.value to share the existing cubit instance
-    return BlocProvider.value(
-      value: getIt<ProfileCubit>(),
-      child: BlocBuilder<ProfileCubit, ProfileState>(
+    // Try to use existing cubit from context first (if available from main.dart)
+    // Otherwise use getIt (which is now LazySingleton, so same instance everywhere)
+    try {
+      return BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           // Load profiles if not loaded yet
           if (state is ProfileInitial) {
-            getIt<ProfileCubit>().loadActiveProfiles();
+            context.read<ProfileCubit>().loadActiveProfiles();
           }
           return const _ProfileSwitcherContent();
         },
-      ),
-    );
+      );
+    } catch (e) {
+      // If no cubit in context (shouldn't happen since main.dart provides it)
+      // Fall back to getIt (LazySingleton ensures same instance)
+      return BlocProvider.value(
+        value: getIt<ProfileCubit>(),
+        child: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileInitial) {
+              context.read<ProfileCubit>().loadActiveProfiles();
+            }
+            return const _ProfileSwitcherContent();
+          },
+        ),
+      );
+    }
   }
 }
 

@@ -40,10 +40,8 @@ Future<void> initializeDependencies() async {
 
   // Profile service (needs to be before repositories)
   getIt.registerLazySingleton<ProfileService>(
-    () => ProfileService(
-      getIt<ObjectBoxService>(),
-      getIt<PreferencesService>(),
-    ),
+    () =>
+        ProfileService(getIt<ObjectBoxService>(), getIt<PreferencesService>()),
   );
 
   // Initialize profile service (creates default profile if needed)
@@ -111,7 +109,9 @@ Future<void> initializeDependencies() async {
     () => SettingsCubit(getIt<PreferencesService>()),
   );
 
-  getIt.registerFactory<ProfileCubit>(
+  // CRITICAL: ProfileCubit MUST be LazySingleton, not Factory
+  // Factory creates a new instance every time, breaking state synchronization
+  getIt.registerLazySingleton<ProfileCubit>(
     () => ProfileCubit(getIt<UserProfileRepository>()),
   );
 

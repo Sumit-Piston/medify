@@ -34,7 +34,14 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _ProfilesPageContent(onRefresh: () => _profileCubit.loadProfiles());
+    // CRITICAL: Must provide cubit to children via BlocProvider.value
+    // Otherwise BlocConsumer in _ProfilesPageContent won't have access to it
+    return BlocProvider.value(
+      value: _profileCubit,
+      child: _ProfilesPageContent(
+        onRefresh: () => _profileCubit.loadProfiles(),
+      ),
+    );
   }
 }
 
@@ -266,6 +273,7 @@ class _ProfilesPageContent extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.paddingL),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Avatar
               Container(
