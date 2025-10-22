@@ -175,7 +175,7 @@ void _showProfileOptions(
               Navigator.pop(sheetContext);
               if (!isActive && profile.id != null) {
                 // Use the cubit from context, not getIt
-                context.read<ProfileCubit>().switchProfile(profile.id!);
+                getIt<ProfileCubit>().switchProfile(profile.id!);
               }
             },
           ),

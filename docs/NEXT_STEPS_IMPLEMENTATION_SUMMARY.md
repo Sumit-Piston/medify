@@ -24,7 +24,7 @@ Fixed **all 4 critical profile system bugs** that were preventing proper UI upda
 
 - **Problem:** Used `getIt<ProfileCubit>()` in bottom sheet (different instance)
 - **Impact:** State changes didn't reach the page, active tag didn't update
-- **Fix:** Use `context.read<ProfileCubit>()` (same instance)
+- **Fix:** Use `getIt<ProfileCubit>()` (same instance)
 - **Result:** ✅ Active tag updates immediately after switching
 
 #### **Bug #4: ProfileSwitcher Creates New Provider**

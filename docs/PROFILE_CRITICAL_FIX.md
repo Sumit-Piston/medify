@@ -80,7 +80,7 @@ Widget build(BuildContext context) {
 
 ---
 
-### **Fix #3: Use context.read Instead of getIt**
+### **Fix #3: Use getIt Instead of getIt**
 
 **The User Reverted To:**
 
@@ -103,8 +103,8 @@ onTap: () {
 onTap: () {
   Navigator.pop(sheetContext);
   if (!isActive && profile.id != null) {
-    // CRITICAL: Use context.read to get the SAME cubit instance
-    context.read<ProfileCubit>().switchProfile(profile.id!);
+    // CRITICAL: Use getIt to get the SAME cubit instance
+    getIt<ProfileCubit>().switchProfile(profile.id!);
   }
 },
 ```
@@ -132,7 +132,7 @@ try {
   return BlocBuilder<ProfileCubit, ProfileState>(
     builder: (context, state) {
       if (state is ProfileInitial) {
-        context.read<ProfileCubit>().loadActiveProfiles();
+        getIt<ProfileCubit>().loadActiveProfiles();
       }
       return const _ProfileSwitcherContent();
     },
@@ -245,17 +245,17 @@ late final MyCubit _cubit = getIt<MyCubit>();
 Widget build(BuildContext context) {
   return BlocProvider.value(  // ← CRITICAL!
     value: _cubit,
-    child: MyContent(),  // Can now use context.read<MyCubit>()
+    child: MyContent(),  // Can now use getIt<MyCubit>()
   );
 }
 ```
 
-### **3. context.read vs getIt**
+### **3. getIt vs getIt**
 
 **When cubit is provided in widget tree:**
 
 ```dart
-context.read<MyCubit>()  // ✅ Gets the cubit from nearest BlocProvider
+getIt<MyCubit>()  // ✅ Gets the cubit from nearest BlocProvider
 ```
 
 **When accessing global singleton:**
@@ -264,7 +264,7 @@ context.read<MyCubit>()  // ✅ Gets the cubit from nearest BlocProvider
 getIt<MyCubit>()  // ✅ Gets the singleton instance
 ```
 
-**The key:** If using `context.read`, the cubit MUST be provided via `BlocProvider`/`MultiBlocProvider`.
+**The key:** If using `getIt`, the cubit MUST be provided via `BlocProvider`/`MultiBlocProvider`.
 
 ---
 
@@ -278,7 +278,7 @@ getIt<MyCubit>()  // ✅ Gets the singleton instance
 2. **`lib/presentation/pages/profiles_page.dart`**
 
    - Re-added `BlocProvider.value` wrapper
-   - Changed `getIt` → `context.read` in switch/delete actions
+   - Changed `getIt` → `getIt` in switch/delete actions
    - Added explanatory comments
 
 3. **`lib/presentation/widgets/profile_switcher.dart`**
@@ -307,7 +307,7 @@ The user made these changes, which broke the fix:
 
 1. **Removed `BlocProvider.value`** from `ProfilesPage.build()`
    - **Impact:** `BlocConsumer` couldn't access cubit
-2. **Changed `context.read` back to `getIt`**
+2. **Changed `getIt` back to `getIt`**
    - **Impact:** With Factory registration, created new instances
 3. **Removed `crossAxisAlignment: CrossAxisAlignment.center`**
    - **Impact:** Not directly breaking, but affects UI alignment
@@ -322,7 +322,7 @@ The user made these changes, which broke the fix:
 
 1. ✅ **ProfileCubit registered as LazySingleton** (not Factory)
 2. ✅ **ProfilesPage provides cubit via BlocProvider.value**
-3. ✅ **Use context.read for same instance access**
+3. ✅ **Use getIt for same instance access**
 
 **Result:** One cubit instance, perfect state synchronization, instant UI updates! 🎉
 

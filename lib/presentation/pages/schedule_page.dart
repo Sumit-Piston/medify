@@ -26,8 +26,7 @@ class SchedulePage extends StatefulWidget {
   State<SchedulePage> createState() => _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage>
-    with AutomaticKeepAliveClientMixin {
+class _SchedulePageState extends State<SchedulePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -105,24 +104,24 @@ class _SchedulePageState extends State<SchedulePage>
     return '${days[_selectedDate.weekday - 1]}, ${months[_selectedDate.month - 1]} ${_selectedDate.day}';
   }
 
-  Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-      helpText: 'Select Date',
-      cancelText: 'Cancel',
-      confirmText: 'OK',
-    );
+  // Future<void> _selectDate() async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: _selectedDate,
+  //     firstDate: DateTime(2020),
+  //     lastDate: DateTime.now().add(const Duration(days: 365)),
+  //     helpText: 'Select Date',
+  //     cancelText: 'Cancel',
+  //     confirmText: 'OK',
+  //   );
 
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-      _loadData();
-    }
-  }
+  //   if (picked != null && picked != _selectedDate) {
+  //     setState(() {
+  //       _selectedDate = picked;
+  //     });
+  //     _loadData();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -137,22 +136,18 @@ class _SchedulePageState extends State<SchedulePage>
         title: Text(_getTitle()),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: _selectDate,
-            tooltip: 'Select date',
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
-            tooltip: 'Refresh',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.calendar_today),
+          //   onPressed: _selectDate,
+          //   tooltip: 'Select date',
+          // ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData, tooltip: 'Refresh'),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
             },
             tooltip: 'Settings',
           ),
@@ -163,8 +158,7 @@ class _SchedulePageState extends State<SchedulePage>
           BlocListener<MedicineLogCubit, MedicineLogState>(
             listenWhen: (previous, current) {
               // Only listen when this page is visible (prevent duplicate toasts)
-              return current is MedicineLogOperationSuccess &&
-                  previous != current;
+              return current is MedicineLogOperationSuccess && previous != current;
             },
             listener: (context, state) {
               if (state is MedicineLogOperationSuccess) {
@@ -195,13 +189,9 @@ class _SchedulePageState extends State<SchedulePage>
               }
 
               return BlocBuilder<MedicineLogCubit, MedicineLogState>(
-                bloc:
-                    getIt<
-                      MedicineLogCubit
-                    >(), // Explicitly use singleton instance
+                bloc: getIt<MedicineLogCubit>(), // Explicitly use singleton instance
                 builder: (context, logState) {
-                  if (logState is MedicineLogLoading ||
-                      medicineState is MedicineLoading) {
+                  if (logState is MedicineLogLoading || medicineState is MedicineLoading) {
                     // Use shimmer loading instead of circular progress
                     return const ShimmerLoadingList(
                       itemCount: 5,
@@ -247,12 +237,7 @@ class _SchedulePageState extends State<SchedulePage>
                       padding: const EdgeInsets.all(AppSizes.paddingM),
                       children: [
                         // Progress Card
-                        _buildProgressCard(
-                          context,
-                          takenCount,
-                          totalCount,
-                          adherencePercent,
-                        ),
+                        _buildProgressCard(context, takenCount, totalCount, adherencePercent),
                         const SizedBox(height: AppSizes.paddingL),
 
                         // Time-based sections
@@ -261,11 +246,7 @@ class _SchedulePageState extends State<SchedulePage>
                           if (logsForPeriod.isEmpty) return <Widget>[];
 
                           return [
-                            _buildTimeBasedSection(
-                              context,
-                              period,
-                              logsForPeriod,
-                            ),
+                            _buildTimeBasedSection(context, period, logsForPeriod),
                             const SizedBox(height: AppSizes.paddingM),
                           ];
                         }),
@@ -288,12 +269,7 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   /// Build progress card
-  Widget _buildProgressCard(
-    BuildContext context,
-    int taken,
-    int total,
-    int percent,
-  ) {
+  Widget _buildProgressCard(BuildContext context, int taken, int total, int percent) {
     final theme = Theme.of(context);
     final progress = total > 0 ? taken / total : 0.0;
 
@@ -304,27 +280,18 @@ class _SchedulePageState extends State<SchedulePage>
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.emoji_events,
-                  color: theme.colorScheme.primary,
-                  size: AppSizes.iconL,
-                ),
+                Icon(Icons.emoji_events, color: theme.colorScheme.primary, size: AppSizes.iconL),
                 const SizedBox(width: AppSizes.paddingM),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Today's Progress",
-                        style: theme.textTheme.titleLarge,
-                      ),
+                      Text("Today's Progress", style: theme.textTheme.titleLarge),
                       const SizedBox(height: 4),
                       Text(
                         '$taken of $total medicines taken',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.7,
-                          ),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -355,12 +322,8 @@ class _SchedulePageState extends State<SchedulePage>
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
-                backgroundColor: theme.colorScheme.onSurface.withValues(
-                  alpha: 0.1,
-                ),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _getProgressColor(percent),
-                ),
+                backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                valueColor: AlwaysStoppedAnimation<Color>(_getProgressColor(percent)),
               ),
             ),
           ],
@@ -378,33 +341,24 @@ class _SchedulePageState extends State<SchedulePage>
     final theme = Theme.of(context);
 
     // Count statuses
-    final pending = logs
-        .where((log) => log.status == MedicineLogStatus.pending)
-        .length;
-    final taken = logs
-        .where((log) => log.status == MedicineLogStatus.taken)
-        .length;
+    final pending = logs.where((log) => log.status == MedicineLogStatus.pending).length;
+    final taken = logs.where((log) => log.status == MedicineLogStatus.taken).length;
     final overdue = logs
-        .where(
-          (log) => log.isOverdue && log.status == MedicineLogStatus.pending,
-        )
+        .where((log) => log.isOverdue && log.status == MedicineLogStatus.pending)
         .length;
 
     return Card(
       child: Theme(
         data: theme.copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          initiallyExpanded:
-              pending > 0 || overdue > 0, // Expand if has pending/overdue
+          initiallyExpanded: pending > 0 || overdue > 0, // Expand if has pending/overdue
           title: Row(
             children: [
               Text(period.emoji, style: const TextStyle(fontSize: 24)),
               const SizedBox(width: AppSizes.paddingS),
               Text(
                 period.label,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: AppSizes.paddingS),
               Text(
