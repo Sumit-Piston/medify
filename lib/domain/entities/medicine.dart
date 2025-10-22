@@ -44,7 +44,8 @@ class Medicine extends Equatable {
   final String? notes;
 
   // Refill tracking fields
-  final double? totalQuantity; // Total quantity in the bottle (supports decimals for ml)
+  final double?
+  totalQuantity; // Total quantity in the bottle (supports decimals for ml)
   final double? currentQuantity; // Current remaining quantity
   final int? refillRemindDays; // Notify when X days of medicine left
   final DateTime? lastRefillDate; // Last time medicine was refilled
