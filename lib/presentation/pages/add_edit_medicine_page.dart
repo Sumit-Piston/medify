@@ -28,13 +28,16 @@ class AddEditMedicinePage extends StatefulWidget {
 class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _dosageController = TextEditingController();
+  final _dosageAmountController = TextEditingController();
   final _notesController = TextEditingController();
   final _totalQuantityController = TextEditingController();
   final _refillRemindDaysController = TextEditingController();
 
   // List to store selected reminder times (as seconds since midnight)
   final List<int> _reminderTimes = [];
+
+  // Selected medicine type
+  MedicineType _selectedMedicineType = MedicineType.tablet;
 
   // Selected intake timing
   MedicineIntakeTiming _selectedIntakeTiming = MedicineIntakeTiming.anytime;
@@ -55,7 +58,11 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   void _loadMedicineData() {
     final medicine = widget.medicine!;
     _nameController.text = medicine.name;
-    _dosageController.text = medicine.dosage;
+    _selectedMedicineType = medicine.medicineType;
+    _dosageAmountController.text =
+        medicine.dosageAmount == medicine.dosageAmount.toInt()
+        ? medicine.dosageAmount.toInt().toString()
+        : medicine.dosageAmount.toString();
     _notesController.text = medicine.notes ?? '';
     _reminderTimes.addAll(medicine.reminderTimes);
     _selectedIntakeTiming = medicine.intakeTiming;
@@ -63,7 +70,10 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     // Load refill tracking data
     if (medicine.totalQuantity != null) {
       _enableRefillTracking = true;
-      _totalQuantityController.text = medicine.totalQuantity.toString();
+      _totalQuantityController.text =
+          medicine.totalQuantity == medicine.totalQuantity!.toInt()
+          ? medicine.totalQuantity!.toInt().toString()
+          : medicine.totalQuantity.toString();
       _refillRemindDaysController.text = (medicine.refillRemindDays ?? 7)
           .toString();
     }
@@ -72,7 +82,7 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _dosageController.dispose();
+    _dosageAmountController.dispose();
     _notesController.dispose();
     _totalQuantityController.dispose();
     _refillRemindDaysController.dispose();
@@ -211,17 +221,70 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
               ),
               const SizedBox(height: AppSizes.paddingM),
 
-              // Dosage
+              // Medicine Type
+              Text(
+                'Medicine Type',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: AppSizes.paddingS),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.paddingM,
+                    vertical: AppSizes.paddingS,
+                  ),
+                  child: DropdownButtonFormField<MedicineType>(
+                    initialValue: _selectedMedicineType,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        _getMedicineTypeIcon(_selectedMedicineType),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    items: MedicineType.values.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(type.label),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedMedicineType = value;
+                          // Clear dosage amount when type changes
+                          if (!_isEditMode) {
+                            _dosageAmountController.clear();
+                          }
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSizes.paddingM),
+
+              // Dosage Amount
               CustomTextField(
-                label: AppLocalizations.of(context)!.dosage,
-                hint: 'e.g., 500mg, 2 tablets',
-                controller: _dosageController,
-                validator: Validators.dosage,
+                label: 'Dosage Amount',
+                hint: _getDosageHint(),
+                controller: _dosageAmountController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter dosage amount';
+                  }
+                  final amount = double.tryParse(value);
+                  if (amount == null || amount <= 0) {
+                    return 'Please enter a valid amount';
+                  }
+                  return null;
+                },
                 prefixIcon: const Icon(Icons.medical_information),
-                keyboardType: TextInputType.text,
-                maxLength: 30, // Standard max length
-                textCapitalization: TextCapitalization.sentences,
-                semanticLabel: 'Dosage information input field',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                suffixText: _selectedMedicineType.unit,
+                semanticLabel: 'Dosage amount input field',
               ),
               const SizedBox(height: AppSizes.paddingM),
 
@@ -324,16 +387,19 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
                       children: [
                         CustomTextField(
                           label: 'Total Quantity',
-                          hint: 'e.g., 30 (pills/doses)',
+                          hint: _getQuantityHint(),
                           controller: _totalQuantityController,
                           prefixIcon: const Icon(Icons.inventory_2),
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          suffixText: _selectedMedicineType.unit,
                           validator: (value) {
                             if (_enableRefillTracking) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter total quantity';
                               }
-                              final quantity = int.tryParse(value);
+                              final quantity = double.tryParse(value);
                               if (quantity == null || quantity <= 0) {
                                 return 'Please enter a valid quantity';
                               }
@@ -664,14 +730,17 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
     // }
     const activeProfileId = 1; // Default profile ID for now
 
+    // Parse dosage amount
+    final dosageAmount = double.parse(_dosageAmountController.text.trim());
+
     // Parse refill tracking values
-    int? totalQuantity;
-    int? currentQuantity;
+    double? totalQuantity;
+    double? currentQuantity;
     int? refillRemindDays;
     DateTime? lastRefillDate;
 
     if (_enableRefillTracking) {
-      totalQuantity = int.tryParse(_totalQuantityController.text.trim());
+      totalQuantity = double.tryParse(_totalQuantityController.text.trim());
       currentQuantity = totalQuantity; // Initialize with total on creation
       refillRemindDays = int.tryParse(_refillRemindDaysController.text.trim());
       lastRefillDate = DateTime.now(); // Mark now as refill date
@@ -683,12 +752,24 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
       }
     }
 
+    // Generate dosage string (e.g., "2 tablets", "500 ml")
+    String dosageString;
+    if (dosageAmount == dosageAmount.toInt()) {
+      final intAmount = dosageAmount.toInt();
+      dosageString =
+          '$intAmount ${intAmount == 1 ? _selectedMedicineType.unit : "${_selectedMedicineType.unit}${_selectedMedicineType == MedicineType.syrup || _selectedMedicineType == MedicineType.injection ? "" : "s"}"}';
+    } else {
+      dosageString = '$dosageAmount ${_selectedMedicineType.unit}';
+    }
+
     // Create medicine object
     final medicine = Medicine(
       id: _isEditMode ? widget.medicine!.id : null,
       profileId: _isEditMode ? widget.medicine!.profileId : activeProfileId,
       name: _nameController.text.trim(),
-      dosage: _dosageController.text.trim(),
+      medicineType: _selectedMedicineType,
+      dosageAmount: dosageAmount,
+      dosage: dosageString,
       reminderTimes: _reminderTimes,
       intakeTiming: _selectedIntakeTiming,
       notes: _notesController.text.trim().isEmpty
@@ -747,6 +828,75 @@ class _AddEditMedicinePageState extends State<AddEditMedicinePage> {
         return Icons.bedtime;
       case MedicineIntakeTiming.anytime:
         return Icons.schedule;
+    }
+  }
+
+  /// Get icon for medicine type
+  IconData _getMedicineTypeIcon(MedicineType type) {
+    switch (type) {
+      case MedicineType.tablet:
+        return Icons.medication;
+      case MedicineType.capsule:
+        return Icons.medication_liquid;
+      case MedicineType.syrup:
+        return Icons.local_drink;
+      case MedicineType.drops:
+        return Icons.water_drop;
+      case MedicineType.injection:
+        return Icons.vaccines;
+      case MedicineType.inhaler:
+        return Icons.air;
+      case MedicineType.ointment:
+        return Icons.healing;
+      case MedicineType.patch:
+        return Icons.label;
+      case MedicineType.other:
+        return Icons.medical_services;
+    }
+  }
+
+  /// Get dosage hint based on medicine type
+  String _getDosageHint() {
+    switch (_selectedMedicineType) {
+      case MedicineType.tablet:
+        return 'e.g., 1, 2, 0.5';
+      case MedicineType.capsule:
+        return 'e.g., 1, 2';
+      case MedicineType.syrup:
+        return 'e.g., 5, 10, 500';
+      case MedicineType.drops:
+        return 'e.g., 2, 3, 5';
+      case MedicineType.injection:
+        return 'e.g., 1, 2, 5';
+      case MedicineType.inhaler:
+        return 'e.g., 1, 2';
+      case MedicineType.ointment:
+        return 'e.g., 1, 2';
+      case MedicineType.patch:
+        return 'e.g., 1';
+      case MedicineType.other:
+        return 'e.g., 1';
+    }
+  }
+
+  /// Get quantity hint for refill tracking based on medicine type
+  String _getQuantityHint() {
+    switch (_selectedMedicineType) {
+      case MedicineType.tablet:
+      case MedicineType.capsule:
+        return 'e.g., 30, 60 (total ${_selectedMedicineType.unit}s)';
+      case MedicineType.syrup:
+      case MedicineType.injection:
+        return 'e.g., 100, 200 (total ${_selectedMedicineType.unit})';
+      case MedicineType.drops:
+        return 'e.g., 50, 100 (total ${_selectedMedicineType.unit})';
+      case MedicineType.inhaler:
+        return 'e.g., 120, 200 (total ${_selectedMedicineType.unit}s)';
+      case MedicineType.ointment:
+      case MedicineType.patch:
+        return 'e.g., 1, 5 (total ${_selectedMedicineType.unit}s)';
+      case MedicineType.other:
+        return 'e.g., 30 (total ${_selectedMedicineType.unit}s)';
     }
   }
 }

@@ -9,15 +9,17 @@ class MedicineModel {
 
   int profileId; // User profile this medicine belongs to
   String name;
-  String dosage;
+  int medicineType; // Store as int (enum index) - tablet, syrup, etc.
+  double dosageAmount; // Numeric amount (e.g., 1, 2, 500)
+  String dosage; // Full dosage string (e.g., "2 tablets", "500 ml")
   List<int> reminderTimes; // Stored as seconds since midnight
   int intakeTiming; // Store as int (enum index)
   bool isActive;
   String? notes;
 
   // Refill tracking fields
-  int? totalQuantity; // Total pills/doses in the bottle
-  int? currentQuantity; // Current remaining pills/doses
+  double? totalQuantity; // Total quantity in bottle (supports decimals for ml)
+  double? currentQuantity; // Current remaining quantity
   int? refillRemindDays; // Notify when X days of medicine left
 
   @Property(type: PropertyType.date)
@@ -33,6 +35,8 @@ class MedicineModel {
     this.id = 0,
     required this.profileId,
     required this.name,
+    this.medicineType = 0, // Default to tablet (index 0)
+    this.dosageAmount = 1.0, // Default to 1
     required this.dosage,
     required this.reminderTimes,
     this.intakeTiming = 4, // Default to anytime (index 4)
@@ -52,6 +56,8 @@ class MedicineModel {
       id: medicine.id ?? 0,
       profileId: medicine.profileId,
       name: medicine.name,
+      medicineType: medicine.medicineType.index,
+      dosageAmount: medicine.dosageAmount,
       dosage: medicine.dosage,
       reminderTimes: medicine.reminderTimes,
       intakeTiming: medicine.intakeTiming.index,
@@ -72,6 +78,8 @@ class MedicineModel {
       id: id == 0 ? null : id,
       profileId: profileId,
       name: name,
+      medicineType: MedicineType.values[medicineType],
+      dosageAmount: dosageAmount,
       dosage: dosage,
       reminderTimes: reminderTimes,
       intakeTiming: MedicineIntakeTiming.values[intakeTiming],

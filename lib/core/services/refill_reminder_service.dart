@@ -149,8 +149,9 @@ class RefillReminderService {
         return;
       }
 
-      // Decrement quantity
-      final newQuantity = medicine.currentQuantity! - 1;
+      // Decrement quantity by dosage amount (e.g., 2 tablets, 500 ml)
+      final decrementAmount = medicine.dosageAmount;
+      final newQuantity = medicine.currentQuantity! - decrementAmount;
       final updatedMedicine = medicine.copyWith(
         currentQuantity: newQuantity > 0 ? newQuantity : 0,
         updatedAt: DateTime.now(),
@@ -159,7 +160,7 @@ class RefillReminderService {
       await _medicineRepository.updateMedicine(updatedMedicine);
 
       developer.log(
-        'Decremented quantity for ${medicine.name}: ${medicine.currentQuantity} -> $newQuantity',
+        'Decremented quantity for ${medicine.name}: ${medicine.currentQuantity} -> $newQuantity (decreased by $decrementAmount ${medicine.medicineType.unit})',
         name: 'RefillReminderService',
       );
 
@@ -175,7 +176,7 @@ class RefillReminderService {
   }
 
   /// Refill medicine stock
-  Future<void> refillMedicine(int medicineId, {int? newQuantity}) async {
+  Future<void> refillMedicine(int medicineId, {double? newQuantity}) async {
     try {
       final medicine = await _medicineRepository.getMedicineById(medicineId);
       if (medicine == null) {
@@ -187,7 +188,7 @@ class RefillReminderService {
       }
 
       // Use provided quantity or reset to total quantity
-      final refillAmount = newQuantity ?? medicine.totalQuantity ?? 0;
+      final refillAmount = newQuantity ?? medicine.totalQuantity ?? 0.0;
 
       final updatedMedicine = medicine.copyWith(
         currentQuantity: refillAmount,
@@ -198,15 +199,23 @@ class RefillReminderService {
       await _medicineRepository.updateMedicine(updatedMedicine);
 
       developer.log(
-        'Refilled ${medicine.name}: currentQuantity = $refillAmount',
+        'Refilled ${medicine.name}: currentQuantity = $refillAmount ${medicine.medicineType.unit}',
         name: 'RefillReminderService',
       );
+
+      // Format quantity string for notification
+      String quantityStr;
+      if (refillAmount == refillAmount.toInt()) {
+        quantityStr = '${refillAmount.toInt()} ${medicine.medicineType.unit}';
+      } else {
+        quantityStr = '$refillAmount ${medicine.medicineType.unit}';
+      }
 
       // Show success notification
       await _notificationService.showImmediateNotification(
         title: '✅ Medicine Refilled',
         body:
-            '${medicine.name} has been refilled successfully. Current stock: $refillAmount doses.',
+            '${medicine.name} has been refilled successfully. Current stock: $quantityStr.',
         payload: 'refilled_${medicine.id}',
       );
     } catch (e) {
@@ -253,18 +262,27 @@ class RefillReminderService {
       return 'Out of stock';
     }
 
+    // Format quantity string
+    String quantityStr;
+    if (medicine.currentQuantity == medicine.currentQuantity!.toInt()) {
+      quantityStr =
+          '${medicine.currentQuantity!.toInt()} ${medicine.medicineType.unit}';
+    } else {
+      quantityStr = '${medicine.currentQuantity} ${medicine.medicineType.unit}';
+    }
+
     if (medicine.isLowStock) {
       final days = medicine.daysRemaining;
       return days == 1
-          ? 'Low stock (1 day left)'
-          : 'Low stock ($days days left)';
+          ? 'Low stock ($quantityStr, 1 day left)'
+          : 'Low stock ($quantityStr, $days days left)';
     }
 
     final days = medicine.daysRemaining;
-    if (days == null) return '${medicine.currentQuantity} doses left';
+    if (days == null) return '$quantityStr left';
 
     return days == 1
-        ? '${medicine.currentQuantity} doses (1 day left)'
-        : '${medicine.currentQuantity} doses ($days days left)';
+        ? '$quantityStr (1 day left)'
+        : '$quantityStr ($days days left)';
   }
 }

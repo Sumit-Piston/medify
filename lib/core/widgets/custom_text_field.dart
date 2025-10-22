@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLines;
   final int? maxLength;
   final Widget? suffixIcon;
+  final String? suffixText;
   final Widget? prefixIcon;
   final bool readOnly;
   final VoidCallback? onTap;
@@ -36,6 +37,7 @@ class CustomTextField extends StatefulWidget {
     this.maxLines = 1,
     this.maxLength,
     this.suffixIcon,
+    this.suffixText,
     this.prefixIcon,
     this.readOnly = false,
     this.onTap,
@@ -129,6 +131,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           labelText: widget.label,
           hintText: widget.hint,
           suffixIcon: _buildSuffixIcon(),
+          suffixText: widget.suffixText,
           prefixIcon: widget.prefixIcon,
           errorText: _hasInteracted ? _errorText : null,
           counterText: widget.showCharacterCounter ? null : '',
@@ -137,4 +140,3 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
-
