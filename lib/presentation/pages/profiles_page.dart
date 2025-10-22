@@ -34,12 +34,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _profileCubit,
-      child: _ProfilesPageContent(
-        onRefresh: () => _profileCubit.loadProfiles(),
-      ),
-    );
+    return _ProfilesPageContent(onRefresh: () => _profileCubit.loadProfiles());
   }
 }
 
