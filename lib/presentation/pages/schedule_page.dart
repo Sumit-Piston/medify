@@ -32,7 +32,7 @@ class _SchedulePageState extends State<SchedulePage> with AutomaticKeepAliveClie
 
   List<Medicine> _medicines = [];
   List<MedicineLog> _logs = [];
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {

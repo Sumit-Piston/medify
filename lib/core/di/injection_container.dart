@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:medify/core/services/permission_service.dart';
 import '../../data/datasources/objectbox_service.dart';
 import '../../data/repositories/medicine_repository_impl.dart';
 import '../../data/repositories/medicine_log_repository_impl.dart';
@@ -32,6 +33,10 @@ Future<void> initializeDependencies() async {
   final notificationService = NotificationService();
   await notificationService.initialize();
   getIt.registerSingleton<NotificationService>(notificationService);
+
+  // Initalize permission service
+  final permissionService = AppPermissionService();
+  getIt.registerSingleton<AppPermissionService>(permissionService);
 
   // Data sources
   final objectBoxService = ObjectBoxService();
