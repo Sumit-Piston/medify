@@ -10,6 +10,7 @@ import '../../core/utils/date_time_utils.dart';
 import '../../domain/entities/medicine_log.dart';
 import '../blocs/history/history_cubit.dart';
 import '../blocs/history/history_state.dart';
+import '../widgets/profile_switcher.dart';
 
 /// Medicine history page with calendar view
 class HistoryPage extends StatefulWidget {
@@ -42,6 +43,10 @@ class _HistoryPageState extends State<HistoryPage>
 
     return Scaffold(
       appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: ProfileSwitcher(),
+        ),
         title: const Text('History'),
         centerTitle: true,
         actions: [
@@ -111,14 +116,14 @@ class _HistoryPageState extends State<HistoryPage>
             );
           }
         },
-          builder: (context, state) {
-            if (state is HistoryLoading) {
-              // Use shimmer loading for history
-              return const ShimmerLoadingList(
-                itemCount: 5,
-                shimmerWidget: ShimmerMedicineLogCard(),
-              );
-            }
+        builder: (context, state) {
+          if (state is HistoryLoading) {
+            // Use shimmer loading for history
+            return const ShimmerLoadingList(
+              itemCount: 5,
+              shimmerWidget: ShimmerMedicineLogCard(),
+            );
+          }
 
           if (state is HistoryError) {
             return Center(
@@ -127,7 +132,10 @@ class _HistoryPageState extends State<HistoryPage>
                 children: [
                   Icon(Icons.error_outline, size: 64, color: AppColors.error),
                   const SizedBox(height: AppSizes.spacing16),
-                  Text('Error loading history', style: theme.textTheme.titleLarge),
+                  Text(
+                    'Error loading history',
+                    style: theme.textTheme.titleLarge,
+                  ),
                   const SizedBox(height: AppSizes.spacing8),
                   Text(
                     state.message,
@@ -260,7 +268,9 @@ class _HistoryPageState extends State<HistoryPage>
     if (logs == null || logs.isEmpty) return null;
 
     final total = logs.length;
-    final taken = logs.where((log) => log.status == MedicineLogStatus.taken).length;
+    final taken = logs
+        .where((log) => log.status == MedicineLogStatus.taken)
+        .length;
     final adherenceRate = (taken / total) * 100;
 
     Color color;
@@ -277,10 +287,7 @@ class _HistoryPageState extends State<HistoryPage>
       child: Container(
         width: 6,
         height: 6,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     );
   }
@@ -406,23 +413,19 @@ class _HistoryPageState extends State<HistoryPage>
           ),
           child: Icon(statusIcon, color: statusColor),
         ),
-        title: Text(
-          medicine.name,
-          style: theme.textTheme.titleMedium,
-        ),
+        title: Text(medicine.name, style: theme.textTheme.titleMedium),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text('${medicine.dosage} • ${DateTimeUtils.formatTime(log.scheduledTime)}'),
+            Text(
+              '${medicine.dosage} • ${DateTimeUtils.formatTime(log.scheduledTime)}',
+            ),
             if (log.takenTime != null) ...[
               const SizedBox(height: 2),
               Text(
                 'Taken at ${DateTimeUtils.formatTime(log.takenTime!)}',
-                style: TextStyle(
-                  color: AppColors.success,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: AppColors.success, fontSize: 12),
               ),
             ],
           ],
@@ -470,7 +473,10 @@ class _HistoryPageState extends State<HistoryPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Medicine filter
-                const Text('Medicine:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Medicine:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<int?>(
                   value: selectedMedicineId,
@@ -479,7 +485,10 @@ class _HistoryPageState extends State<HistoryPage>
                     border: OutlineInputBorder(),
                   ),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('All Medicines')),
+                    const DropdownMenuItem(
+                      value: null,
+                      child: Text('All Medicines'),
+                    ),
                     ...state.medicines.map((medicine) {
                       return DropdownMenuItem(
                         value: medicine.id,
@@ -496,7 +505,10 @@ class _HistoryPageState extends State<HistoryPage>
                 const SizedBox(height: 16),
 
                 // Status filter
-                const Text('Status:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Status:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<MedicineLogStatus?>(
                   value: selectedStatus,
@@ -505,7 +517,10 @@ class _HistoryPageState extends State<HistoryPage>
                     border: OutlineInputBorder(),
                   ),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('All Statuses')),
+                    const DropdownMenuItem(
+                      value: null,
+                      child: Text('All Statuses'),
+                    ),
                     ...MedicineLogStatus.values.map((status) {
                       return DropdownMenuItem(
                         value: status,
@@ -593,4 +608,3 @@ class _HistoryPageState extends State<HistoryPage>
     }
   }
 }
-

@@ -10,6 +10,7 @@ import '../../core/widgets/shimmer_loading.dart';
 import '../../domain/entities/statistics.dart';
 import '../blocs/statistics/statistics_cubit.dart';
 import '../blocs/statistics/statistics_state.dart';
+import '../widgets/profile_switcher.dart';
 
 /// Statistics and analytics page
 class StatisticsPage extends StatefulWidget {
@@ -39,6 +40,10 @@ class _StatisticsPageState extends State<StatisticsPage>
 
     return Scaffold(
       appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: ProfileSwitcher(),
+        ),
         title: const Text('Statistics'),
         centerTitle: true,
         actions: [

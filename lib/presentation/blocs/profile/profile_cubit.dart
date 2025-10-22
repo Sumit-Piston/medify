@@ -154,18 +154,19 @@ class ProfileCubit extends Cubit<ProfileState> {
   /// Switch to a different profile
   Future<void> switchProfile(int profileId) async {
     try {
+      // Set active profile in repository (updates database)
       await _userProfileRepository.setActiveProfile(profileId);
-      final profile = await _userProfileRepository.getProfileById(profileId);
 
+      // Reload all profiles first (this will have correct isActive flags)
+      await loadProfiles();
+
+      // Then emit success message
+      final profile = await _userProfileRepository.getProfileById(profileId);
       if (profile != null) {
-        emit(ActiveProfileChanged(profile));
         emit(const ProfileOperationSuccess('Profile switched successfully'));
 
         // Reload medicines and logs for the new profile
         _reloadAppData();
-
-        // Reload all profiles to update active status
-        await loadProfiles();
       } else {
         emit(const ProfileError('Profile not found'));
       }

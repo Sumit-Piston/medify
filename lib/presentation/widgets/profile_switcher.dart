@@ -14,9 +14,18 @@ class ProfileSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()..loadActiveProfiles(),
-      child: const _ProfileSwitcherContent(),
+    // Use BlocProvider.value to share the existing cubit instance
+    return BlocProvider.value(
+      value: getIt<ProfileCubit>(),
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          // Load profiles if not loaded yet
+          if (state is ProfileInitial) {
+            getIt<ProfileCubit>().loadActiveProfiles();
+          }
+          return const _ProfileSwitcherContent();
+        },
+      ),
     );
   }
 }
@@ -171,7 +180,8 @@ class _ProfileSwitcherContent extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(sheetContext);
                     if (!isActive && profile.id != null) {
-                      getIt<ProfileCubit>().switchProfile(profile.id!);
+                      // Use context cubit to ensure proper state updates
+                      context.read<ProfileCubit>().switchProfile(profile.id!);
                       // Show success message
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

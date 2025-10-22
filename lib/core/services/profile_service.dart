@@ -120,6 +120,9 @@ class ProfileService {
 
   /// Set active profile by ID
   ///
+  /// Updates the isActive flag in the database for all profiles and
+  /// stores the active profile ID in SharedPreferences.
+  ///
   /// Throws [Exception] if profile with [profileId] doesn't exist
   Future<void> setActiveProfile(int profileId) async {
     final profile = await getProfileById(profileId);
@@ -127,9 +130,42 @@ class ProfileService {
       throw Exception('Profile with ID $profileId not found');
     }
 
-    _activeProfile = profile;
-    await _preferencesService.setInt(_keyActiveProfileId, profileId);
-    developer.log('Active profile set to: ${profile.name} (ID: $profileId)');
+    try {
+      // 1. Set all profiles to inactive in database
+      final allProfiles = await getAllProfiles();
+      for (final p in allProfiles) {
+        if (p.isActive && p.id != profileId) {
+          final inactiveProfile = p.copyWith(
+            isActive: false,
+            updatedAt: DateTime.now(),
+          );
+          final model = UserProfileModel.fromEntity(inactiveProfile);
+          _profileBox.put(model);
+          developer.log('Set profile ${p.name} (ID: ${p.id}) to inactive');
+        }
+      }
+
+      // 2. Set selected profile to active in database
+      final activeProfile = profile.copyWith(
+        isActive: true,
+        updatedAt: DateTime.now(),
+      );
+      final activeModel = UserProfileModel.fromEntity(activeProfile);
+      _profileBox.put(activeModel);
+
+      // 3. Update cache and preferences
+      _activeProfile = activeProfile;
+      await _preferencesService.setInt(_keyActiveProfileId, profileId);
+
+      developer.log('Active profile set to: ${profile.name} (ID: $profileId)');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to set active profile',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   /// Create a new profile
