@@ -21,7 +21,7 @@ class ProfileSwitcher extends StatelessWidget {
         builder: (context, state) {
           // Load profiles if not loaded yet
           if (state is ProfileInitial) {
-            context.read<ProfileCubit>().loadActiveProfiles();
+            getIt<ProfileCubit>().loadActiveProfiles();
           }
           return const _ProfileSwitcherContent();
         },
@@ -34,7 +34,7 @@ class ProfileSwitcher extends StatelessWidget {
         child: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileInitial) {
-              context.read<ProfileCubit>().loadActiveProfiles();
+              getIt<ProfileCubit>().loadActiveProfiles();
             }
             return const _ProfileSwitcherContent();
           },
@@ -64,14 +64,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
                 horizontal: AppSizes.paddingS,
                 vertical: 4,
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildActiveProfileAvatar(state.activeProfile),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_drop_down, size: 20),
-                ],
-              ),
+              child: _buildActiveProfileAvatar(state.activeProfile),
             ),
           );
         }
@@ -195,7 +188,7 @@ class _ProfileSwitcherContent extends StatelessWidget {
                     Navigator.pop(sheetContext);
                     if (!isActive && profile.id != null) {
                       // Use context cubit to ensure proper state updates
-                      context.read<ProfileCubit>().switchProfile(profile.id!);
+                      getIt<ProfileCubit>().switchProfile(profile.id!);
                       // Show success message
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
