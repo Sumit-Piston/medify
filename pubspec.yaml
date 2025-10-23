@@ -2,7 +2,7 @@ name: medify
 description: "Medicine Reminder & Tracker App"
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: ^3.9.2
@@ -37,9 +37,12 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.0
   shared_preferences: ^2.3.3
+  package_info_plus: ^9.0.0
 
   # Charts & Visualizations (Phase 2)
   fl_chart: ^0.69.0
+  showcaseview: ^5.0.1
+  flutter_intro: ^3.4.0
 
   # Calendar & History (Phase 2)
   table_calendar: ^3.1.2
@@ -50,7 +53,6 @@ dependencies:
   shimmer: ^3.0.0
   flutter_staggered_animations: ^1.1.1
   confetti: ^0.7.0
-  flutter_intro: ^3.4.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medify/core/services/system_service.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/di/injection_container.dart';
@@ -664,6 +665,7 @@ class _SettingsView extends StatelessWidget {
   }
 
   Widget _buildVersionCard(ThemeData theme) {
+    final systemService = getIt<SystemService>();
     return Card(
       child: ListTile(
         leading: ClipRRect(
@@ -671,16 +673,23 @@ class _SettingsView extends StatelessWidget {
           child: Assets.icons.medifyIcon.image(width: 32, height: 32),
         ),
         title: Text('Version', style: theme.textTheme.titleMedium),
-        subtitle: Text('1.0.0', style: theme.textTheme.bodySmall),
+        subtitle: FutureBuilder(
+          future: systemService.getVersionCode(),
+          builder: (context, app) {
+            return Text('${app.data}', style: theme.textTheme.bodySmall);
+          },
+        ),
       ),
     );
   }
 
-  void _showAboutDialog(BuildContext context) {
+  void _showAboutDialog(BuildContext context) async {
+    final appVersion = await getIt<SystemService>().getVersionCode();
+    if (!context.mounted) return;
     showAboutDialog(
       context: context,
       applicationName: AppLocalizations.of(context)!.appName,
-      applicationVersion: '1.0.0',
+      applicationVersion: appVersion,
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Assets.icons.medifyIcon.image(width: 64, height: 64),
